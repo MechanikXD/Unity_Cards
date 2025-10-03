@@ -19,6 +19,7 @@ namespace Core.Cards.Card
         [SerializeField] private TMP_Text _healthField;
         [Header("Dynamic")]
         [SerializeField] private TMP_Text _finalAttackField;
+        public int FinalAttack { get; private set; }
         private int _cardReferenceId;
 
         // TODO: Get databank from game manager of sort
@@ -37,7 +38,18 @@ namespace Core.Cards.Card
             _cardReferenceId = data.ID;
         }
 
-        public void SetFinalAttack(int damage) => _finalAttackField.SetText(damage.ToString());
+        public void SetRandomFinalAttack(CardDataBank source)
+        {
+            var attackRange = source.Get(_cardReferenceId).Attack;
+            var final = Random.Range(attackRange.x, attackRange.y);
+            SetFinalAttack(final);
+        }
+        
+        public void SetFinalAttack(int damage)
+        {
+            FinalAttack = damage;
+            _finalAttackField.SetText(damage.ToString());
+        }
 
         public void Clear()
         {
@@ -53,6 +65,10 @@ namespace Core.Cards.Card
             _cardReferenceId = -1;
         }
         
-        public void ClearFinalAttack() => _finalAttackField.SetText(EMPTY_FINAL_ATTACK_CHAR);
+        public void ClearFinalAttack()
+        {
+            FinalAttack = -1;
+            _finalAttackField.SetText(EMPTY_FINAL_ATTACK_CHAR);
+        }
     }
 }

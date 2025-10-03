@@ -17,8 +17,12 @@ namespace Core.Cards.Board
         [SerializeField] private int _cardIndex;
         [SerializeField] private Vector2 _cardPosition =  new Vector2(0, 0);
 
+        public bool IsEmpty { get; private set; }
+        public CardModel Card => _child;
+
         public void Attach(CardModel card)
         {
+            IsEmpty = false;
             _child = card;
             card.transform.SetParent(transform);
             MoveCardToPositionAsync(card.transform, _cts.Token).Forget();
@@ -29,6 +33,7 @@ namespace Core.Cards.Board
             var cardModel = _child;
             _child.transform.parent = null;
             _child = null;
+            IsEmpty = false;
             return cardModel;
         }
 
