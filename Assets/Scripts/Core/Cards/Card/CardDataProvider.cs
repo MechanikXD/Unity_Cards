@@ -8,6 +8,8 @@ namespace Core.Cards.Card
 {
     public static class CardDataProvider
     {
+        public static CardDataBank DataBank => Resources.Load<CardDataBank>("Card Data");
+        
         // TODO: Add actual sprites and correct path
         private readonly static Dictionary<CardAffinity, Sprite> AffinitySprites =
             new Dictionary<CardAffinity, Sprite>
@@ -42,7 +44,7 @@ namespace Core.Cards.Card
             var stringBuilder = new StringBuilder();
             foreach (var effect in data.Effects)
             {
-                var description = MakeDescription(effect.Effects, EffectPrefixes[effect.Trigger]);
+                var description = MakeDescription(effect.Value, EffectPrefixes[effect.Key]);
                 if (!string.IsNullOrEmpty(description))
                 {
                     stringBuilder.Append(description);

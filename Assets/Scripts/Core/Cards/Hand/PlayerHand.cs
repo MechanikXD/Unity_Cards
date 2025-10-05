@@ -10,10 +10,14 @@ namespace Core.Cards.Hand
         [SerializeField] private int _defaultHealth;
         private int _health;
         private int _maxHealth;
+        
+        public int CurrentHealth => _health;
 
         [SerializeField] private int _defaultHope;
         private int _hope;
         private int _maxHope;
+        
+        public int CurrentHope => _hope;
         
         [SerializeField] private int _defaultHopeRegeneration;
         private int _hopeRegeneration;

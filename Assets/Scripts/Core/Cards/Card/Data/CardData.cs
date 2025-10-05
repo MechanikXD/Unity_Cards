@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Core.Cards.Card.Effects;
 using UnityEngine;
 
@@ -26,8 +28,9 @@ namespace Core.Cards.Card.Data
         public int Health =>  _health;
         public Vector2Int Attack => _attack;
         public int Cost => _cost;
-        
-        public EffectGroup[] Effects => _effects;
+
+        public Dictionary<TriggerType, CardEffect[]> Effects =>
+            _effects.ToDictionary(e => e.Trigger, e => e.Effects);
     }
 
     [Serializable]
