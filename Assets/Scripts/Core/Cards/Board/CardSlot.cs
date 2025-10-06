@@ -1,18 +1,19 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Core.Cards.Board
 {
-    public class CardSlot : MonoBehaviour
+    public class CardSlot : MonoBehaviour, IDropHandler
     {
-        private const float CART_MOVE_SPEED = 1f;
-        private const float CART_SNAP_DISTANCE = 0.05f;
+        private const float CARD_MOVE_SPEED = 3f;
+        private const float CARD_SNAP_DISTANCE = 10f;
         private readonly CancellationTokenSource _cts = new  CancellationTokenSource();
         private CardModel _child;
-        
+
+        [SerializeField] private bool _canSnapTo = true;
         [SerializeField] private BoardModel _board;
         [SerializeField] private int _cardIndex;
         [SerializeField] private Vector2 _cardPosition =  new Vector2(0, 0);
@@ -20,6 +21,17 @@ namespace Core.Cards.Board
         public bool IsEmpty { get; private set; }
         public CardModel Card => _child;
 
+        public void OnDrop(PointerEventData eventData)
+        {
+            if (!_canSnapTo) return;
+            
+            var card = eventData.pointerDrag;
+            if (card != null && card.TryGetComponent<CardModel>(out var cardModel))
+            {
+                Attach(cardModel);
+            }
+        }
+        
         public void Attach(CardModel card)
         {
             IsEmpty = false;
@@ -39,21 +51,14 @@ namespace Core.Cards.Board
 
         private async UniTask MoveCardToPositionAsync(Transform cardTransform, CancellationToken ct = default)
         {
-            try
+            var moveDirection = transform.position - cardTransform.position;
+            while (Vector2.Distance(cardTransform.localPosition, _cardPosition) > CARD_SNAP_DISTANCE)
             {
-                var moveDirection = cardTransform.position - transform.position;
-                while (Vector2.Distance(cardTransform.position, _cardPosition) > CART_SNAP_DISTANCE)
-                {
-                    cardTransform.Translate(moveDirection * (Time.deltaTime * CART_MOVE_SPEED));
-                    await UniTask.NextFrame(cancellationToken:ct);
-                }
+                cardTransform.Translate(moveDirection * (Time.deltaTime * CARD_MOVE_SPEED));
+                await UniTask.NextFrame(cancellationToken:ct);
+            }
 
-                cardTransform.position = _cardPosition; // Snap to final location
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("Card Movement was canceled");
-            }
+            cardTransform.localPosition = _cardPosition; // Snap to final location
         }
 
         private void OnDestroy() => _cts.Cancel();

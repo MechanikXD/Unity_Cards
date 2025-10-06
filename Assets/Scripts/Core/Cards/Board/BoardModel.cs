@@ -4,6 +4,7 @@ using Core.Cards.Card.Data;
 using Core.Cards.Card.Effects;
 using Core.Cards.Hand;
 using Cysharp.Threading.Tasks;
+using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,6 +39,7 @@ namespace Core.Cards.Board
 
         public async UniTask PlayTurnAsync(CardDataBank db, CancellationToken ct = default)
         {
+            InputBlocker.Instance.DisableInput();
             await DisplayFinalAttacksAsync(db, ct);
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
@@ -95,6 +97,7 @@ namespace Core.Cards.Board
             }
             
             ClearFinalAttacks();
+            InputBlocker.Instance.EnableInput();
         }
 
         private async UniTask DisplayFinalAttacksAsync(CardDataBank db, CancellationToken ct = default)
