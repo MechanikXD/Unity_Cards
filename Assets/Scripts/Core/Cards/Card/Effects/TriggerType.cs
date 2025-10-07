@@ -4,6 +4,6 @@
     {
         CombatStart,
         OnHit,
-        NextTurn
+        TurnEnd
     }
 }

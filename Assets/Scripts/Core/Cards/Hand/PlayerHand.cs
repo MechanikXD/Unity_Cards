@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Cards.Card.Data;
 using Other;
 using UnityEngine;
@@ -22,9 +23,20 @@ namespace Core.Cards.Hand
         [SerializeField] private int _defaultHopeRegeneration;
         private int _hopeRegeneration;
         
+        [SerializeField] private int _defaultStartingHandSize;
+        [SerializeField] private int _defaultCardDrawCount;
+        private int _startingHandSize;
+        private int _drawCount;
+
+        public int StartingHandSize => _startingHandSize;
+        
         private CardData[] _deck;
         private LinkedList<CardData> _currentDeck;
         private List<CardData> _hand;
+        
+        public bool HasAnyCards => _hand.Count > 0 && _currentDeck.Count > 0;
+
+        public event Action PlayerDefeated; 
 
         public void Initialize(CardData[] deck)
         {
@@ -98,7 +110,7 @@ namespace Core.Cards.Hand
             _health -= damage;
             if (_health <= 0)
             {
-                // TODO: Defeat sequence
+                PlayerDefeated?.Invoke();
                 _health = 0;
             }
         }
@@ -133,6 +145,20 @@ namespace Core.Cards.Hand
             _hand.RemoveAt(index);
             return card;
         }
+        
+        public CardData GetCardFromHand(CardData card)
+        {
+            var toRemove = 0;
+            for (var i = 0; i < _hand.Count; i++)
+            {
+                if (_hand[i] != card) continue;
+
+                toRemove = i;
+                break;
+            }
+            _hand.RemoveAt(toRemove);
+            return card;
+        }
 
         public void RefillDeck()
         {
@@ -141,6 +167,9 @@ namespace Core.Cards.Hand
             ShuffleDeck();
         }
 
+        public void DrawCardsFromDeck(bool shuffleBeforeDraw=false) => 
+            DrawCardsFromDeck(_drawCount, shuffleBeforeDraw);
+        
         public void DrawCardsFromDeck(int count, bool shuffleBeforeDraw=false)
         {
             if (shuffleBeforeDraw) ShuffleDeck();
@@ -151,6 +180,16 @@ namespace Core.Cards.Hand
                 _hand.Add(_currentDeck.First.Value);
                 _currentDeck.RemoveFirst();
             }
+        }
+
+        public void SetCardDrawCount(int newCount)
+        {
+            _drawCount = newCount < 0 ? 1 : newCount;
+        }
+        
+        public void SetStartingHandSize(int newSize)
+        {
+            _startingHandSize = newSize < 0 ? 1 : newSize;
         }
 
         private void ShuffleDeck() => _currentDeck = (LinkedList<CardData>)_currentDeck.Shuffle();

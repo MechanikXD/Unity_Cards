@@ -26,10 +26,13 @@ namespace Core.Cards.Board
             if (!_canSnapTo) return;
             
             var card = eventData.pointerDrag;
-            if (card != null && card.TryGetComponent<CardModel>(out var cardModel))
-            {
-                Attach(cardModel);
-            }
+            
+            // 1. Not null; 2. It is a card; 3. Can be placed (enough cost)
+            if (card == null || !card.TryGetComponent<CardModel>(out var cardModel) ||
+                !cardModel.CanBePlaced) return;
+
+            Attach(cardModel);
+            cardModel.SetPlaced();
         }
         
         public void Attach(CardModel card)

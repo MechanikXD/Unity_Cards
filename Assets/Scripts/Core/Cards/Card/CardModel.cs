@@ -1,4 +1,5 @@
 ﻿using Core.Cards.Card.Data;
+using Core.Cards.Hand;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,13 +21,15 @@ namespace Core.Cards.Card
         [Header("Dynamic")]
         [SerializeField] private TMP_Text _finalAttackField;
         public int FinalAttack { get; private set; }
-        private int _cardReferenceId;
+        private PlayerHand _hand;
+        private CardData _data;
 
-        // TODO: Get databank from game manager of sort
-        public CardData GetCard(CardDataBank source) => source.Get(_cardReferenceId);
+        public CardData CardData => _data;
+        public bool CanBePlaced => _hand.CanUseCard(_data.Cost);
         
-        public void Set(CardData data)
+        public void Set(CardData data, PlayerHand owner)
         {
+            _data = data;
             _mainImage.sprite = data.Image;
             _descriptionField.SetText(CardDataProvider.MakeDescription(data));
             _affinityImage.sprite = CardDataProvider.GetAffinitySprite(data.Affinity);
@@ -35,12 +38,18 @@ namespace Core.Cards.Card
             _costField.SetText(data.Cost.ToString());
             _healthField.SetText(data.Health.ToString());
             
-            _cardReferenceId = data.ID;
+            _hand = owner;
         }
 
-        public void SetRandomFinalAttack(CardDataBank source)
+        public void SetPlaced()
         {
-            var attackRange = source.Get(_cardReferenceId).Attack;
+            _hand.GetCardFromHand(_data);
+            _hand = null;
+        }
+
+        public void SetRandomFinalAttack()
+        {
+            var attackRange = _data.Attack;
             var final = Random.Range(attackRange.x, attackRange.y);
             SetFinalAttack(final);
         }
@@ -62,7 +71,7 @@ namespace Core.Cards.Card
             _healthField.SetText(string.Empty);
             ClearFinalAttack();
 
-            _cardReferenceId = -1;
+            _data = default;
         }
         
         public void ClearFinalAttack()

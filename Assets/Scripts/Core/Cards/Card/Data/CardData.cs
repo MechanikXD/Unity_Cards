@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Core.Cards.Card.Data
 {
     [Serializable]
-    public struct CardData
+    public struct CardData : IEquatable<CardData>
     {
         [SerializeField] private int _id;
         [Header("Visual")]
@@ -31,6 +31,32 @@ namespace Core.Cards.Card.Data
 
         public Dictionary<TriggerType, CardEffect[]> Effects =>
             _effects.ToDictionary(e => e.Trigger, e => e.Effects);
+
+        public static bool operator ==(CardData thisCard, CardData otherCard)
+        {
+            return thisCard.Equals(otherCard);
+        }
+
+        public static bool operator !=(CardData thisCard, CardData otherCard)
+        {
+            return !(thisCard == otherCard);
+        }
+
+        public bool Equals(CardData other)
+        {
+            return _id == other._id && _affinity == other._affinity && _health == other._health &&
+                   _attack.Equals(other._attack) && _cost == other._cost;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CardData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_id, _image, (int)_affinity, _health, _attack, _cost, _effects);
+        }
     }
 
     [Serializable]

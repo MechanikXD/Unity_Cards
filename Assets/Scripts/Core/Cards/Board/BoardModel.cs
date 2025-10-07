@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Core.Cards.Card.Data;
 using Core.Cards.Card.Effects;
@@ -14,9 +16,9 @@ namespace Core.Cards.Board
     public class BoardModel : MonoBehaviour
     {
         private const float FINAL_ATTACK_DISPLAY_DELAY = 0.5f;
-        private const float BETWEEN_ATTACKS_DELAY = 1f;
-        [SerializeField] private Button _playButton;   
+        private const float BETWEEN_ATTACKS_DELAY = 1f; 
         [SerializeField] private Transform _playerCards;
+        
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
         [SerializeField] private PlayerHand _playerHand;
@@ -37,23 +39,63 @@ namespace Core.Cards.Board
         [SerializeField] private Image _otherHopeFill;
         [SerializeField] private TMP_Text _otherHopeText;
 
-        public async UniTask PlayTurnAsync(CardDataBank db, CancellationToken ct = default)
+        private void OnDisable()
+        {
+            _playerHand.PlayerDefeated -= GameManager.Instance.GameLoose;
+            _otherHand.PlayerDefeated -= GameManager.Instance.WinGame;
+        }
+
+        public void StartGame(CardData[] playerCards, CardData[] otherCards)
+        {
+            _playerHand.Initialize(playerCards);
+            _otherHand.Initialize(otherCards);
+
+            _playerHand.PlayerDefeated += GameManager.Instance.GameLoose;
+            _otherHand.PlayerDefeated += GameManager.Instance.WinGame;
+            
+            _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
+            _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
+        }
+
+        public void NextTurn()
+        {
+            if (!HasAnyCards(_otherHand, _otherCardSlots))
+            {
+                GameManager.Instance.WinGame();
+                return;
+            }
+            _otherHand.DrawCardsFromDeck();
+            _otherHand.RegenerateHope();
+            
+            if (!HasAnyCards(_playerHand, _playerCardSlots))
+            {
+                GameManager.Instance.GameLoose();
+                return;
+            }
+            _playerHand.DrawCardsFromDeck();
+            _playerHand.RegenerateHope();
+        }
+
+        private static bool HasAnyCards(PlayerHand hand, CardSlot[] cardSlots) => 
+            hand.HasAnyCards || cardSlots.Any(slot => !slot.IsEmpty);
+
+        public async UniTask PlayTurnAsync(CancellationToken ct = default)
         {
             InputBlocker.Instance.DisableInput();
-            await DisplayFinalAttacksAsync(db, ct);
+            await DisplayFinalAttacksAsync(ct);
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
                 if (!_playerCardSlots[i].IsEmpty)   // Player has card in slot
                 {
                     var playerCard = _playerCardSlots[i].Card;
-                    var playerEffects = playerCard.GetCard(db).Effects;
-                    PlayPlayerEffects(playerEffects, TriggerType.CombatStart);
+                    var playerEffects = playerCard.CardData.Effects;
+                    PlayEffects(playerEffects, TriggerType.CombatStart, GetPlayerContext);
                     
                     if (!_otherCardSlots[i].IsEmpty) // Both slots have cards
                     {
                         var otherCard = _otherCardSlots[i].Card;
-                        var otherEffects =  otherCard.GetCard(db).Effects;
-                        PlayOtherEffects(otherEffects, TriggerType.CombatStart);
+                        var otherEffects =  otherCard.CardData.Effects;
+                        PlayEffects(otherEffects, TriggerType.CombatStart, GetOtherContext);
                         // Difference in final power
                         var difference = playerCard.FinalAttack - otherCard.FinalAttack;
                         
@@ -62,57 +104,67 @@ namespace Core.Cards.Board
                             // player win
                             case > 0:
                                 _otherHand.TakeDamage(difference);
-                                PlayPlayerEffects(playerEffects, TriggerType.OnHit); 
+                                PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext); 
+                                PlayCardAnimation(ct).Forget();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY * 1000f, cancellationToken: ct);
                                 break;
                             // player loose
                             case < 0:
                                 _playerHand.TakeDamage(-difference);
-                                PlayOtherEffects(otherEffects, TriggerType.OnHit);
+                                PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
+                                PlayCardAnimation(ct).Forget();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY * 1000f, cancellationToken: ct);
                                 break;
                         }
                         
-                        PlayOtherEffects(otherEffects, TriggerType.NextTurn);
+                        PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
                     }
                     else // Player unopposed
                     {
                         _otherHand.TakeDamage(playerCard.FinalAttack);
+                        PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext);
+                        PlayCardAnimation(ct).Forget();
                         await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY * 1000f, cancellationToken: ct);
-                        PlayPlayerEffects(playerEffects, TriggerType.OnHit);
                     }
                     
-                    PlayPlayerEffects(playerEffects, TriggerType.NextTurn);
+                    PlayEffects(playerEffects, TriggerType.TurnEnd, GetPlayerContext);
                 }
                 else if (!_otherCardSlots[i].IsEmpty) // Enemy unopposed
                 {
                     var otherCard = _otherCardSlots[i].Card;
-                    var otherEffects = otherCard.GetCard(db).Effects;
+                    var otherEffects = otherCard.CardData.Effects;
                     _playerHand.TakeDamage(otherCard.FinalAttack);
-                    PlayOtherEffects(otherEffects, TriggerType.OnHit);
+                    PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
+                    PlayCardAnimation(ct).Forget();
                     
                     await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY * 1000f, cancellationToken: ct);
-                    PlayOtherEffects(otherEffects, TriggerType.NextTurn);
+                    PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
                 }
             }
             
             ClearFinalAttacks();
             InputBlocker.Instance.EnableInput();
+            NextTurn();
         }
 
-        private async UniTask DisplayFinalAttacksAsync(CardDataBank db, CancellationToken ct = default)
+        private async UniTask PlayCardAnimation(CancellationToken ct)
+        {
+            // TODO: Make method
+        }
+
+        private async UniTask DisplayFinalAttacksAsync(CancellationToken ct = default)
         {
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
                 if (!_playerCardSlots[i].IsEmpty)
                 {
-                    _playerCardSlots[i].Card.SetRandomFinalAttack(db);
+                    _playerCardSlots[i].Card.SetRandomFinalAttack();
                     await UniTask.WaitForSeconds(FINAL_ATTACK_DISPLAY_DELAY * 1000, cancellationToken:ct);
                 }
                 
                 if (!_otherCardSlots[i].IsEmpty)
                 {
-                    _playerCardSlots[i].Card.SetRandomFinalAttack(db);
+                    _playerCardSlots[i].Card.SetRandomFinalAttack();
                     if (i < _playerCardSlots.Length) await UniTask.WaitForSeconds(FINAL_ATTACK_DISPLAY_DELAY * 1000, cancellationToken:ct);
                 }
             }
@@ -128,16 +180,10 @@ namespace Core.Cards.Board
             }
         }
 
-        private void PlayPlayerEffects(Dictionary<TriggerType, CardEffect[]> cardData, TriggerType trigger)
+        private void PlayEffects(Dictionary<TriggerType, CardEffect[]> cardData, TriggerType trigger, Func<BoardContext> contextProvider)
         {
             if (!cardData.TryGetValue(trigger, out var effects)) return;
-            foreach (var effect in effects) effect.Execute(GetPlayerContext());
-        }
-        
-        private void PlayOtherEffects(Dictionary<TriggerType, CardEffect[]> cardData, TriggerType trigger)
-        {
-            if (!cardData.TryGetValue(trigger, out var effects)) return;
-            foreach (var effect in effects) effect.Execute(GetOtherContext());
+            foreach (var effect in effects) effect.Execute(contextProvider());
         }
 
         private BoardContext GetPlayerContext()

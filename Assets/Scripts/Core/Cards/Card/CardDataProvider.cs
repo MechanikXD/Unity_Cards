@@ -27,7 +27,7 @@ namespace Core.Cards.Card
             {
                 [TriggerType.CombatStart] = "[Combat Start]",
                 [TriggerType.OnHit] = "[On Hit]",
-                [TriggerType.NextTurn] = "[Next Turn]"
+                [TriggerType.TurnEnd] = "[Next Turn]"
             };
         
         public static Sprite GetAffinitySprite(CardAffinity affinity) => AffinitySprites[affinity];
