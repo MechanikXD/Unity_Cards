@@ -11,7 +11,8 @@ namespace Core.Cards.Card.Data
     {
         [SerializeField] private int _id;
         [Header("Visual")]
-        [SerializeField] private Sprite _image;
+        [SerializeField] private Sprite _sprite;
+        [SerializeField] private Sprite _background;
         [SerializeField] private CardAffinity _affinity;
         [Header("Stats")]
         [SerializeField] private int _health;
@@ -22,16 +23,24 @@ namespace Core.Cards.Card.Data
 
         public int ID => _id;
 
-        public Sprite Image => _image;
+        public Sprite Sprite => _sprite;
+        public Sprite Background => _background;
         public CardAffinity Affinity => _affinity;
         
         public int Health =>  _health;
         public Vector2Int Attack => _attack;
         public int Cost => _cost;
 
-        public Dictionary<TriggerType, CardEffect[]> Effects =>
-            _effects.ToDictionary(e => e.Trigger, e => e.Effects);
-
+        public Dictionary<TriggerType, CardEffect[]> Effects
+        {
+            get
+            {
+                return _effects != null
+                    ? _effects.ToDictionary(e => e.Trigger, e => e.Effects)
+                    : new Dictionary<TriggerType, CardEffect[]>();
+            }
+        }
+        
         public static bool operator ==(CardData thisCard, CardData otherCard)
         {
             return thisCard.Equals(otherCard);
@@ -55,7 +64,7 @@ namespace Core.Cards.Card.Data
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_id, _image, (int)_affinity, _health, _attack, _cost, _effects);
+            return HashCode.Combine(_id, (int)_affinity, _health, _attack, _cost);
         }
     }
 

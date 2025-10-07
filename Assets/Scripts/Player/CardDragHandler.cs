@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Core;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,9 +11,9 @@ namespace Player
         private const float CARD_SNAP_DISTANCE = 10f;
         private const float CARD_MOVE_SPEED = 5f;
         
-        [SerializeField] private Transform _relocationCanvas;
-        
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        // TODO: Pass this with zenject
+        private Transform _relocationCanvas;
         private CanvasGroup _canvasGroup;
         private Vector3 _originalPosition;
         private Transform _originalParent;
@@ -20,6 +21,11 @@ namespace Player
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        private void Start()
+        {
+            _relocationCanvas = GameManager.Instance.ControlCanvas;
         }
 
         public void OnBeginDrag(PointerEventData eventData)

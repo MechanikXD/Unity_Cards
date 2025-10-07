@@ -18,7 +18,7 @@ namespace Core.Cards.Board
         [SerializeField] private int _cardIndex;
         [SerializeField] private Vector2 _cardPosition =  new Vector2(0, 0);
 
-        public bool IsEmpty { get; private set; }
+        public bool IsEmpty { get; private set; } = true;
         public CardModel Card => _child;
 
         public void OnDrop(PointerEventData eventData)
@@ -48,7 +48,7 @@ namespace Core.Cards.Board
             var cardModel = _child;
             _child.transform.parent = null;
             _child = null;
-            IsEmpty = false;
+            IsEmpty = true;
             return cardModel;
         }
 

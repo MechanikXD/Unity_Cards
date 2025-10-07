@@ -16,17 +16,18 @@ namespace Other
             }
         }
         
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> array)
+        public static void Shuffle<T>(this LinkedList<T> list)
         {
-            var list = array.ToList();
-            
-            for (var i = 0; i < list.Count; i++ )
+            var values = list.ToList();
+            for (var i = 0; i < values.Count; i++)
             {
-                var random = Random.Range(i, list.Count);
-                (list[i], list[random]) = (list[random], list[i]);
+                var j = Random.Range(i, values.Count);
+                (values[i], values[j]) = (values[j], values[i]);
             }
-            
-            return list;
+
+            // Rebuild linked list
+            list.Clear();
+            foreach (var v in values) list.AddLast(v);
         }
     }
 }

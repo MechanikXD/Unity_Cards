@@ -11,7 +11,8 @@ namespace Core.Cards.Card
         private const string EMPTY_FINAL_ATTACK_CHAR = "#";
         
         [Header("Visual")]
-        [SerializeField] private Image _mainImage;
+        [SerializeField] private Image _sprite;
+        [SerializeField] private Image _background;
         [SerializeField] private TMP_Text _descriptionField;
         [SerializeField] private Image _affinityImage;
         [Header("Informative")]
@@ -30,7 +31,8 @@ namespace Core.Cards.Card
         public void Set(CardData data, PlayerHand owner)
         {
             _data = data;
-            _mainImage.sprite = data.Image;
+            _sprite.sprite = data.Sprite;
+            _background.sprite = data.Background;
             _descriptionField.SetText(CardDataProvider.MakeDescription(data));
             _affinityImage.sprite = CardDataProvider.GetAffinitySprite(data.Affinity);
             
@@ -44,6 +46,7 @@ namespace Core.Cards.Card
         public void SetPlaced()
         {
             _hand.GetCardFromHand(_data);
+            _hand.UseHope(_data.Cost);
             _hand = null;
         }
 
@@ -62,9 +65,11 @@ namespace Core.Cards.Card
 
         public void Clear()
         {
-            _mainImage.sprite = null;
+            var imageNull = CardDataProvider.ImageNull;
+            _sprite.sprite = imageNull;
+            _background.sprite = imageNull;
             _descriptionField.SetText(string.Empty);
-            _affinityImage.sprite = null;
+            _affinityImage.sprite = imageNull;
             
             _attackField.SetText(string.Empty);
             _costField.SetText(string.Empty);

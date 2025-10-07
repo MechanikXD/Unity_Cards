@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other;
 using UnityEngine;
@@ -25,11 +26,9 @@ namespace Core.Cards.Hand
         
         [SerializeField] private int _defaultStartingHandSize;
         [SerializeField] private int _defaultCardDrawCount;
-        private int _startingHandSize;
+        public int StartingHandSize { get; private set; }
         private int _drawCount;
 
-        public int StartingHandSize => _startingHandSize;
-        
         private CardData[] _deck;
         private LinkedList<CardData> _currentDeck;
         private List<CardData> _hand;
@@ -38,9 +37,9 @@ namespace Core.Cards.Hand
 
         public event Action PlayerDefeated; 
 
-        public void Initialize(CardData[] deck)
+        public void Initialize(int[] cardIds)
         {
-            _deck = deck;
+            _deck = CreateDeck(cardIds);
             _currentDeck = new LinkedList<CardData>();
             _hand = new List<CardData>();
 
@@ -49,6 +48,9 @@ namespace Core.Cards.Hand
 
             _hope = _defaultHope;
             _maxHope = _defaultHope;
+            
+            StartingHandSize = _defaultStartingHandSize;
+            _drawCount = _defaultCardDrawCount;
 
             _hopeRegeneration = _defaultHopeRegeneration;
         }
@@ -139,6 +141,18 @@ namespace Core.Cards.Hand
 
         #region Card Related
 
+        private CardData[] CreateDeck(int[] ids)
+        {
+            var db = CardDataProvider.DataBank;
+            var deck = new CardData[ids.Length];
+            for (var i = 0; i < ids.Length; i++)
+            {
+                deck[i] = db.Get(ids[i]);
+            }
+            
+            return deck;
+        }
+        
         public CardData GetCardFromHand(int index)
         {
             var card = _hand[index];
@@ -164,22 +178,31 @@ namespace Core.Cards.Hand
         {
             _currentDeck.Clear();
             foreach (var card in _deck) _currentDeck.AddLast(card);
-            ShuffleDeck();
+            _currentDeck.Shuffle();
         }
 
-        public void DrawCardsFromDeck(bool shuffleBeforeDraw=false) => 
+        public CardData[] DrawCardsFromDeck(bool shuffleBeforeDraw=false) => 
             DrawCardsFromDeck(_drawCount, shuffleBeforeDraw);
         
-        public void DrawCardsFromDeck(int count, bool shuffleBeforeDraw=false)
+        public CardData[] DrawCardsFromDeck(int count, bool shuffleBeforeDraw=false)
         {
-            if (shuffleBeforeDraw) ShuffleDeck();
+            if (shuffleBeforeDraw) _currentDeck.Shuffle();
+            count = Mathf.Min(_currentDeck.Count, count);
+            var drawn = new CardData[count];
+            var drawnIndex = 0;
             for (var i = 0; i < count; i++)
             {
                 if (_currentDeck.Count <= 0) break;
                 
-                _hand.Add(_currentDeck.First.Value);
+                var newCard = _currentDeck.First.Value;
+                _hand.Add(newCard);
                 _currentDeck.RemoveFirst();
+                
+                drawn[drawnIndex] = newCard;
+                drawnIndex++;
             }
+            
+            return drawn;
         }
 
         public void SetCardDrawCount(int newCount)
@@ -189,10 +212,8 @@ namespace Core.Cards.Hand
         
         public void SetStartingHandSize(int newSize)
         {
-            _startingHandSize = newSize < 0 ? 1 : newSize;
+            StartingHandSize = newSize < 0 ? 1 : newSize;
         }
-
-        private void ShuffleDeck() => _currentDeck = (LinkedList<CardData>)_currentDeck.Shuffle();
 
         #endregion
     }

@@ -10,16 +10,15 @@ namespace Core.Cards.Card
     {
         public static CardDataBank DataBank => Resources.Load<CardDataBank>("Card Data");
         
-        // TODO: Add actual sprites and correct path
         private readonly static Dictionary<CardAffinity, Sprite> AffinitySprites =
             new Dictionary<CardAffinity, Sprite>
             {
-                [CardAffinity.Destruction] = Resources.Load<Sprite>(""),
-                [CardAffinity.Machinery] = Resources.Load<Sprite>(""),
-                [CardAffinity.Nature] = Resources.Load<Sprite>(""),
-                [CardAffinity.Space] = Resources.Load<Sprite>(""),
-                [CardAffinity.Spirit] = Resources.Load<Sprite>(""),
-                [CardAffinity.Wildcard] = Resources.Load<Sprite>("")
+                [CardAffinity.Destruction] = Resources.Load<Sprite>("Icons/pentagram"),
+                [CardAffinity.Machinery] = Resources.Load<Sprite>("Icons/cogs"),
+                [CardAffinity.Nature] = Resources.Load<Sprite>("Icons/leaf"),
+                [CardAffinity.Space] = Resources.Load<Sprite>("Icons/planet"),
+                [CardAffinity.Spirit] = Resources.Load<Sprite>("Icons/spirit"),
+                [CardAffinity.Wildcard] = Resources.Load<Sprite>("Icons/dice")
             };
 
         private readonly static Dictionary<TriggerType, string> EffectPrefixes =
@@ -29,6 +28,8 @@ namespace Core.Cards.Card
                 [TriggerType.OnHit] = "[On Hit]",
                 [TriggerType.TurnEnd] = "[Next Turn]"
             };
+        
+        public readonly static Sprite ImageNull = Resources.Load<Sprite>("UI/ImageNull");
         
         public static Sprite GetAffinitySprite(CardAffinity affinity) => AffinitySprites[affinity];
 
