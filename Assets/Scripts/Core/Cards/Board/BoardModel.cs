@@ -116,16 +116,22 @@ namespace Core.Cards.Board
                         {
                             // player win
                             case > 0:
+                                playerCard.SetFinalAttack(difference);
+                                otherCard.SetFinalAttack(0);
+                                
                                 _otherHand.TakeDamage(difference);
                                 PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext); 
-                                PlayCardAnimation(ct).Forget();
+                                playerCard.PlayRandomAnimation();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                                 break;
                             // player loose
                             case < 0:
+                                playerCard.SetFinalAttack(0);
+                                otherCard.SetFinalAttack(difference);
+                                
                                 _playerHand.TakeDamage(-difference);
                                 PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
-                                PlayCardAnimation(ct).Forget();
+                                otherCard.PlayRandomAnimation();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                                 break;
                         }
@@ -136,7 +142,7 @@ namespace Core.Cards.Board
                     {
                         _otherHand.TakeDamage(playerCard.FinalAttack);
                         PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext);
-                        PlayCardAnimation(ct).Forget();
+                        playerCard.PlayRandomAnimation();
                         await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                     }
                     
@@ -148,21 +154,19 @@ namespace Core.Cards.Board
                     var otherEffects = otherCard.CardData.Effects;
                     _playerHand.TakeDamage(otherCard.FinalAttack);
                     PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
-                    PlayCardAnimation(ct).Forget();
+                    otherCard.PlayRandomAnimation();
                     
                     await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                     PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
                 }
+
+                if (_playerHand.IsDefeated || _otherHand.IsDefeated) break;
             }
+
             
             ClearFinalAttacks();
             InputBlocker.Instance.EnableInput();
             NextTurn();
-        }
-
-        private async UniTask PlayCardAnimation(CancellationToken ct)
-        {
-            // TODO: Make method
         }
 
         private async UniTask DisplayFinalAttacksAsync(CancellationToken ct = default)

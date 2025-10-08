@@ -7,6 +7,11 @@ namespace Other
 {
     public static class ArrayExtensions
     {
+        public static T GetRandom<T>(this IList<T> list)
+        {
+            return list[Random.Range(0, list.Count)];
+        }
+        
         public static void Shuffle(this IList array)
         {
             for (var i = 0; i < array.Count; i++ )

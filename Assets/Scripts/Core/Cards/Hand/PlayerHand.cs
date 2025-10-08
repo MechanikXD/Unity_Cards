@@ -36,6 +36,7 @@ namespace Core.Cards.Hand
         private List<CardData> _hand;
         
         public bool HasAnyCards => _hand.Count > 0 || _currentDeck.Count > 0;
+        public bool IsDefeated { get; private set; }
 
         public event Action PlayerDefeated; 
 
@@ -126,6 +127,7 @@ namespace Core.Cards.Hand
             if (_health <= 0)
             {
                 PlayerDefeated?.Invoke();
+                IsDefeated = true;
                 _health = 0;
             }
             
