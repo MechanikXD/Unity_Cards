@@ -23,12 +23,12 @@ namespace Core
 
         public void WinGame()
         {
-            
+            Debug.Log("Game Won");
         }
         
         public void GameLoose()
         {
-            
+            Debug.Log("Game Lost");
         }
     }
 }

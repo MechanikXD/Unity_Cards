@@ -8,7 +8,7 @@ namespace UI.View
 {
     public class PlayerStatView : MonoBehaviour
     {
-        private const float VALUE_CHANGE_SPEED = 0.05f;
+        private const float VALUE_CHANGE_SPEED = 0.75f;
         private readonly CancellationTokenSource _cts = new  CancellationTokenSource();
         
         [SerializeField] private TMP_Text _healthText;
@@ -44,12 +44,13 @@ namespace UI.View
             var currentFillValue = _healthFill.fillAmount;
             while (!Mathf.Approximately(currentFillValue, _targetHealthFill))
             {
-                if (Mathf.Abs(currentFillValue - _targetHealthFill) < VALUE_CHANGE_SPEED) 
+                var valueChangeThisFrame = VALUE_CHANGE_SPEED * Time.deltaTime;
+                if (Mathf.Abs(currentFillValue - _targetHealthFill) < valueChangeThisFrame) 
                     currentFillValue = _targetHealthFill;
                 else
                     currentFillValue += currentFillValue > _targetHealthFill
-                        ? -VALUE_CHANGE_SPEED
-                        : VALUE_CHANGE_SPEED;
+                        ? -valueChangeThisFrame
+                        : valueChangeThisFrame;
                 
                 _healthFill.fillAmount = currentFillValue;
                 await UniTask.NextFrame(ct);
@@ -65,11 +66,12 @@ namespace UI.View
             var currentFillValue = _hopeFill.fillAmount;
             while (!Mathf.Approximately(currentFillValue, _targetHopeFill))
             {
-                if (Mathf.Abs(currentFillValue - _targetHopeFill) < VALUE_CHANGE_SPEED) 
+                var valueChangeThisFrame = VALUE_CHANGE_SPEED * Time.deltaTime;
+                if (Mathf.Abs(currentFillValue - _targetHopeFill) < valueChangeThisFrame) 
                     currentFillValue = _targetHopeFill;
                 else currentFillValue += currentFillValue > _targetHopeFill
-                    ? -VALUE_CHANGE_SPEED
-                    : VALUE_CHANGE_SPEED;
+                    ? -valueChangeThisFrame
+                    : valueChangeThisFrame;
                 
                 _hopeFill.fillAmount = currentFillValue;
                 await UniTask.NextFrame(ct);
