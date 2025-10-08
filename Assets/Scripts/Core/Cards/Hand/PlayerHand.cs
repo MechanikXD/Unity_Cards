@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other;
+using UI.View;
 using UnityEngine;
 
 namespace Core.Cards.Hand
 {
     public class PlayerHand : MonoBehaviour
     {
+        [SerializeField] private PlayerStatView _statView;
         [SerializeField] private int _defaultHealth;
         private int _health;
         private int _maxHealth;
@@ -53,6 +55,9 @@ namespace Core.Cards.Hand
             _drawCount = _defaultCardDrawCount;
 
             _hopeRegeneration = _defaultHopeRegeneration;
+            
+            _statView.SetHealth(_health, _maxHealth, true);
+            _statView.SetHope(_hope, _maxHope, true);
         }
 
         #region Hope Related
@@ -70,9 +75,15 @@ namespace Core.Cards.Hand
             {
                 _hope -= cardCost;
             }
+            
+            _statView.SetHope(_hope, _maxHope);
         }
 
-        public void AddHope(int count) => _hope = Mathf.Min(_hope + count, _maxHope);
+        public void AddHope(int count)
+        {
+            _hope = Mathf.Min(_hope + count, _maxHope);
+            _statView.SetHope(_hope, _maxHope);
+        }
 
         public void SetMaxHope(int newValue)
         {
@@ -90,6 +101,8 @@ namespace Core.Cards.Hand
                 if (oldMaxHope > _maxHope) _hope = Mathf.Min(oldMaxHope, _hope);
                 else _hope += _maxHope - oldMaxHope;
             }
+            
+            _statView.SetHope(_hope, _maxHope);
         }
 
         public void RegenerateHope() => AddHope(_hopeRegeneration);
@@ -115,9 +128,15 @@ namespace Core.Cards.Hand
                 PlayerDefeated?.Invoke();
                 _health = 0;
             }
+            
+            _statView.SetHealth(_health, _maxHealth);
         }
 
-        public void RestoreHealth(int amount) => _health = Mathf.Min(_health + amount, _maxHealth);
+        public void RestoreHealth(int amount)
+        {
+            _health = Mathf.Min(_health + amount, _maxHealth);
+            _statView.SetHealth(_health, _maxHealth);
+        }
 
         public void SetMaxHealth(int newValue)
         {
@@ -135,6 +154,8 @@ namespace Core.Cards.Hand
                 if (oldMaxHealth > _maxHealth) _health = Mathf.Min(oldMaxHealth, _health);
                 else _health += _maxHealth - oldMaxHealth;
             }
+            
+            _statView.SetHealth(_health, _maxHealth);
         }
 
         #endregion
