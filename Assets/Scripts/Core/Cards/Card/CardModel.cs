@@ -30,13 +30,17 @@ namespace Core.Cards.Card
         public int FinalAttack { get; private set; }
         private PlayerHand _hand;
         private CardData _data;
-
+        private RectTransform _rectTransform;
+        
+        public int IndexInLayout { get; set; }
+        public RectTransform RectTransform => _rectTransform;
         public CardData CardData => _data;
         public bool CanBePlaced => _hand.CanUseCard(_data.Cost);
 
         private void Awake()
         {
             _animator.enabled = false;
+            _rectTransform = (RectTransform)transform;
         }
 
         public void Set(CardData data, PlayerHand owner)
@@ -59,8 +63,9 @@ namespace Core.Cards.Card
             _hand.GetCardFromHand(_data);
             _hand.UseHope(_data.Cost);
             _hand = null;
+            
             _animator.enabled = true;
-            var rect = ((RectTransform)transform);
+            var rect = (RectTransform)transform;
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
         }

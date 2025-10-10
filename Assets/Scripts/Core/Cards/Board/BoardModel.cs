@@ -7,6 +7,7 @@ using Core.Cards.Card.Data;
 using Core.Cards.Card.Effects;
 using Core.Cards.Hand;
 using Cysharp.Threading.Tasks;
+using Other;
 using Player;
 using TMPro;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Core.Cards.Board
         private const float FINAL_ATTACK_DISPLAY_DELAY = 0.5f;
         private const float BETWEEN_ATTACKS_DELAY = 1f; 
         [SerializeField] private CardModel _cardPrefab;
-        [SerializeField] private Transform _playerCards;
+        [SerializeField] private CardGroupLayout _layout;
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -43,8 +44,11 @@ namespace Core.Cards.Board
 
         private void OnDisable()
         {
-            _playerHand.PlayerDefeated -= GameManager.Instance.GameLoose;
-            _otherHand.PlayerDefeated -= GameManager.Instance.WinGame;
+            if (GameManager.Instance != null)
+            {
+                _playerHand.PlayerDefeated -= GameManager.Instance.GameLoose;
+                _otherHand.PlayerDefeated -= GameManager.Instance.WinGame;    
+            }
         }
 
         public void StartGame(int[] playerCardIds, int[] otherCardsIds)
@@ -57,7 +61,7 @@ namespace Core.Cards.Board
             
             _playerHand.RefillDeck();
             var data = _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
-            foreach (var cardData in data) GivePlayerCard(cardData);
+            foreach (var cardData in data) CrateNewCardModel(cardData);
             
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
@@ -79,18 +83,23 @@ namespace Core.Cards.Board
                 return;
             }
             var data = _playerHand.DrawCardsFromDeck();
-            foreach (var cardData in data) GivePlayerCard(cardData);
+            foreach (var cardData in data) CrateNewCardModel(cardData);
             _playerHand.RegenerateHope();
         }
 
         private static bool HasAnyCards(PlayerHand hand, CardSlot[] cardSlots) => 
             hand.HasAnyCards || cardSlots.Any(slot => !slot.IsEmpty);
 
-        private void GivePlayerCard(CardData card)
+        private void CrateNewCardModel(CardData card)
         {
-            var model = Instantiate(_cardPrefab, _playerCards);
+            var model = Instantiate(_cardPrefab);
             model.Set(card, _playerHand);
+            AddCardToLayout((RectTransform)model.transform);
         }
+        
+        public void AddCardToLayout(RectTransform rect) => _layout.AddChild(rect);
+
+        public void RemoveCardFromLayout(int index) => _layout.RemoveChild(index);
 
         public async UniTask PlayTurnAsync(CancellationToken ct = default)
         {

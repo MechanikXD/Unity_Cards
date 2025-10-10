@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Core;
+using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,9 +18,11 @@ namespace Player
         private CanvasGroup _canvasGroup;
         private Vector3 _originalPosition;
         private Transform _originalParent;
+        private CardModel _thisModel;
 
         private void Awake()
         {
+            _thisModel = GetComponent<CardModel>();
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
@@ -35,6 +38,8 @@ namespace Player
             _canvasGroup.blocksRaycasts = false;
             transform.SetParent(_relocationCanvas);
             transform.SetAsFirstSibling();
+            
+            GameManager.Instance.Board.RemoveCardFromLayout(_thisModel.IndexInLayout);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -46,7 +51,10 @@ namespace Player
         {
             _canvasGroup.blocksRaycasts = true;
             if (transform.parent == _relocationCanvas)
+            {
                 MoveToOriginalAsync(_cts.Token).Forget();
+            }
+            
             else DestroyImmediate(this);
         }
 
@@ -66,6 +74,8 @@ namespace Player
 
             transform.position = _originalPosition; // Snap to final location
             transform.SetParent(_originalParent);
+            
+            GameManager.Instance.Board.AddCardToLayout((RectTransform)_thisModel.transform);
         }
     }
 }

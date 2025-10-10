@@ -2896,7 +2896,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1449186084}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
@@ -2922,13 +2922,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1449186084}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c2290b9648c43b580518b110962d010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rotation: {x: 0, y: 0, z: 10}
   _moveSpeed: 10
-  _spacing: 25
+  _spacing: 150
 --- !u!1 &1454113695
 GameObject:
   m_ObjectHideFlags: 0
@@ -3795,7 +3796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardPrefab: {fileID: 3161949255210604065, guid: 6620643fe5e450a4a9f930adb80600d3, type: 3}
-  _playerCards: {fileID: 1449186085}
+  _layout: {fileID: 1449186087}
   _playerCardSlots:
   - {fileID: 201354979}
   - {fileID: 1083559666}
