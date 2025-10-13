@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using Core.Behaviour.StateMachine;
 using Core.Cards.Board;
+using Core.Cards.Card.Data;
 using Core.Cards.Hand;
 using Enemy.States;
 using Other;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -46,6 +48,48 @@ namespace Enemy
             }
             
             return dangerLevels;
+        }
+        
+        protected CardData? GetCardWithLeastCost()
+        {
+            var hand = Hand.CardsInHand;
+            var leastHopeCost = int.MaxValue;
+            var leastHopeCostIndex = -1;
+            
+            for (var i = 0; i < hand.Count; i++)
+            {
+                if (hand[i].Cost >= leastHopeCost) continue;
+
+                leastHopeCost = hand[i].Cost;
+                leastHopeCostIndex = i;
+            }
+
+            if (leastHopeCostIndex != -1 && Hand.CanUseCard(leastHopeCost)) 
+                return Hand.GetCardFromHand(leastHopeCostIndex);
+            else return null;
+        }
+
+        protected CardData? GetCardWithMatchingCost(float match)
+        {
+            var hand = Hand.CardsInHand;
+            var closestDangerDiff = float.MaxValue;
+            var closestDangerIndex = -1;
+            
+            for (var i = 0; i < hand.Count; i++)
+            {
+                if (!Hand.CanUseCard(hand[i].Cost)) continue;
+                
+                var attack = hand[i].Attack.Average();
+                var difference = Mathf.Abs(match - attack);
+                
+                if (difference >= closestDangerDiff) continue;
+
+                closestDangerDiff = difference;
+                closestDangerIndex = i;
+            }
+
+            if (closestDangerIndex != -1) return Hand.GetCardFromHand(closestDangerIndex);
+            else return null;
         }
         
         public void AutoChangeState() => AutoChangeState(GetDangerLevels().Sum());

@@ -1,4 +1,6 @@
-﻿using Core.Behaviour.StateMachine;
+﻿using System.Collections.Generic;
+using Core.Behaviour.StateMachine;
+using Core.Cards.Card.Data;
 using Other;
 
 namespace Enemy.States
@@ -12,13 +14,12 @@ namespace Enemy.States
 
         public override void PlayTurn()
         {
-            var currentDangerLevels = GetDangerLevels();
-
-            var dangerLevelsOnPlayer = new float[Board.PlayerSlots.Length];
+            var counteractSlots = new List<int>();
+            var emptySlots = new List<int>();
             var totalPressure = 0f;
             // Only when card slot can attack player directly (player has no card) it is 0
             // Otherwise there will be some kind of value.
-            for (var i = 0; i < dangerLevelsOnPlayer.Length; i++)
+            for (var i = 0; i < Board.EnemySlots.Length; i++)
             {
                 var playerCard = Board.PlayerSlots[i];
                 var myCard = Board.EnemySlots[i];
@@ -27,29 +28,65 @@ namespace Enemy.States
                 {
                     // both empty
                     case true when myCard.IsEmpty:
-                        dangerLevelsOnPlayer[i] = 0f;
+                        emptySlots.Add(i);
                         break;
                     // player card only
                     case false when myCard.IsEmpty:
-                        dangerLevelsOnPlayer[i] = -playerCard.Card.CardData.Attack.Average();
+                        var danger = playerCard.Card.CardData.Attack.Average();
+                        if (danger >= StateOwner.Settings.IgnoreDangerLevelAggressive)
+                        {
+                            counteractSlots.Add(i);
+                        }
                         break;
                     // My card only
                     case true when !myCard.IsEmpty:
                         var attackValue = myCard.Card.CardData.Attack.Average();
-                        dangerLevelsOnPlayer[i] = attackValue;
                         totalPressure += attackValue;
-                        break;
-                    // Both slots have a card.
-                    default:
-                        dangerLevelsOnPlayer[i] = 1f;
                         break;
                 }
             }
-            
-            // If there are too dangerous slots (Settings.IgnoreDangerLevelAggressive) counteract
-            // If there are slots where can directly attack player AND player pressure is too low
-            //      -> play card (check Settings.TryToPreserveHope boolean)
-            // Then end turn.
+
+            foreach (var index in counteractSlots)
+            {
+                CardData? card;
+                
+                if (!StateOwner.Settings.TryToPreserveHope)
+                {
+                    card = GetCardWithLeastCost();
+                }
+                else
+                {
+                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
+                    card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                }
+
+                // If we can't use a card with the least cost => we can't use any.
+                if (card == null) break;
+                
+                StateOwner.PlayCard(card.Value, index);
+            }
+
+            foreach (var index in emptySlots)
+            {
+                if (totalPressure >= StateOwner.Settings.MaxPlayerPressureAggressive) break;
+                
+                CardData? card;
+                
+                if (!StateOwner.Settings.TryToPreserveHope)
+                {
+                    card = GetCardWithLeastCost();
+                }
+                else
+                {
+                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
+                    card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                }
+
+                // If we can't use a card with the least cost => we can't use any.
+                if (card == null) break;
+                
+                StateOwner.PlayCard(card.Value, index);
+            }
         }
         
         public override void EnterState() { }

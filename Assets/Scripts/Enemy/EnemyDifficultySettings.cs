@@ -9,6 +9,7 @@ namespace Enemy
         [SerializeField] private float _dangerLevelToBecomeAggressive;
         // Any danger below given will be ignored, otherwise respond to it
         [SerializeField] private float _ignoreDangerLevelAggressive;
+        [SerializeField] private bool _tryMatchDangerLevelOnCounteractAggressive;
         // If this enabled, Ai will try to use as less hope to put as given pressure on player
         [SerializeField] private bool _tryToPreserveHope;
         // Max level of danger that AI can put on player 

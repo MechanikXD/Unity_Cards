@@ -66,7 +66,8 @@ namespace Enemy.States
                 if (StateOwner.Settings.TryToMatchDangerLevelsDefensive)
                 {
                     // If we can't play a card -> fall back to the least costly one
-                    card = GetCardWithMatchingCost(index) ?? GetCardWithLeastCost();
+                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
+                    card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
                 }
                 else
                 {
@@ -79,48 +80,6 @@ namespace Enemy.States
                 StateOwner.PlayCard(card.Value, index);
                 hopeUsed += card.Value.Cost;
             }
-        }
-
-        private CardData? GetCardWithLeastCost()
-        {
-            var hand = Hand.CardsInHand;
-            var leastHopeCost = int.MaxValue;
-            var leastHopeCostIndex = -1;
-            
-            for (var i = 0; i < hand.Count; i++)
-            {
-                if (hand[i].Cost >= leastHopeCost) continue;
-
-                leastHopeCost = hand[i].Cost;
-                leastHopeCostIndex = i;
-            }
-
-            if (leastHopeCostIndex != -1 && Hand.CanUseCard(leastHopeCost)) 
-                return Hand.GetCardFromHand(leastHopeCostIndex);
-            else return null;
-        }
-
-        private CardData? GetCardWithMatchingCost(float match)
-        {
-            var hand = Hand.CardsInHand;
-            var closestDangerDiff = float.MaxValue;
-            var closestDangerIndex = -1;
-            
-            for (var i = 0; i < hand.Count; i++)
-            {
-                if (!Hand.CanUseCard(hand[i].Cost)) continue;
-                
-                var attack = hand[i].Attack.Average();
-                var difference = Mathf.Abs(match - attack);
-                
-                if (difference >= closestDangerDiff) continue;
-
-                closestDangerDiff = difference;
-                closestDangerIndex = i;
-            }
-
-            if (closestDangerIndex != -1) return Hand.GetCardFromHand(closestDangerIndex);
-            else return null;
         }
         
         public override void EnterState() { }
