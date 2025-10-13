@@ -30,10 +30,6 @@ namespace Enemy
         [Header("Neutral")]
         // How many card to play per turn (at random)
         [SerializeField] private int _maxCardCountPerTurn;
-        // How to pick card slot (if selected -> random, otherwise with more profit:
-        // how much damage can deal to how much will receive)
-        // Card selected on random.
-        [SerializeField] private bool _randomSlotSelection;
         // If random selection is not on, will respond to card with given danger level
         [SerializeField] private float _minDangerLevelToRespondNeutral;
         
@@ -51,7 +47,6 @@ namespace Enemy
         public float DangerMultiplyFactorDefensive => _dangerMultiplyFactorDefensive;
         // Neutral state fields 
         public int MaxCardCountPerTurn => _maxCardCountPerTurn;
-        public bool RandomSlotSelection => _randomSlotSelection;
         public float MinDangerLevelToRespondNeutral => _minDangerLevelToRespondNeutral;
     }
 }
