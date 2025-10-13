@@ -35,6 +35,8 @@ namespace Core.Cards.Hand
         private LinkedList<CardData> _currentDeck;
         private List<CardData> _hand;
         
+        public List<CardData> CardsInHand => _hand;
+        
         public bool HasAnyCards => _hand.Count > 0 || _currentDeck.Count > 0;
         public bool IsDefeated { get; private set; }
 

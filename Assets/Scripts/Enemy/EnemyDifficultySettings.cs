@@ -35,21 +35,20 @@ namespace Enemy
         [SerializeField] private bool _randomSlotSelection;
         // If random selection is not on, will respond to card with given danger level
         [SerializeField] private float _minDangerLevelToRespondNeutral;
-         
+        
+        // Aggressive state fields
         public float DangerLevelToBecomeAggressive => _dangerLevelToBecomeAggressive;
         public float IgnoreDangerLevelAggressive => _ignoreDangerLevelAggressive;
         public bool TryToPreserveHope => _tryToPreserveHope;
         public float MaxPlayerPressureAggressive => _maxPlayerPressureAggressive;
         public float DangerMultiplyFactorAggressive => _dangerMultiplyFactorAggressive;
-        
+        // Defensive state fields
         public float DangerLevelToBecomeDefensive => _dangerLevelToBecomeDefensive;
         public bool TryToMatchDangerLevelsDefensive => _tryToMatchDangerLevelsDefensive;
-
         public float ImmediateRespondToDangerLevelDefensive => _immediateRespondToDangerLevelDefensive;
-
         public float MaxHopeUsagePerTurnDefensive => _maxHopeUsagePerTurnDefensive;
         public float DangerMultiplyFactorDefensive => _dangerMultiplyFactorDefensive;
-        
+        // Neutral state fields 
         public int MaxCardCountPerTurn => _maxCardCountPerTurn;
         public bool RandomSlotSelection => _randomSlotSelection;
         public float MinDangerLevelToRespondNeutral => _minDangerLevelToRespondNeutral;

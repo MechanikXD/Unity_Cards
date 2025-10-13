@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Behaviour.StateMachine;
 using Core.Cards.Board;
+using Core.Cards.Card.Data;
 using Core.Cards.Hand;
 using Enemy.States;
 using UnityEngine;
@@ -30,6 +31,11 @@ namespace Enemy
             _stateMachine.Initialize(neutralState);
             _stateMachine.AddState(defensiveState);
             _stateMachine.AddState(aggressiveState);
+        }
+
+        public void PlayCard(CardData card, int slotIndex)
+        {
+            throw new NotImplementedException();
         }
         
         public void FinishTurn() => EnemyTurnFinished?.Invoke();
