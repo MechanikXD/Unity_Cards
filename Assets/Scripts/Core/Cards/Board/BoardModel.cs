@@ -42,6 +42,10 @@ namespace Core.Cards.Board
         [SerializeField] private Image _otherHopeFill;
         [SerializeField] private TMP_Text _otherHopeText;
 
+        public CardSlot[] PlayerSlots => _playerCardSlots;
+        public CardSlot[] EnemySlots => _otherCardSlots;
+        public static event Action TurnStarted;
+        
         private void OnDisable()
         {
             if (GameManager.Instance != null)
@@ -85,6 +89,7 @@ namespace Core.Cards.Board
             var data = _playerHand.DrawCardsFromDeck();
             foreach (var cardData in data) CrateNewCardModel(cardData);
             _playerHand.RegenerateHope();
+            TurnStarted?.Invoke();
         }
 
         private static bool HasAnyCards(PlayerHand hand, CardSlot[] cardSlots) => 
