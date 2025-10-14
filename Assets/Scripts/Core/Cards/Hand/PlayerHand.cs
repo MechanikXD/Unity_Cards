@@ -187,15 +187,15 @@ namespace Core.Cards.Hand
         
         public CardData GetCardFromHand(CardData card)
         {
-            var toRemove = 0;
+            var index = 0;
             for (var i = 0; i < _hand.Count; i++)
             {
                 if (_hand[i] != card) continue;
 
-                toRemove = i;
+                index = i;
                 break;
             }
-            _hand.RemoveAt(toRemove);
+            _hand.RemoveAt(index);
             return card;
         }
 

@@ -37,6 +37,7 @@ namespace Other
         {
             _child.Add(child);
             child.transform.SetParent(transform);
+            child.localScale = Vector3.one;
             child.rotation = Quaternion.Euler(_rotation);
             UpdateChildPosition();
         }

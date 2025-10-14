@@ -15,6 +15,7 @@ namespace Core.Cards.Card
         [SerializeField] private string[] _cardAnimations = {
             "Forward Attack", "Left Attack", "Right Attack"
         };
+        [SerializeField] private string _reverseAnimationSuffix = " Reverse";
         
         [Header("Visual")]
         [SerializeField] private Image _sprite;
@@ -31,11 +32,13 @@ namespace Core.Cards.Card
         private PlayerHand _hand;
         private CardData _data;
         private RectTransform _rectTransform;
+        private int _currentHealth;
         
         public int IndexInLayout { get; set; }
         public RectTransform RectTransform => _rectTransform;
         public CardData CardData => _data;
         public bool CanBePlaced => _hand.CanUseCard(_data.Cost);
+        public bool IsDefeated { get; private set; }
 
         private void Awake()
         {
@@ -54,6 +57,7 @@ namespace Core.Cards.Card
             _attackField.SetText(CardDataProvider.AttackToString(data.Attack));
             _costField.SetText(data.Cost.ToString());
             _healthField.SetText(data.Health.ToString());
+            _currentHealth = data.Health;
             
             _hand = owner;
         }
@@ -64,6 +68,11 @@ namespace Core.Cards.Card
             _hand.UseHope(_data.Cost);
             _hand = null;
             
+            EnableAnimator();
+        }
+
+        public void EnableAnimator()
+        {
             _animator.enabled = true;
             var rect = (RectTransform)transform;
             rect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -81,6 +90,17 @@ namespace Core.Cards.Card
         {
             FinalAttack = damage;
             _finalAttackField.SetText(damage.ToString());
+        }
+
+        public void TakeDamage(int damage)
+        {
+            _currentHealth -= damage;
+            if (_currentHealth <= 0)
+            {
+                IsDefeated = true;
+                _currentHealth = 0;
+            }
+            _healthField.SetText(_currentHealth.ToString());
         }
 
         public void Clear()
@@ -108,6 +128,12 @@ namespace Core.Cards.Card
         public void PlayRandomAnimation()
         {
             _animator.Play(_cardAnimations.GetRandom(), -1, 0f);
+        }
+
+        public void PlayRandomAnimationReverse()
+        {
+            _animator.Play(_cardAnimations.GetRandom() + _reverseAnimationSuffix,
+                -1, 0f);
         }
 
         public void PlayAnimation(string animationName)

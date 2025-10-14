@@ -47,6 +47,7 @@ namespace Enemy
                 }
             }
             
+            Debug.Log("Danger levels: " + string.Join(", ", dangerLevels));
             return dangerLevels;
         }
         
@@ -109,5 +110,8 @@ namespace Enemy
                 StateMachine.ChangeState<NeutralState>();
             }
         }
+
+        public sealed override void FrameUpdate() {}
+        public sealed override void FixedFrameUpdate() {}
     }
 }

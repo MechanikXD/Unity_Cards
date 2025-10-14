@@ -7,6 +7,7 @@ using Core.Cards.Card.Data;
 using Core.Cards.Card.Effects;
 using Core.Cards.Hand;
 using Cysharp.Threading.Tasks;
+using Enemy;
 using Other;
 using Player;
 using TMPro;
@@ -21,6 +22,7 @@ namespace Core.Cards.Board
         private const float BETWEEN_ATTACKS_DELAY = 1f; 
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
+        private EnemyBehaviour _enemyBehaviour;
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -42,6 +44,7 @@ namespace Core.Cards.Board
         [SerializeField] private Image _otherHopeFill;
         [SerializeField] private TMP_Text _otherHopeText;
 
+        public CardModel CardPrefab => _cardPrefab;
         public CardSlot[] PlayerSlots => _playerCardSlots;
         public CardSlot[] EnemySlots => _otherCardSlots;
         public static event Action TurnStarted;
@@ -69,10 +72,15 @@ namespace Core.Cards.Board
             
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
+
+            _enemyBehaviour = new EnemyBehaviour(this, _otherHand, GameManager.Instance.DifficultySettings);
+            _enemyBehaviour.PlayTurn();
         }
 
         public void NextTurn()
         {
+            if (GameManager.Instance.GameIsFinished) return;
+            
             if (!HasAnyCards(_otherHand, _otherCardSlots))
             {
                 GameManager.Instance.WinGame();
@@ -90,6 +98,7 @@ namespace Core.Cards.Board
             foreach (var cardData in data) CrateNewCardModel(cardData);
             _playerHand.RegenerateHope();
             TurnStarted?.Invoke();
+            _enemyBehaviour.PlayTurn();
         }
 
         private static bool HasAnyCards(PlayerHand hand, CardSlot[] cardSlots) => 
@@ -133,7 +142,13 @@ namespace Core.Cards.Board
                                 playerCard.SetFinalAttack(difference);
                                 otherCard.SetFinalAttack(0);
                                 
-                                _otherHand.TakeDamage(difference);
+                                otherCard.TakeDamage(difference);
+                                if (otherCard.IsDefeated)
+                                {
+                                    var model = _otherCardSlots[i].Detach();
+                                    Destroy(model.gameObject);
+                                }
+                                
                                 PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext); 
                                 playerCard.PlayRandomAnimation();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
@@ -141,11 +156,17 @@ namespace Core.Cards.Board
                             // player loose
                             case < 0:
                                 playerCard.SetFinalAttack(0);
-                                otherCard.SetFinalAttack(difference);
+                                otherCard.SetFinalAttack(-difference);
                                 
-                                _playerHand.TakeDamage(-difference);
+                                playerCard.TakeDamage(-difference);
+                                if (playerCard.IsDefeated)
+                                {
+                                    var model = _playerCardSlots[i].Detach();
+                                    Destroy(model.gameObject);
+                                }
+                                
                                 PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
-                                otherCard.PlayRandomAnimation();
+                                otherCard.PlayRandomAnimationReverse();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                                 break;
                         }
@@ -168,7 +189,7 @@ namespace Core.Cards.Board
                     var otherEffects = otherCard.CardData.Effects;
                     _playerHand.TakeDamage(otherCard.FinalAttack);
                     PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
-                    otherCard.PlayRandomAnimation();
+                    otherCard.PlayRandomAnimationReverse();
                     
                     await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
                     PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
@@ -207,7 +228,7 @@ namespace Core.Cards.Board
             {
                 if (!_playerCardSlots[i].IsEmpty) _playerCardSlots[i].Card.ClearFinalAttack();
                 
-                if (!_otherCardSlots[i].IsEmpty) _playerCardSlots[i].Card.ClearFinalAttack();
+                if (!_otherCardSlots[i].IsEmpty) _otherCardSlots[i].Card.ClearFinalAttack();
             }
         }
 

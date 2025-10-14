@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.Behaviour.StateMachine;
 using Other;
+using UnityEngine;
 
 namespace Enemy.States
 {
@@ -31,6 +32,10 @@ namespace Enemy.States
                     {
                         dangerSlots.Add(i);
                     }
+                    else
+                    {
+                        emptySlots.Add(i);
+                    }
                 }
                 else if (myCard.IsEmpty)
                 {
@@ -50,7 +55,13 @@ namespace Enemy.States
                 }
                 
                 shuffledIndex++;
-                if (shuffledIndex >= cardsShuffle.Count) return;
+                if (shuffledIndex >= cardsShuffle.Count) break;
+            }
+
+            if (shuffledIndex >= cardsShuffle.Count)
+            {
+                StateOwner.FinishTurn();
+                return;
             }
             
             foreach (var index in emptySlots)
@@ -64,13 +75,13 @@ namespace Enemy.States
                 }
                 
                 shuffledIndex++;
-                if (shuffledIndex >= cardsShuffle.Count) return;
+                if (shuffledIndex >= cardsShuffle.Count) break;
             }
+            
+            StateOwner.FinishTurn();
         }
-        
+
         public override void EnterState() { }
         public override void ExitState() { }
-        public override void FrameUpdate() { }
-        public override void FixedFrameUpdate() { }
     }
 }

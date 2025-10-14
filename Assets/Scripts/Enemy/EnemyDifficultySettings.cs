@@ -2,6 +2,7 @@
 
 namespace Enemy
 {
+    [CreateAssetMenu(fileName = "Difficulty Settings", menuName = "ScriptableObjects/Difficulty Settings")]
     public class EnemyDifficultySettings : ScriptableObject
     {
         [Header("Aggressive")]

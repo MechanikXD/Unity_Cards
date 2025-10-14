@@ -37,6 +37,10 @@ namespace Enemy.States
                         {
                             counteractSlots.Add(i);
                         }
+                        else
+                        {
+                            emptySlots.Add(i);
+                        }
                         break;
                     // My card only
                     case true when !myCard.IsEmpty:
@@ -78,8 +82,16 @@ namespace Enemy.States
                 }
                 else
                 {
-                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
-                    card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                    var playerCard = Board.PlayerSlots[index];
+                    if (playerCard.IsEmpty)
+                    {
+                        card = GetCardWithLeastCost();
+                    }
+                    else
+                    {
+                        var attack = playerCard.Card.CardData.Attack.Average();
+                        card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                    }
                 }
 
                 // If we can't use a card with the least cost => we can't use any.
@@ -87,11 +99,11 @@ namespace Enemy.States
                 
                 StateOwner.PlayCard(card.Value, index);
             }
+            
+            StateOwner.FinishTurn();
         }
-        
+
         public override void EnterState() { }
         public override void ExitState() { }
-        public override void FrameUpdate() { }
-        public override void FixedFrameUpdate() { }
     }
 }

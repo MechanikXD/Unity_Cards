@@ -15,7 +15,7 @@ MonoBehaviour:
   _cards:
   - _id: 0
     _sprite: {fileID: 21300000, guid: d05673953269b7c4d98b7c0b714de8b8, type: 3}
-    _background: {fileID: 687897013243468630, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
     _affinity: 2
     _health: 3
     _attack: {x: 1, y: 2}
@@ -23,7 +23,7 @@ MonoBehaviour:
     _effects: []
   - _id: 1
     _sprite: {fileID: 21300000, guid: ccf4940c6cb2d374e8af7a8dd389171d, type: 3}
-    _background: {fileID: 687897013243468630, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
     _affinity: 2
     _health: 3
     _attack: {x: 1, y: 3}
@@ -31,7 +31,7 @@ MonoBehaviour:
     _effects: []
   - _id: 2
     _sprite: {fileID: 21300000, guid: 4de3290e38350744c9a4b8ba7ed48a1d, type: 3}
-    _background: {fileID: 687897013243468630, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
     _affinity: 0
     _health: 6
     _attack: {x: 3, y: 5}
@@ -39,9 +39,145 @@ MonoBehaviour:
     _effects: []
   - _id: 3
     _sprite: {fileID: 21300000, guid: b67039eff4aa351469b095fe78b8d402, type: 3}
-    _background: {fileID: 687897013243468630, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
     _affinity: 0
     _health: 15
     _attack: {x: 4, y: 10}
+    _cost: 10
+    _effects: []
+  - _id: 4
+    _sprite: {fileID: 21300000, guid: 646ff277adc4cd342b2cbe2ca19dfc09, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 0
+    _health: 2
+    _attack: {x: 1, y: 2}
+    _cost: 1
+    _effects: []
+  - _id: 5
+    _sprite: {fileID: 21300000, guid: 7dc73205f561aac4a973bc1cc805146b, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 2
+    _health: 5
+    _attack: {x: 2, y: 6}
+    _cost: 4
+    _effects: []
+  - _id: 6
+    _sprite: {fileID: 21300000, guid: 77a0c2e7bd435344293d6b95681a1941, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 2
+    _health: 5
+    _attack: {x: 2, y: 5}
+    _cost: 4
+    _effects: []
+  - _id: 7
+    _sprite: {fileID: 21300000, guid: a7cb7fbf9350abc4d8a8eb6a38dd5057, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 0
+    _health: 3
+    _attack: {x: 2, y: 4}
+    _cost: 4
+    _effects: []
+  - _id: 8
+    _sprite: {fileID: 21300000, guid: fceeb19ed4872bb4482ed7bd86c6016d, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 0
+    _health: 3
+    _attack: {x: 2, y: 3}
+    _cost: 2
+    _effects: []
+  - _id: 9
+    _sprite: {fileID: 21300000, guid: 3c5208caea232a245b06981d84fa3105, type: 3}
+    _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}
+    _affinity: 0
+    _health: 7
+    _attack: {x: 2, y: 7}
+    _cost: 6
+    _effects: []
+  - _id: 10
+    _sprite: {fileID: 21300000, guid: 873a60b342b1d8c4bb69d4d95dd5ec26, type: 3}
+    _background: {fileID: 21300000, guid: 97900992f90bc2543bd1ed9341114048, type: 3}
+    _affinity: 2
+    _health: 2
+    _attack: {x: 1, y: 1}
+    _cost: 1
+    _effects: []
+  - _id: 11
+    _sprite: {fileID: 21300000, guid: 72b533d5fe165bd4aba2858b68838cc1, type: 3}
+    _background: {fileID: 21300000, guid: 97900992f90bc2543bd1ed9341114048, type: 3}
+    _affinity: 2
+    _health: 2
+    _attack: {x: 1, y: 1}
+    _cost: 1
+    _effects: []
+  - _id: 12
+    _sprite: {fileID: 21300000, guid: a126f2d27997a954ab61fe9a5a7ba984, type: 3}
+    _background: {fileID: 21300000, guid: 97900992f90bc2543bd1ed9341114048, type: 3}
+    _affinity: 2
+    _health: 2
+    _attack: {x: 1, y: 3}
+    _cost: 1
+    _effects: []
+  - _id: 13
+    _sprite: {fileID: 21300000, guid: e743d742208f7274ebb71c49ac811aa8, type: 3}
+    _background: {fileID: 21300000, guid: 97900992f90bc2543bd1ed9341114048, type: 3}
+    _affinity: 0
+    _health: 10
+    _attack: {x: 6, y: 10}
+    _cost: 10
+    _effects: []
+  - _id: 14
+    _sprite: {fileID: 21300000, guid: cffb9d49f5a58d941a2e8f4410c86a1d, type: 3}
+    _background: {fileID: 21300000, guid: 97900992f90bc2543bd1ed9341114048, type: 3}
+    _affinity: 2
+    _health: 6
+    _attack: {x: 2, y: 4}
+    _cost: 3
+    _effects: []
+  - _id: 15
+    _sprite: {fileID: 21300000, guid: 795dece516c46b247bf0d1705379b1a2, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 1
+    _health: 3
+    _attack: {x: 1, y: 1}
+    _cost: 1
+    _effects: []
+  - _id: 16
+    _sprite: {fileID: 21300000, guid: c1c5bd97b107c0745bbb132bdb5dbe29, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 1
+    _health: 4
+    _attack: {x: 1, y: 2}
+    _cost: 2
+    _effects: []
+  - _id: 17
+    _sprite: {fileID: 21300000, guid: 7307f29b21a9f0842984cbe8f14064b5, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 1
+    _health: 5
+    _attack: {x: 1, y: 5}
+    _cost: 3
+    _effects: []
+  - _id: 18
+    _sprite: {fileID: 21300000, guid: 7e76665ce448073478a541033d36d2b4, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 1
+    _health: 6
+    _attack: {x: 2, y: 5}
+    _cost: 4
+    _effects: []
+  - _id: 19
+    _sprite: {fileID: 21300000, guid: 943917a125a01d043a22704c9c2784dd, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 1
+    _health: 7
+    _attack: {x: 3, y: 5}
+    _cost: 7
+    _effects: []
+  - _id: 20
+    _sprite: {fileID: 21300000, guid: 165b0f4d3291efa489cc82444be11dfd, type: 3}
+    _background: {fileID: 21300000, guid: 85139812e514f0d439d50c804a542a4a, type: 3}
+    _affinity: 0
+    _health: 7
+    _attack: {x: 5, y: 10}
     _cost: 10
     _effects: []

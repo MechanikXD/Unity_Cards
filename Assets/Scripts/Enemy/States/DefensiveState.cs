@@ -2,7 +2,6 @@
 using Core.Behaviour.StateMachine;
 using Core.Cards.Card.Data;
 using Other;
-using UnityEngine;
 
 namespace Enemy.States
 {
@@ -31,7 +30,7 @@ namespace Enemy.States
                     immediateRespondSlots.Add(i);
                 else otherDangerSlots.Add(i);
             }
-
+            
             var hopeUsed = 0;
             foreach (var index in immediateRespondSlots)
             {
@@ -65,9 +64,16 @@ namespace Enemy.States
                 
                 if (StateOwner.Settings.TryToMatchDangerLevelsDefensive)
                 {
-                    // If we can't play a card -> fall back to the least costly one
-                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
-                    card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                    var playerCard = Board.PlayerSlots[index];
+                    if (playerCard.IsEmpty)
+                    {
+                        card = GetCardWithLeastCost();
+                    }
+                    else
+                    {
+                        var attack = playerCard.Card.CardData.Attack.Average();
+                        card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
+                    }
                 }
                 else
                 {
@@ -80,11 +86,11 @@ namespace Enemy.States
                 StateOwner.PlayCard(card.Value, index);
                 hopeUsed += card.Value.Cost;
             }
+            
+            StateOwner.FinishTurn();
         }
-        
+
         public override void EnterState() { }
         public override void ExitState() { }
-        public override void FrameUpdate() { }
-        public override void FixedFrameUpdate() { }
     }
 }

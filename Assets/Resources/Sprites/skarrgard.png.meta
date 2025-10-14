@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 99f60c2523296fe4a8f35aea4b024202
+guid: 165b0f4d3291efa489cc82444be11dfd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 687897013243468630
-    second: GreymoorBG_0
+      213: -2127085372764653375
+    second: skarrgard_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GreymoorBG_0
+      name: skarrgard_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 1024
-        height: 1024
+        y: 29
+        width: 200
+        height: 144
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 65bdd6c50b6eb8900800000000000000
-      internalID: 687897013243468630
+      spriteID: 1c8fe6d8f131b72e0800000000000000
+      internalID: -2127085372764653375
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GreymoorBG_0: 687897013243468630
+      skarrgard_0: -2127085372764653375
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
