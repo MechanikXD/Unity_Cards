@@ -40,6 +40,7 @@ namespace Core.Cards.Board
             IsEmpty = false;
             _child = card;
             card.transform.SetParent(transform);
+            card.RectTransform.localScale = Vector3.one;
             MoveCardToPositionAsync(card.transform, _cts.Token).Forget();
         }
 

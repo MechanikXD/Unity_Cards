@@ -133,6 +133,7 @@ MonoBehaviour:
   - Forward Attack
   - Left Attack
   - Right Attack
+  _reverseAnimationSuffix: ' Reverse'
   _sprite: {fileID: 1995594842243231758}
   _background: {fileID: 5760368486737151758}
   _descriptionField: {fileID: 1914175319446116543}

@@ -21,6 +21,17 @@ namespace Other
             }
         }
         
+        public static IList<T> Shuffled<T>(this IList<T> array)
+        {
+            var result = new List<T>(array); // create a copy of the original list
+            for (var i = 0; i < result.Count; i++)
+            {
+                var random = Random.Range(i, result.Count);
+                (result[i], result[random]) = (result[random], result[i]);
+            }
+            return result;
+        }
+        
         public static void Shuffle<T>(this LinkedList<T> list)
         {
             var values = list.ToList();

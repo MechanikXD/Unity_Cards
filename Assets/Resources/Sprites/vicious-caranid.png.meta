@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 99f60c2523296fe4a8f35aea4b024202
+guid: cffb9d49f5a58d941a2e8f4410c86a1d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 687897013243468630
-    second: GreymoorBG_0
+      213: -2253898582726956519
+    second: vicious-caranid_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GreymoorBG_0
+      name: vicious-caranid_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1024
-        height: 1024
+        x: 12
+        y: 6
+        width: 181
+        height: 176
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 65bdd6c50b6eb8900800000000000000
-      internalID: 687897013243468630
+      spriteID: 91aadc04e2b88b0e0800000000000000
+      internalID: -2253898582726956519
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GreymoorBG_0: 687897013243468630
+      vicious-caranid_0: -2253898582726956519
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
