@@ -1,6 +1,8 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
 using Enemy;
+using UI;
+using UI.View;
 using UnityEngine;
 
 namespace Core
@@ -28,13 +30,15 @@ namespace Core
         public void WinGame()
         {
             GameIsFinished = true;
-            Debug.Log("Game Won");
+            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Victory!");
+            UIManager.Instance.EnterUICanvas<GameResultView>();
         }
         
         public void GameLoose()
         {
             GameIsFinished = true;
-            Debug.Log("Game Lost");
+            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Defeat");
+            UIManager.Instance.EnterUICanvas<GameResultView>();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace UI
         [SerializeField] private bool _hideOnStart = false;
         protected Canvas ThisCanvas;
         
+        public bool HideOnStart => _hideOnStart;
+        
         protected virtual void Awake()
         {
             ThisCanvas = GetComponent<Canvas>();

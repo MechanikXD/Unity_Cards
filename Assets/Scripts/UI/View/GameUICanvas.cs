@@ -17,11 +17,13 @@ namespace UI.View
         private void SubscribeToEvents()
         {
             _playButton.onClick.AddListener(PlayTurn);
+            _pauseButton.onClick.AddListener(UIManager.Instance.EnterUICanvas<GameMenuView>);
         }
 
         private void UnSubscribeFromEvents()
         {
             _playButton.onClick.RemoveListener(PlayTurn);
+            _pauseButton.onClick.RemoveListener(UIManager.Instance.EnterUICanvas<GameMenuView>);
         }
 
         private void PlayTurn()
