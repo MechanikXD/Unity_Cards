@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class InputBlocker : SingletonBase<InputBlocker>
+    public class GlobalInputBlocker : SingletonBase<GlobalInputBlocker>
     {
         private GameObject _blocker;
         

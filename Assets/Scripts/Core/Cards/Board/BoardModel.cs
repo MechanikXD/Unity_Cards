@@ -23,6 +23,7 @@ namespace Core.Cards.Board
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -56,6 +57,8 @@ namespace Core.Cards.Board
                 _playerHand.PlayerDefeated -= GameManager.Instance.GameLoose;
                 _otherHand.PlayerDefeated -= GameManager.Instance.WinGame;    
             }
+            
+            _cts.Cancel();
         }
 
         public void StartGame(int[] playerCardIds, int[] otherCardsIds)
@@ -115,10 +118,10 @@ namespace Core.Cards.Board
 
         public void RemoveCardFromLayout(int index) => _layout.RemoveChild(index);
 
-        public async UniTask PlayTurnAsync(CancellationToken ct = default)
+        public async UniTask PlayTurnAsync()
         {
-            InputBlocker.Instance.DisableInput();
-            await DisplayFinalAttacksAsync(ct);
+            GlobalInputBlocker.Instance.DisableInput();
+            await DisplayFinalAttacksAsync(_cts.Token);
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
                 if (!_playerCardSlots[i].IsEmpty)   // Player has card in slot
@@ -151,7 +154,7 @@ namespace Core.Cards.Board
                                 
                                 PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext); 
                                 playerCard.PlayRandomAnimation();
-                                await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
+                                await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken:_cts.Token);
                                 break;
                             // player loose
                             case < 0:
@@ -167,7 +170,7 @@ namespace Core.Cards.Board
                                 
                                 PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
                                 otherCard.PlayRandomAnimationReverse();
-                                await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
+                                await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken:_cts.Token);
                                 break;
                         }
                         
@@ -178,7 +181,7 @@ namespace Core.Cards.Board
                         _otherHand.TakeDamage(playerCard.FinalAttack);
                         PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext);
                         playerCard.PlayRandomAnimation();
-                        await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
+                        await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken:_cts.Token);
                     }
                     
                     PlayEffects(playerEffects, TriggerType.TurnEnd, GetPlayerContext);
@@ -191,7 +194,7 @@ namespace Core.Cards.Board
                     PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
                     otherCard.PlayRandomAnimationReverse();
                     
-                    await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken: ct);
+                    await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, cancellationToken:_cts.Token);
                     PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
                 }
 
@@ -200,7 +203,7 @@ namespace Core.Cards.Board
 
             
             ClearFinalAttacks();
-            InputBlocker.Instance.EnableInput();
+            GlobalInputBlocker.Instance.EnableInput();
             NextTurn();
         }
 

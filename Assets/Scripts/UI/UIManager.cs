@@ -10,6 +10,7 @@ namespace UI
         private Dictionary<Type, CanvasView> _uiCanvases;
         private Dictionary<Type, CanvasView> _hudCanvases;
 
+        [SerializeField] private GameObject _sceneInputBlock;
         [SerializeField] private CanvasView[] _sceneUiCanvases;
         [SerializeField] private CanvasView[] _sceneHudCanvases;
 
@@ -23,6 +24,7 @@ namespace UI
             HasOpenedUI = false;
             SortCanvases();
             DisableCanvases();
+            ExitPauseState();
         }
 
         public void EnterUICanvas<T>() where T : CanvasView {
@@ -53,15 +55,13 @@ namespace UI
         private void EnterPauseState() {
             HasOpenedUI = true;
             Time.timeScale = 0f;
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.Confined;
+            _sceneInputBlock.SetActive(true);
         }
 
         private void ExitPauseState() {
             HasOpenedUI = false;
             Time.timeScale = 1f;
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            _sceneInputBlock.SetActive(false);
         }
 
         public T GetUICanvas<T>() where T : CanvasView => (T)_uiCanvases[typeof(T)];
