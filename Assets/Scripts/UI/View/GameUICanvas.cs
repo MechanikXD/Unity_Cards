@@ -17,16 +17,23 @@ namespace UI.View
         private void SubscribeToEvents()
         {
             _playButton.onClick.AddListener(PlayTurn);
+            _pauseButton.onClick.AddListener(Pause);
         }
 
         private void UnSubscribeFromEvents()
         {
             _playButton.onClick.RemoveListener(PlayTurn);
+            _pauseButton.onClick.RemoveListener(Pause);
+        }
+
+        private void Pause()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.EnterUICanvas<GameMenuView>();
         }
 
         private void PlayTurn()
         {
-            GameManager.Instance.Board.PlayTurnAsync().Forget();
+            if (GameManager.Instance != null) GameManager.Instance.Board.PlayTurnAsync().Forget();
         }
     }
 }

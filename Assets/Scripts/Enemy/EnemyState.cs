@@ -47,7 +47,6 @@ namespace Enemy
                 }
             }
             
-            Debug.Log("Danger levels: " + string.Join(", ", dangerLevels));
             return dangerLevels;
         }
         

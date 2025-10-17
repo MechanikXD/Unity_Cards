@@ -48,14 +48,11 @@ namespace Enemy
 
         public void FinishTurn()
         {
-            Debug.Log($"Cards to use: {_inputBuffer.Count}");
             foreach (var input in _inputBuffer)
             {
-                Debug.Log($"Input: {input.data.Sprite.name}, {input.index}");
                 var thisSlot = Board.EnemySlots[input.index];
                 if (!thisSlot.IsEmpty) continue;
 
-                Debug.Log("Slot was empty...");
                 var newCard = Object.Instantiate(Board.CardPrefab);
                 
                 thisSlot.Attach(newCard);
