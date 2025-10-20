@@ -10,11 +10,12 @@ namespace Other
     public class CardGroupLayout : MonoBehaviour
     {
         private const float SNAP_DISTANCE = 10f;
+        private const int MIN_SORTING_ORDER = 3;
         [SerializeField] private Vector3 _rotation;
         [SerializeField] private float _moveSpeed;
         [SerializeField] private float _spacing;
         private float _currentSpacing;
-        private List<RectTransform> _child = new List<RectTransform>();
+        private List<CardModel> _child = new List<CardModel>();
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private int _objectsChangingPosition;
         private bool _isChangingPosition;
@@ -27,24 +28,24 @@ namespace Other
 
         private void LoadChildren()
         {
-            _child = transform.childCount == 0
-                ? new List<RectTransform>()
-                : gameObject.transform.Cast<RectTransform>().ToList();
+            _child = transform.childCount > 0 
+                ? GetComponentsInChildren<CardModel>().ToList() 
+                : new List<CardModel>();
             UpdateChildPosition();
         }
 
-        public void AddChild(RectTransform child)
+        public void AddChild(CardModel child)
         {
             _child.Add(child);
             child.transform.SetParent(transform);
-            child.localScale = Vector3.one;
-            child.rotation = Quaternion.Euler(_rotation);
+            child.transform.localScale = Vector3.one;
+            child.transform.rotation = Quaternion.Euler(_rotation);
             UpdateChildPosition();
         }
 
         public void RemoveChild(int index)
         {
-            _child[index].rotation = Quaternion.identity;
+            _child[index].transform.rotation = Quaternion.identity;
             _child.RemoveAt(index);
             UpdateChildPosition();
         }
@@ -56,16 +57,19 @@ namespace Other
             _objectsChangingPosition = _child.Count;
             
             AdjustSpacing(out var totalWidth);
-            
+
+            var currentOrder = MIN_SORTING_ORDER;
             var currentPosition = -totalWidth / 2;
             for (var i = 0; i < _child.Count; i++)
             {
-                _child[i].GetComponent<CardModel>().IndexInLayout = i;
+                _child[i].IndexInLayout = i;
+                _child[i].SortingGroup.sortingOrder = currentOrder;
                 
-                _child[i] .SetSiblingIndex(i);
-                MoveRectAsync(_child[i], new Vector2(currentPosition, 
-                    _child[i].anchoredPosition.y), _cts.Token).Forget();
+                var target = new Vector3(currentPosition, 0, 0);
+                MoveRectAsync(_child[i].transform, target, _cts.Token).Forget();
+                
                 currentPosition += _spacing;
+                currentOrder++;
             }
         }
 
@@ -84,18 +88,18 @@ namespace Other
             }
         }
 
-        private async UniTask MoveRectAsync(RectTransform rectTransform, Vector2 final,
+        private async UniTask MoveRectAsync(Transform cardTransform, Vector3 final,
             CancellationToken ct)
         {
-            var current = rectTransform.anchoredPosition;
-            while (Vector2.Distance(current, final) < SNAP_DISTANCE)
+            var current = cardTransform.localPosition;
+            while (Vector3.Distance(current, final) < SNAP_DISTANCE)
             {
-                current = Vector2.Lerp(current, final, _moveSpeed);
-                rectTransform.anchoredPosition = current;
+                current = Vector3.Lerp(current, final, _moveSpeed);
+                cardTransform.localPosition = current;
                 await UniTask.NextFrame(cancellationToken: ct);
             }
 
-            rectTransform.anchoredPosition = final;
+            cardTransform.localPosition = final;
 
             _objectsChangingPosition--;
             if (_objectsChangingPosition <= 0)

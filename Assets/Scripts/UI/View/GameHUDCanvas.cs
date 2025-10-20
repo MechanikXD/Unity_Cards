@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.View
 {
-    public class GameUICanvas : CanvasView
+    public class GameHUDCanvas : CanvasView
     {
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _pauseButton;

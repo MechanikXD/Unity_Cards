@@ -3,6 +3,7 @@ using Core.Cards.Hand;
 using Other;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 namespace Core.Cards.Card
@@ -10,6 +11,7 @@ namespace Core.Cards.Card
     public class CardModel : MonoBehaviour
     {
         private const string EMPTY_FINAL_ATTACK_CHAR = "#";
+        [SerializeField] private SortingGroup _sortingGroup;
         [SerializeField] private Animator _animator;
         [SerializeField] private string[] _cardAnimations = {
             "Forward Attack", "Left Attack", "Right Attack"
@@ -30,19 +32,18 @@ namespace Core.Cards.Card
         public int FinalAttack { get; private set; }
         private PlayerHand _hand;
         private CardData _data;
-        private RectTransform _rectTransform;
         private int _currentHealth;
         
         public int IndexInLayout { get; set; }
-        public RectTransform RectTransform => _rectTransform;
         public CardData CardData => _data;
         public bool CanBePlaced => _hand.CanUseCard(_data.Cost);
         public bool IsDefeated { get; private set; }
+        public Animator Animator => _animator;
+        public SortingGroup SortingGroup => _sortingGroup;
 
         private void Awake()
         {
             _animator.enabled = false;
-            _rectTransform = (RectTransform)transform;
         }
 
         public void Set(CardData data, PlayerHand owner)
@@ -66,16 +67,7 @@ namespace Core.Cards.Card
             _hand.GetCardFromHand(_data);
             _hand.UseHope(_data.Cost);
             _hand = null;
-            
-            EnableAnimator();
-        }
-
-        public void EnableAnimator()
-        {
             _animator.enabled = true;
-            var rect = (RectTransform)transform;
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
         }
 
         public void SetRandomFinalAttack()

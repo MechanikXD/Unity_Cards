@@ -1,61 +1,78 @@
 ﻿using System.Threading;
 using Core;
+using Core.Cards.Board;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using Debug = UnityEngine.Debug;
 
 namespace Player
 {
-    public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class CardDragHandler : MonoBehaviour
     {
-        private const float CARD_SNAP_DISTANCE = 10f;
-        private const float CARD_MOVE_SPEED = 5f;
+        [SerializeField] private LayerMask _mouseReleaseMask;
+        
+        private const float CARD_SNAP_DISTANCE = 0.1f;
+        private const float CARD_MOVE_SPEED = 10f;
+        private const int CARD_ORDER = 99;
         
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        // TODO: Pass this with zenject
-        private Transform _relocationCanvas;
-        private CanvasGroup _canvasGroup;
         private Vector3 _originalPosition;
-        private Transform _originalParent;
         private CardModel _thisModel;
+        private Camera _camera;
 
         private void Awake()
         {
             _thisModel = GetComponent<CardModel>();
-            _canvasGroup = GetComponent<CanvasGroup>();
+            if (Camera.main == null)
+            {
+                Debug.LogError("There is no main camera on this scene!");
+            }
+            else _camera = Camera.main;
         }
 
-        private void Start()
+        public void OnMouseDown()
         {
-            _relocationCanvas = GameManager.Instance.ControlCanvas;
-        }
+            if (!GlobalInputBlocker.Instance.InputEnabled) return;
 
-        public void OnBeginDrag(PointerEventData eventData)
-        {
             _originalPosition = transform.position;
-            _originalParent = transform.parent;
-            _canvasGroup.blocksRaycasts = false;
-            transform.SetParent(_relocationCanvas);
-            transform.SetAsFirstSibling();
-            
+            _thisModel.SortingGroup.sortingOrder = CARD_ORDER;
             GameManager.Instance.Board.RemoveCardFromLayout(_thisModel.IndexInLayout);
         }
 
-        public void OnDrag(PointerEventData eventData)
+        public void OnMouseDrag()
         {
-            transform.position = eventData.position;
+            transform.position = GetRaycastHitPoint();
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        public void OnMouseUp()
         {
-            _canvasGroup.blocksRaycasts = true;
-            if (transform.parent == _relocationCanvas)
+            var cardPos2D = new Vector2(transform.position.x, transform.position.y);
+            // Check for overlapping slot collider
+            var hit = Physics2D.OverlapPoint(cardPos2D, _mouseReleaseMask);
+
+            if (hit != null)
             {
-                MoveToOriginalAsync(_cts.Token).Forget();
+                var slot = hit.GetComponent<CardSlot>();
+                if (slot != null && slot.IsEmpty && _thisModel.CanBePlaced)
+                {
+                    _thisModel.transform.SetParent(slot.transform);
+                    slot.Attach(_thisModel);
+                    _thisModel.SetPlaced();
+                    Destroy(this);
+                    return;
+                }
             }
-            
-            else DestroyImmediate(this);
+
+            MoveToOriginalAsync(_cts.Token).Forget();
+        }
+
+        private Vector3 GetRaycastHitPoint()
+        {
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            var boardPlane = new Plane(Vector3.forward, Vector3.zero);
+            return boardPlane.Raycast(ray, out var enter) 
+                ? ray.GetPoint(enter) : Vector3.zero;
         }
 
         private void OnDestroy()
@@ -71,11 +88,9 @@ namespace Player
                 transform.Translate(moveDirection * (Time.deltaTime * CARD_MOVE_SPEED));
                 await UniTask.NextFrame(cancellationToken:ct);
             }
-
-            transform.position = _originalPosition; // Snap to final location
-            transform.SetParent(_originalParent);
+            transform.position = _originalPosition;
             
-            GameManager.Instance.Board.AddCardToLayout((RectTransform)_thisModel.transform);
+            GameManager.Instance.Board.AddCardToLayout(_thisModel);
         }
     }
 }

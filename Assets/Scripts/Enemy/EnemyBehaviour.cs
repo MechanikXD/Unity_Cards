@@ -56,7 +56,7 @@ namespace Enemy
                 var newCard = Object.Instantiate(Board.CardPrefab);
                 
                 thisSlot.Attach(newCard);
-                newCard.EnableAnimator();
+                newCard.Animator.enabled = true;
                 Object.Destroy(newCard.GetComponent<CardDragHandler>());
                 newCard.Set(input.data, null);
             }

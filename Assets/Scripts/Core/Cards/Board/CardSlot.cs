@@ -2,14 +2,14 @@
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Core.Cards.Board
 {
-    public class CardSlot : MonoBehaviour, IDropHandler
+    public class CardSlot : MonoBehaviour
     {
         private const float CARD_MOVE_SPEED = 3f;
         private const float CARD_SNAP_DISTANCE = 10f;
+        private const int SORTING_ORDER = 3;
         private readonly CancellationTokenSource _cts = new  CancellationTokenSource();
         private CardModel _child;
 
@@ -20,27 +20,14 @@ namespace Core.Cards.Board
 
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card => _child;
-
-        public void OnDrop(PointerEventData eventData)
-        {
-            if (!_canSnapTo) return;
-            
-            var card = eventData.pointerDrag;
-            
-            // 1. Not null; 2. It is a card; 3. Can be placed (enough cost)
-            if (card == null || !card.TryGetComponent<CardModel>(out var cardModel) ||
-                !cardModel.CanBePlaced) return;
-
-            Attach(cardModel);
-            cardModel.SetPlaced();
-        }
         
         public void Attach(CardModel card)
         {
             IsEmpty = false;
             _child = card;
             card.transform.SetParent(transform);
-            card.RectTransform.localScale = Vector3.one;
+            card.transform.localScale = Vector3.one;
+            card.SortingGroup.sortingOrder = SORTING_ORDER;
             MoveCardToPositionAsync(card.transform, _cts.Token).Forget();
         }
 
@@ -55,7 +42,7 @@ namespace Core.Cards.Board
 
         private async UniTask MoveCardToPositionAsync(Transform cardTransform, CancellationToken ct = default)
         {
-            var moveDirection = transform.position - cardTransform.position;
+            var moveDirection = _cardPosition - cardTransform.localPosition;
             while (Vector3.Distance(cardTransform.localPosition, _cardPosition) > CARD_SNAP_DISTANCE)
             {
                 cardTransform.Translate(moveDirection * (Time.deltaTime * CARD_MOVE_SPEED));

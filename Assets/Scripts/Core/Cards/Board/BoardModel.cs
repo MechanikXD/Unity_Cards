@@ -111,10 +111,10 @@ namespace Core.Cards.Board
         {
             var model = Instantiate(_cardPrefab);
             model.Set(card, _playerHand);
-            AddCardToLayout((RectTransform)model.transform);
+            AddCardToLayout(model);
         }
         
-        public void AddCardToLayout(RectTransform rect) => _layout.AddChild(rect);
+        public void AddCardToLayout(CardModel rect) => _layout.AddChild(rect);
 
         public void RemoveCardFromLayout(int index) => _layout.RemoveChild(index);
 
