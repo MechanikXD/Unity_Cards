@@ -16,7 +16,7 @@ namespace Core.Cards.Board
         [SerializeField] private bool _canSnapTo = true;
         [SerializeField] private BoardModel _board;
         [SerializeField] private int _cardIndex;
-        [SerializeField] private Vector2 _cardPosition =  new Vector2(0, 0);
+        [SerializeField] private Vector3 _cardPosition =  new Vector3(0, 0, 0);
 
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card => _child;
@@ -56,7 +56,7 @@ namespace Core.Cards.Board
         private async UniTask MoveCardToPositionAsync(Transform cardTransform, CancellationToken ct = default)
         {
             var moveDirection = transform.position - cardTransform.position;
-            while (Vector2.Distance(cardTransform.localPosition, _cardPosition) > CARD_SNAP_DISTANCE)
+            while (Vector3.Distance(cardTransform.localPosition, _cardPosition) > CARD_SNAP_DISTANCE)
             {
                 cardTransform.Translate(moveDirection * (Time.deltaTime * CARD_MOVE_SPEED));
                 await UniTask.NextFrame(cancellationToken:ct);

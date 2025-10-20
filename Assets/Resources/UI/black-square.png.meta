@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cffb9d49f5a58d941a2e8f4410c86a1d
+guid: 91e13d3c56e67dd408b2328805c4fba4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2253898582726956519
-    second: vicious-caranid_0
+      213: 1949100630783700688
+    second: black-square_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -139,23 +139,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vicious-caranid_0
+      name: black-square_0
       rect:
         serializedVersion: 2
-        x: 12
-        y: 6
-        width: 181
-        height: 176
+        x: 0
+        y: 0
+        width: 256
+        height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 85, y: 85, z: 85, w: 85}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 91aadc04e2b88b0e0800000000000000
-      internalID: -2253898582726956519
+      spriteID: 0de2a5962b89c0b10800000000000000
+      internalID: 1949100630783700688
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: c89998a8c38d6b247be8ef72b0e871a5
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vicious-caranid_0: -2253898582726956519
+      black-square_0: 1949100630783700688
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

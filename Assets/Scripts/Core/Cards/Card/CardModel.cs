@@ -3,7 +3,6 @@ using Core.Cards.Hand;
 using Other;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Core.Cards.Card
@@ -18,10 +17,10 @@ namespace Core.Cards.Card
         [SerializeField] private string _reverseAnimationSuffix = " Reverse";
         
         [Header("Visual")]
-        [SerializeField] private Image _sprite;
-        [SerializeField] private Image _background;
+        [SerializeField] private SpriteRenderer _sprite;
+        [SerializeField] private SpriteRenderer _background;
         [SerializeField] private TMP_Text _descriptionField;
-        [SerializeField] private Image _affinityImage;
+        [SerializeField] private SpriteRenderer _affinityImage;
         [Header("Informative")]
         [SerializeField] private TMP_Text _costField;
         [SerializeField] private TMP_Text _attackField;
