@@ -3,21 +3,23 @@ using System.Linq;
 using System.Threading;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Other
 {
     public class CardGroupLayout : MonoBehaviour
     {
-        private const float SNAP_DISTANCE = 10f;
         private const int MIN_SORTING_ORDER = 3;
+        [SerializeField] private float _spacing;
+        [SerializeField] private float _xOffset;
         [SerializeField] private Vector3 _rotation;
         [SerializeField] private float _moveSpeed;
-        [SerializeField] private float _spacing;
         private float _currentSpacing;
         private List<CardModel> _child = new List<CardModel>();
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private int _objectsChangingPosition;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        
+        private int _objectsChangingPositionCount;
         private bool _isChangingPosition;
 
         private void Awake()
@@ -31,45 +33,53 @@ namespace Other
             _child = transform.childCount > 0 
                 ? GetComponentsInChildren<CardModel>().ToList() 
                 : new List<CardModel>();
-            UpdateChildPosition();
+            UpdateChildPosition(true);
         }
 
         public void AddChild(CardModel child)
         {
             _child.Add(child);
             child.transform.SetParent(transform);
-            child.transform.localScale = Vector3.one;
             child.transform.rotation = Quaternion.Euler(_rotation);
             UpdateChildPosition();
         }
 
-        public void RemoveChild(int index)
+        public void RemoveChild(int index, [CanBeNull] Transform newParent=null)
         {
             _child[index].transform.rotation = Quaternion.identity;
+            _child[index].transform.SetParent(newParent);
             _child.RemoveAt(index);
             UpdateChildPosition();
         }
         
-        private void UpdateChildPosition()
+        private void UpdateChildPosition(bool isInstant=false)
         {
-            if (_isChangingPosition) _cts.Cancel();
+            if (_isChangingPosition) _cts = _cts.Reset();
             _isChangingPosition = true;
-            _objectsChangingPosition = _child.Count;
+            // Mark how many cards are moving so we know when to unflag _isChangingPosition
+            _objectsChangingPositionCount = _child.Count;
             
             AdjustSpacing(out var totalWidth);
 
             var currentOrder = MIN_SORTING_ORDER;
-            var currentPosition = -totalWidth / 2;
+            var currentPosition = -totalWidth / 2 + _xOffset;
             for (var i = 0; i < _child.Count; i++)
             {
                 _child[i].IndexInLayout = i;
                 _child[i].SortingGroup.sortingOrder = currentOrder;
-                
                 var target = new Vector3(currentPosition, 0, 0);
-                MoveRectAsync(_child[i].transform, target, _cts.Token).Forget();
                 
-                currentPosition += _spacing;
+                if (isInstant) _child[i].transform.localPosition = target;
+                else MoveChildAsync(_child[i].transform, target).Forget();
+                
+                currentPosition += _currentSpacing;
                 currentOrder++;
+            }
+
+            if (isInstant)
+            {
+                _objectsChangingPositionCount = 0;
+                _isChangingPosition = false;
             }
         }
 
@@ -88,21 +98,12 @@ namespace Other
             }
         }
 
-        private async UniTask MoveRectAsync(Transform cardTransform, Vector3 final,
-            CancellationToken ct)
+        private async UniTask MoveChildAsync(Transform cardTransform, Vector3 final)
         {
-            var current = cardTransform.localPosition;
-            while (Vector3.Distance(current, final) < SNAP_DISTANCE)
-            {
-                current = Vector3.Lerp(current, final, _moveSpeed);
-                cardTransform.localPosition = current;
-                await UniTask.NextFrame(cancellationToken: ct);
-            }
+            await cardTransform.MoveToLocalAsync(final, _moveSpeed, _cts.Token);
 
-            cardTransform.localPosition = final;
-
-            _objectsChangingPosition--;
-            if (_objectsChangingPosition <= 0)
+            _objectsChangingPositionCount--;
+            if (_objectsChangingPositionCount <= 0)
             {
                 _isChangingPosition = false;
             }

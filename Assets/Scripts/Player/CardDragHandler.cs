@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using Core;
+﻿using Core;
 using Core.Cards.Board;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
+using Other;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -10,14 +10,13 @@ namespace Player
 {
     public class CardDragHandler : MonoBehaviour
     {
-        [SerializeField] private LayerMask _mouseReleaseMask;
-        
-        private const float CARD_SNAP_DISTANCE = 0.1f;
-        private const float CARD_MOVE_SPEED = 10f;
         private const int CARD_ORDER = 99;
+        [SerializeField] private LayerMask _mouseReleaseMask;
+        [SerializeField] private float _cardMoveSpeed = 2f;
+        [SerializeField] private Vector2 _xMoveBorders;
         
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private Vector3 _originalPosition;
+        private Plane _boardPlane = new Plane(Vector3.forward, Vector3.zero);
         private CardModel _thisModel;
         private Camera _camera;
 
@@ -42,54 +41,42 @@ namespace Player
 
         public void OnMouseDrag()
         {
-            transform.position = GetRaycastHitPoint();
+            var newPoint = GetRaycastHitPoint();
+            newPoint.x = Mathf.Clamp(newPoint.x, _xMoveBorders.x, _xMoveBorders.y);
+            transform.position = newPoint;
         }
 
         public void OnMouseUp()
         {
-            var cardPos2D = new Vector2(transform.position.x, transform.position.y);
-            // Check for overlapping slot collider
-            var hit = Physics2D.OverlapPoint(cardPos2D, _mouseReleaseMask);
-
-            if (hit != null)
+            if (_thisModel.CanBePlaced)
             {
-                var slot = hit.GetComponent<CardSlot>();
-                if (slot != null && slot.IsEmpty && _thisModel.CanBePlaced)
+                // BOARD MUST BE LOCATED ON XY PANE (position.z = 0, rotation = Vector3.zero).
+                // Because we use transform.position, there is no z coordinate, so board can't have z as well.
+                var hit = Physics2D.OverlapPoint(transform.position, _mouseReleaseMask);
+
+                if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty)
                 {
-                    _thisModel.transform.SetParent(slot.transform);
                     slot.Attach(_thisModel);
                     _thisModel.SetPlaced();
-                    Destroy(this);
+                    Destroy(this);  // Make non-interactable
                     return;
                 }
             }
 
-            MoveToOriginalAsync(_cts.Token).Forget();
+            MoveToOriginalAsync().Forget();
         }
 
         private Vector3 GetRaycastHitPoint()
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            var boardPlane = new Plane(Vector3.forward, Vector3.zero);
-            return boardPlane.Raycast(ray, out var enter) 
-                ? ray.GetPoint(enter) : Vector3.zero;
+            return _boardPlane.Raycast(ray, out var intersection) 
+                ? ray.GetPoint(intersection) : Vector3.zero;
         }
 
-        private void OnDestroy()
+        private async UniTask MoveToOriginalAsync()
         {
-            _cts.Cancel();
-        }
-
-        private async UniTask MoveToOriginalAsync(CancellationToken ct = default)
-        {
-            var moveDirection = _originalPosition - transform.position;
-            while (Vector2.Distance(transform.position, _originalPosition) > CARD_SNAP_DISTANCE)
-            {
-                transform.Translate(moveDirection * (Time.deltaTime * CARD_MOVE_SPEED));
-                await UniTask.NextFrame(cancellationToken:ct);
-            }
-            transform.position = _originalPosition;
-            
+            await transform.MoveToAsync(_originalPosition, _cardMoveSpeed, this.GetCancellationTokenOnDestroy());
+            transform.rotation = Quaternion.identity;
             GameManager.Instance.Board.AddCardToLayout(_thisModel);
         }
     }

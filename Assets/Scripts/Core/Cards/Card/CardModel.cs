@@ -118,13 +118,12 @@ namespace Core.Cards.Card
 
         public void PlayRandomAnimation()
         {
-            _animator.Play(_cardAnimations.GetRandom(), -1, 0f);
+            PlayAnimation(_cardAnimations.GetRandom());
         }
 
         public void PlayRandomAnimationReverse()
         {
-            _animator.Play(_cardAnimations.GetRandom() + _reverseAnimationSuffix,
-                -1, 0f);
+            PlayAnimation(_cardAnimations.GetRandom() + _reverseAnimationSuffix);
         }
 
         public void PlayAnimation(string animationName)

@@ -107,6 +107,8 @@ MonoBehaviour:
   _mouseReleaseMask:
     serializedVersion: 2
     m_Bits: 1
+  _cardMoveSpeed: 10
+  _xMoveBorders: {x: -5, y: 5}
 --- !u!210 &-4098478259757336368
 SortingGroup:
   m_ObjectHideFlags: 0

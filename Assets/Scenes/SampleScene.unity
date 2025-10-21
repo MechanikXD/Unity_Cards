@@ -2882,10 +2882,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 0
-  _board: {fileID: 778903803}
   _cardIndex: 0
+  _cardMoveSpeed: 1
+  _canSnapTo: 0
   _cardPosition: {x: 0, y: 2.5, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &742721395
 Transform:
   m_ObjectHideFlags: 0
@@ -4521,10 +4522,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 1
-  _board: {fileID: 778903803}
   _cardIndex: 0
+  _cardMoveSpeed: 1
+  _canSnapTo: 1
   _cardPosition: {x: 0, y: 1, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &1391429280
 Transform:
   m_ObjectHideFlags: 0
@@ -4635,10 +4637,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 1
-  _board: {fileID: 778903803}
   _cardIndex: 3
+  _cardMoveSpeed: 1
+  _canSnapTo: 1
   _cardPosition: {x: 0, y: 1, z: 0}
+  _board: {fileID: 778903803}
 --- !u!61 &1399591989
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5103,10 +5106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 0
-  _board: {fileID: 778903803}
   _cardIndex: 3
+  _cardMoveSpeed: 1
+  _canSnapTo: 0
   _cardPosition: {x: 0, y: 2.5, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &1462161888
 Transform:
   m_ObjectHideFlags: 0
@@ -5517,10 +5521,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 0
-  _board: {fileID: 778903803}
   _cardIndex: 2
+  _cardMoveSpeed: 1
+  _canSnapTo: 0
   _cardPosition: {x: 0, y: 2.5, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &1685426661
 Transform:
   m_ObjectHideFlags: 0
@@ -5734,10 +5739,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 0
-  _board: {fileID: 778903803}
   _cardIndex: 1
+  _cardMoveSpeed: 1
+  _canSnapTo: 0
   _cardPosition: {x: 0, y: 2.5, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &1814490749
 Transform:
   m_ObjectHideFlags: 0
@@ -6168,9 +6174,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c2290b9648c43b580518b110962d010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotation: {x: 0, y: 0, z: 10}
-  _moveSpeed: 1
   _spacing: 1
+  _xOffset: 0
+  _rotation: {x: 0, y: 0, z: 10}
+  _moveSpeed: 5
 --- !u!1 &2031304665
 GameObject:
   m_ObjectHideFlags: 0
@@ -6288,10 +6295,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 1
-  _board: {fileID: 778903803}
   _cardIndex: 2
+  _cardMoveSpeed: 1
+  _canSnapTo: 1
   _cardPosition: {x: 0, y: 1, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &2055172252
 Transform:
   m_ObjectHideFlags: 0
@@ -6385,10 +6393,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f10bea52c2e4c979941c0bcc592725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canSnapTo: 1
-  _board: {fileID: 778903803}
   _cardIndex: 1
+  _cardMoveSpeed: 1
+  _canSnapTo: 1
   _cardPosition: {x: 0, y: 1, z: 0}
+  _board: {fileID: 778903803}
 --- !u!4 &2122681901
 Transform:
   m_ObjectHideFlags: 0
