@@ -5,27 +5,25 @@ namespace Core.Behaviour.StateMachine
 {
     public class StateMachine
     {
-        private State _currentState;
-
-        public State CurrentState => _currentState;
+        public State CurrentState { get; private set; }
 
         public virtual void Initialize(State initialState)
         {
-            _currentState = initialState;
-            _currentState.EnterState();
+            CurrentState = initialState;
+            CurrentState.EnterState();
         }
 
         public void ChangeState(State newState)
         {
-            _currentState.ExitState();
-            _currentState = newState;
-            _currentState.EnterState();
+            CurrentState.ExitState();
+            CurrentState = newState;
+            CurrentState.EnterState();
         }
 
         public virtual void StopMachine()
         {
-            _currentState.ExitState();
-            _currentState = null;
+            CurrentState.ExitState();
+            CurrentState = null;
         }
     }
 

@@ -11,7 +11,7 @@ namespace Enemy
 {
     public class EnemyBehaviour
     {
-        private readonly StateMachine<EnemyBehaviour> _stateMachine;
+        public StateMachine<EnemyBehaviour> StateMachine { get; private set; }
         public PlayerHand Hand { get; private set; }
         public BoardModel Board { get; private set; }
         public EnemyDifficultySettings Settings { get; private set; }
@@ -24,18 +24,18 @@ namespace Enemy
             Board = board;
             Settings = settings;
             Hand = hand;
-            _stateMachine = new StateMachine<EnemyBehaviour>();
-            var aggressiveState = new AggressiveState(_stateMachine, this);
-            var defensiveState = new DefensiveState(_stateMachine, this);
-            var neutralState = new NeutralState(_stateMachine, this);
-            _stateMachine.Initialize(neutralState);
-            _stateMachine.AddState(defensiveState);
-            _stateMachine.AddState(aggressiveState);
+            StateMachine = new StateMachine<EnemyBehaviour>();
+            var aggressiveState = new AggressiveState(StateMachine, this);
+            var defensiveState = new DefensiveState(StateMachine, this);
+            var neutralState = new NeutralState(StateMachine, this);
+            StateMachine.Initialize(neutralState);
+            StateMachine.AddState(defensiveState);
+            StateMachine.AddState(aggressiveState);
         }
 
         public void PlayTurn()
         {
-            ((EnemyState)_stateMachine.CurrentState).PlayTurn();
+            ((EnemyState)StateMachine.CurrentState).PlayTurn();
         }
 
         public void PlayCard(CardData card, int slotIndex)
@@ -56,12 +56,12 @@ namespace Enemy
                 var newCard = Object.Instantiate(Board.CardPrefab);
                 
                 thisSlot.Attach(newCard);
-                newCard.EnableAnimator();
+                newCard.Animator.enabled = true;
                 Object.Destroy(newCard.GetComponent<CardDragHandler>());
                 newCard.Set(input.data, null);
             }
             
-            ((EnemyState)_stateMachine.CurrentState).AutoChangeState();
+            ((EnemyState)StateMachine.CurrentState).AutoChangeState();
             _inputBuffer.Clear();
         }
     }

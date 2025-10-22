@@ -4,7 +4,7 @@
     {
         protected readonly StateMachine StateMachine;
 
-        public State(StateMachine sm)
+        protected State(StateMachine sm)
         {
             StateMachine = sm;
         }

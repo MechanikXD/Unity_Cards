@@ -6,6 +6,7 @@ namespace Player
     public class GlobalInputBlocker : SingletonBase<GlobalInputBlocker>
     {
         private GameObject _blocker;
+        public bool InputEnabled { get; private set; }
         
         protected override void Initialize()
         {
@@ -13,8 +14,16 @@ namespace Player
             EnableInput();
         }
         
-        public void DisableInput() => _blocker.SetActive(true);
-        
-        public void EnableInput() => _blocker.SetActive(false);
+        public void DisableInput()
+        {
+            _blocker.SetActive(true);
+            InputEnabled = false;
+        }
+
+        public void EnableInput()
+        {
+            _blocker.SetActive(false);
+            InputEnabled = true;
+        }
     }
 }
