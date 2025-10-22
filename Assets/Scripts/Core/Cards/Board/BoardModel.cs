@@ -261,6 +261,11 @@ namespace Core.Cards.Board
             return new BoardContext(_otherCardSlots, _otherHand.CurrentHealth, _otherHand.CurrentHope,
                                     _playerCardSlots, _playerHand.CurrentHealth, _playerHand.CurrentHope);
         }
+
+        private void OnDestroy()
+        {
+            _enemyBehaviour.StateMachine.StopMachine();
+        }
     }
 
     public readonly struct BoardContext
