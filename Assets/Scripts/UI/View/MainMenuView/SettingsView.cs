@@ -73,12 +73,17 @@ namespace UI.View.MainMenuView
         
         private void OnEnable()
         {
-            _backButton.onClick.AddListener(UIManager.Instance.ExitLastCanvas);
+            _backButton.onClick.AddListener(ExitUICanvas);
         }
 
         private void OnDisable()
         {
-            _backButton.onClick.RemoveListener(UIManager.Instance.ExitLastCanvas);
+            _backButton.onClick.RemoveListener(ExitUICanvas);
+        }
+
+        private void ExitUICanvas()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
     }
 }

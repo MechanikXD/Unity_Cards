@@ -11,6 +11,7 @@ namespace UI.Settings
         [SerializeField] private Button _groupButton;
         [SerializeField] private TMP_Text _title;
         private Transform _content;
+        private readonly List<Setting> _loadedSettings = new List<Setting>();
         public int GroupIndex { get; private set; }
 
         private void OnEnable()
@@ -23,8 +24,11 @@ namespace UI.Settings
             _groupButton.onClick.RemoveListener(SwitchToThisGroup);
         }
 
-        private void SwitchToThisGroup() =>
+        private void SwitchToThisGroup()
+        {
             UIManager.Instance.GetUICanvas<SettingsView>().SwitchGroup(GroupIndex);
+            Debug.Log($"Switch To {GroupIndex} Group");
+        }
 
         public void SetRoot(Transform root, int groupIndex)
         {
@@ -38,11 +42,26 @@ namespace UI.Settings
             var settings = settingGroup.GetSettings(out created);
             foreach (var setting in settings)
             {
+                _loadedSettings.Add(setting);
                 setting.transform.SetParent(_content);
+                setting.transform.localScale = Vector3.one;
             }
         }
-        
-        public void ShowGroup() => _content.gameObject.SetActive(true);
-        public void HideGroup() => _content.gameObject.SetActive(false);
+
+        public void ShowGroup()
+        {
+            foreach (var setting in _loadedSettings)
+            {
+                setting.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideGroup()
+        {
+            foreach (var setting in _loadedSettings)
+            {
+                setting.gameObject.SetActive(false);
+            }
+        }
     }
 }

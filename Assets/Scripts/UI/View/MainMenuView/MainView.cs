@@ -14,17 +14,20 @@ namespace UI.View.MainMenuView
         private void OnEnable()
         {
             _newGameButton.onClick.AddListener(ApplicationManager.EnterGameScene);
-            _changeDeckButton.onClick.AddListener(UIManager.Instance.EnterUICanvas<SettingsView>);
-            _settingsButton.onClick.AddListener(UIManager.Instance.EnterUICanvas<DeckView>);
+            _changeDeckButton.onClick.AddListener(OpenDeck);
+            _settingsButton.onClick.AddListener(OpenSettings);
             _exitButton.onClick.AddListener(ApplicationManager.ExitApplication);
         }
         
         private void OnDisable()
         {
             _newGameButton.onClick.RemoveListener(ApplicationManager.EnterGameScene);
-            _changeDeckButton.onClick.RemoveListener(UIManager.Instance.EnterUICanvas<SettingsView>);
-            _settingsButton.onClick.RemoveListener(UIManager.Instance.EnterUICanvas<DeckView>);
+            _changeDeckButton.onClick.RemoveListener(OpenDeck);
+            _settingsButton.onClick.RemoveListener(OpenSettings);
             _exitButton.onClick.RemoveListener(ApplicationManager.ExitApplication);
         }
+        
+        private void OpenSettings() => UIManager.Instance.EnterUICanvas<SettingsView>();
+        private void OpenDeck() => UIManager.Instance.EnterUICanvas<DeckView>();
     }
 }

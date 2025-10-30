@@ -14,8 +14,6 @@ namespace UI.Settings.Types
         private Vector2 _bounds;
         
         public float CurrentValue { get; private set; }
-        
-        private void Awake() => SetValues();
 
         private void OnEnable()
         {
@@ -34,10 +32,18 @@ namespace UI.Settings.Types
             _title.SetText(settingName);
             _defaultValue = value;
             _bounds = bounds;
+            
+            _slider.minValue = _bounds.x;
+            _slider.maxValue = _bounds.y;
+            
+            _slider.value = Mathf.Clamp(_defaultValue, _slider.minValue, _slider.maxValue);
+            _inputField.text = _defaultValue.ToString(CultureInfo.InvariantCulture);
+            CurrentValue = _slider.value;
         }
 
         private void UpdateSliderValue(string inputValue)
         {
+            // TODO: Fix number format and cut to X.XX
             var value = float.Parse(inputValue, NumberStyles.Any, CultureInfo.InvariantCulture);
             value = Mathf.Clamp(value, _bounds.x, _bounds.y);
             
@@ -50,16 +56,6 @@ namespace UI.Settings.Types
             _inputField.text = sliderValue.ToString(CultureInfo.InvariantCulture);
             CurrentValue = sliderValue;
             SettingsChanged();
-        }
-
-        public override void SetValues()
-        {
-            _slider.minValue = _bounds.x;
-            _slider.maxValue = _bounds.y;
-            
-            _slider.value = Mathf.Clamp(_defaultValue, _slider.minValue, _slider.maxValue);
-            _inputField.text = _defaultValue.ToString(CultureInfo.InvariantCulture);
-            CurrentValue = _slider.value;
         }
     }
 }

@@ -26,20 +26,11 @@ namespace UI.Settings.Types
             SettingsChanged();
         }
 
-        private void Awake()
-        {
-            SetValues();
-        }
-
         public void Load(string settingName, bool value)
         {
             _title.SetText(settingName);
             _defaultValue = value;
             IsOn = value;
-        }
-        
-        public override void SetValues()
-        {
             _switch.isOn = _defaultValue;
         }
     }

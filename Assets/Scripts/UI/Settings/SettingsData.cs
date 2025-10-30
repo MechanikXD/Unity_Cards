@@ -21,15 +21,15 @@ namespace UI.Settings
         [SerializeField] private SliderSettingValues[] _sliders;
         [SerializeField] private BooleanSettingValues[] _booleans;
         [SerializeField] private DropDownSettingValues[] _dropdowns;
-
-        private SliderSetting _sliderPrefab;
-        private BooleanSetting _booleanPrefab;
-        private DropDownSetting _dropdownPrefab;
         
         public string GroupTitle => _groupTitle;
 
         public List<Setting> GetSettings(out Dictionary<string, Setting> created)
         {
+            var sliderPrefab = Resources.Load<SliderSetting>("Prefabs/Settings/Settings Slider");
+            var booleanPrefab = Resources.Load<BooleanSetting>("Prefabs/Settings/Settings Boolean");
+            var dropdownPrefab = Resources.Load<DropDownSetting>("Prefabs/Settings/Settings DropDown");
+            
             created = new Dictionary<string, Setting>();
             var ordered = new List<Setting>();
             var currentOrder = 0;
@@ -37,8 +37,8 @@ namespace UI.Settings
             var sliderMaxOrder = _sliders.Length > 0 ? _sliders[^1].Order : -1;
             var boolMaxOrder = _booleans.Length > 0 ? _booleans[^1].Order : -1;
             var dropMaxOrder = _dropdowns.Length > 0 ? _dropdowns[^1].Order : -1;
-            var maxOrder = Mathf.Max(sliderMaxOrder, boolMaxOrder, dropMaxOrder);
-
+            var maxOrder = Mathf.Max(sliderMaxOrder, boolMaxOrder, dropMaxOrder) + 1;
+            
             var slidersLocalIndex = 0;
             var booleansLocalIndex = 0;
             var dropDownLocalIndex = 0;
@@ -47,7 +47,7 @@ namespace UI.Settings
                 while (slidersLocalIndex < _sliders.Length)
                 {
                     if (_sliders[slidersLocalIndex].Order != currentOrder) break;
-                    var newSetting = _sliders[slidersLocalIndex].GetSetting(_sliderPrefab);
+                    var newSetting = _sliders[slidersLocalIndex].GetSetting(sliderPrefab);
                     ordered.Add(newSetting);
                     created.Add(_sliders[slidersLocalIndex].SettingName, newSetting);
                     slidersLocalIndex++;
@@ -55,7 +55,7 @@ namespace UI.Settings
                 while (booleansLocalIndex < _booleans.Length)
                 {
                     if (_booleans[booleansLocalIndex].Order != currentOrder) break;
-                    var newSetting = _booleans[booleansLocalIndex].GetSetting(_booleanPrefab);
+                    var newSetting = _booleans[booleansLocalIndex].GetSetting(booleanPrefab);
                     ordered.Add(newSetting);
                     created.Add(_booleans[booleansLocalIndex].SettingName, newSetting);
                     booleansLocalIndex++;
@@ -63,7 +63,7 @@ namespace UI.Settings
                 while (dropDownLocalIndex < _dropdowns.Length)
                 {
                     if (_dropdowns[dropDownLocalIndex].Order != currentOrder) break;
-                    var newSetting = _dropdowns[dropDownLocalIndex].GetSetting(_dropdownPrefab);
+                    var newSetting = _dropdowns[dropDownLocalIndex].GetSetting(dropdownPrefab);
                     ordered.Add(newSetting);
                     created.Add(_dropdowns[dropDownLocalIndex].SettingName, newSetting);
                     dropDownLocalIndex++;

@@ -10,8 +10,6 @@ namespace UI.Settings
 
         private void Start() => SettingsChanged();
 
-        public abstract void SetValues();
-        
         public event Action<Setting> OnSettingChanged;
         
         protected void SettingsChanged() => OnSettingChanged?.Invoke(this);
