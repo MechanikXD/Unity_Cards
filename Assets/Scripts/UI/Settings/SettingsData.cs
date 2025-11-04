@@ -82,6 +82,7 @@ namespace UI.Settings
         [SerializeField] private int _order;
         [SerializeField] private float _defaultValue;
         [SerializeField] private Vector2 _bounds;
+        [SerializeField] private bool _wholeNumbers;
         
         public string SettingName => _settingName;
         public int Order => _order;
@@ -89,7 +90,7 @@ namespace UI.Settings
         public SliderSetting GetSetting(SliderSetting prefab)
         {
             var slider = Object.Instantiate(prefab);
-            slider.Load(_settingName, _defaultValue, _bounds);
+            slider.Load(_settingName, _defaultValue, _bounds, _wholeNumbers);
             return slider;
         }
     }

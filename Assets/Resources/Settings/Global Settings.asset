@@ -12,4 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7310b2440e74009b827714ff990b6b9, type: 3}
   m_Name: Global Settings
   m_EditorClassIdentifier: 
-  _settingGroups: []
+  _settingGroups:
+  - _groupTitle: First
+    _sliders:
+    - _settingName: Test slider
+      _order: 1
+      _defaultValue: 1
+      _bounds: {x: 0, y: 1}
+    _booleans:
+    - _settingName: test bool
+      _order: 0
+      _isOnByDefault: 0
+    _dropdowns: []
+  - _groupTitle: Second
+    _sliders: []
+    _booleans: []
+    _dropdowns:
+    - _settingName: Test Dropdown
+      _order: 1
+      _values:
+      - First
+      - Second

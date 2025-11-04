@@ -19,6 +19,7 @@ namespace Core.Cards.Board
 
         public void Attach(CardModel card)
         {
+            if (!_canSnapTo) return;
             IsEmpty = false;
             Card = card;
             card.transform.SetParent(transform);
