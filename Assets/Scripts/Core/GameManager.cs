@@ -2,7 +2,10 @@
 using Core.Cards.Board;
 using Enemy;
 using UI;
+using UI.Settings;
+using UI.Settings.Types;
 using UI.View;
+using UI.View.MainMenuView;
 using UnityEngine;
 
 namespace Core

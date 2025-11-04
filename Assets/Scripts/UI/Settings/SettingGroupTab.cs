@@ -27,7 +27,6 @@ namespace UI.Settings
         private void SwitchToThisGroup()
         {
             UIManager.Instance.GetUICanvas<SettingsView>().SwitchGroup(GroupIndex);
-            Debug.Log($"Switch To {GroupIndex} Group");
         }
 
         public void SetRoot(Transform root, int groupIndex)
