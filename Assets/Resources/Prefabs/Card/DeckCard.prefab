@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 178758120291526839}
   - component: {fileID: 5535126587343530413}
   - component: {fileID: 6004174078994817678}
+  - component: {fileID: 3343347148247241520}
   m_Layer: 5
   m_Name: DeckCard
   m_TagString: Untagged
@@ -454,11 +455,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3be4c801eb8349efb5d18fab73e6b15d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mouseReleaseMask:
-    serializedVersion: 2
-    m_Bits: 33
-  _cardMoveSpeed: 10
-  _xMoveBorders: {x: 1, y: 10}
 --- !u!114 &6004174078994817678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,12 +469,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sortingGroup: {fileID: 178758120291526839}
   _sprite: {fileID: 2948344009810699255}
-  _background: {fileID: 3243669771408458780}
+  _background: {fileID: 4434322805961512075}
   _descriptionField: {fileID: 7982574923364168651}
   _affinityImage: {fileID: 8727615371038423717}
   _costField: {fileID: 6436062147407033750}
   _attackField: {fileID: 7999928714445078449}
   _healthField: {fileID: 6294805130908155816}
+--- !u!114 &3343347148247241520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976643786822123503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &2685259781787800463
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,23 +7,45 @@ using UnityEngine;
 
 namespace Player
 {
-    public class CardDragHandler : DragHandler
+    public class CardDragHandler : MonoBehaviour
     {
+        private const int CARD_ORDER = 99;
+        [SerializeField] private LayerMask _mouseReleaseMask;
+        [SerializeField] private float _cardMoveSpeed = 2f;
+        [SerializeField] private Vector2 _xMoveBorders;
+        
+        private Vector3 _originalPosition;
+        private Plane _plane = new Plane(Vector3.forward, Vector3.zero);
+        private Camera _camera;
         private CardModel _thisModel;
 
-        protected override void Awake()
+        protected void Awake()
         {
             _thisModel = GetComponent<CardModel>();
-            base.Awake();
+            if (Camera.main == null)
+            {
+                Debug.LogError("There is no main camera on this scene!");
+            }
+            else _camera = Camera.main;
         }
-
-        protected override void PickUpObject()
+        
+        public void OnMouseDown()
         {
-            _thisModel.SortingGroup.sortingOrder = CardOrder;
+            if (!GlobalInputBlocker.Instance.InputEnabled) return;
+
+            _originalPosition = transform.position;
+            _thisModel.SortingGroup.sortingOrder = CARD_ORDER;
             GameManager.Instance.Board.RemoveCardFromLayout(_thisModel.IndexInLayout);
         }
 
-        protected override void DropObject()
+        public void OnMouseDrag()
+        {
+            var newPoint = GetRaycastHitPoint();
+            newPoint.x = Mathf.Clamp(newPoint.x, _xMoveBorders.x, _xMoveBorders.y);
+            transform.position = newPoint;
+        }
+
+        public void OnMouseUp()
         {
             if (_thisModel.CanBePlaced)
             {
@@ -42,10 +64,17 @@ namespace Player
 
             MoveToOriginalAsync().Forget();
         }
+
+        private Vector3 GetRaycastHitPoint()
+        {
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            return _plane.Raycast(ray, out var intersection) 
+                ? ray.GetPoint(intersection) : Vector3.zero;
+        }
         
         private async UniTask MoveToOriginalAsync()
         {
-            await transform.MoveToAsync(OriginalPosition, _cardMoveSpeed, this.GetCancellationTokenOnDestroy());
+            await transform.MoveToAsync(_originalPosition, _cardMoveSpeed, this.GetCancellationTokenOnDestroy());
             transform.rotation = Quaternion.identity;
             GameManager.Instance.Board.AddCardToLayout(_thisModel);
         }

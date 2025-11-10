@@ -33,6 +33,7 @@ namespace Player.Deck
             model.InPlayerHand = true;
             _currentCapacityText.SetText(_currentCapacity.ToString());
             model.transform.SetParent(_root);
+            model.transform.localScale = Vector3.one;
             model.IndexInLayout = _attachedCards.Count;
             _attachedCards.Add(model);
         }
@@ -46,7 +47,7 @@ namespace Player.Deck
             _attachedCards.RemoveAt(index);
             for (var i = index; i < _attachedCards.Count; i++)
             {
-                _attachedCards[index].IndexInLayout = i;
+                _attachedCards[i].IndexInLayout = i;
             }
             
             _currentCardsInDeck.Remove(index);

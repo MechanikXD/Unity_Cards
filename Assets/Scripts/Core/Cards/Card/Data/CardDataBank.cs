@@ -7,6 +7,7 @@ namespace Core.Cards.Card.Data
     {
         [SerializeField] private CardData[] _cards;
 
+        public int Count => _cards.Length;
         public CardData Get(int index) => _cards[index];
     }
 }
