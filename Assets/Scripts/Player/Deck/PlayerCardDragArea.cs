@@ -16,7 +16,8 @@ namespace Player.Deck
         private readonly List<DeckCardModel> _attachedCards = new List<DeckCardModel>();
         private readonly HashSet<int> _currentCardsInDeck = new HashSet<int>();
 
-        public List<int> GetCardIDs => _currentCardsInDeck.ToList();
+        public int CardCount => _currentCardsInDeck.Count;
+        public int[] GetCardIDs => _currentCardsInDeck.ToArray();
 
         public bool CanAddToDeck(int cost) => _maxCapacity - _currentCapacity >= cost;
 

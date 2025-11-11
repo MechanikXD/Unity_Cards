@@ -47,6 +47,20 @@ namespace UI.Settings
             }
         }
 
+        public List<Setting> GetChangedSettings()
+        {
+            var changed = new List<Setting>();
+            foreach (var setting in _loadedSettings)
+            {
+                if (!setting.WasChanged) continue;
+
+                changed.Add(setting);
+                setting.ClearChanged();
+            }
+            
+            return changed;
+        }
+
         public void ShowGroup()
         {
             foreach (var setting in _loadedSettings)

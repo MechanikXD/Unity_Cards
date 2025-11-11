@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,7 +31,8 @@ namespace UI.Settings.Types
 
         public void Load(string settingName, float value, Vector2 bounds, bool wholeNumbers)
         {
-            _title.SetText(settingName);
+            _titleField.SetText(settingName);
+            Title = settingName;
             _bounds = bounds;
             _defaultValue = Mathf.Clamp(value, _bounds.x, _bounds.y);
             _wholeNumbers = wholeNumbers;
@@ -39,9 +41,9 @@ namespace UI.Settings.Types
             _slider.maxValue = _bounds.y;
             _slider.wholeNumbers = wholeNumbers;
             
-            _slider.SetValueWithoutNotify(_defaultValue);
-            _inputField.SetTextWithoutNotify(_defaultValue.ToString(CultureInfo.InvariantCulture));
-            CurrentValue = _defaultValue;
+            CurrentValue = StorageProxy.HasSetting(Title) ? StorageProxy.GetSetting<float>(Title) : _defaultValue;
+            _slider.SetValueWithoutNotify(CurrentValue);
+            _inputField.SetTextWithoutNotify(CurrentValue.ToString(CultureInfo.InvariantCulture));
         }
 
         private void UpdateSliderValue(string inputValue)
@@ -61,5 +63,7 @@ namespace UI.Settings.Types
             CurrentValue = sliderValue;
             SettingsChanged();
         }
+
+        public override void WriteChangesInStorage() => StorageProxy.SetSetting(_titleField.text, CurrentValue);
     }
 }

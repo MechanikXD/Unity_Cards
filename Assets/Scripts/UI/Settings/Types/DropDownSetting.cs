@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Storage;
+using TMPro;
 using UnityEngine;
 
 namespace UI.Settings.Types
@@ -28,15 +29,31 @@ namespace UI.Settings.Types
         public void Load(string settingName, string[] values)
         {
             _options = values;
-            _title.SetText(settingName);
+            Title = settingName;
+            _titleField.SetText(Title);
 
             foreach (var value in values)
             {
                 _dropdown.options.Add(new TMP_Dropdown.OptionData(value));    
             }
+
+            var optionIndex = 0;
+            if (StorageProxy.HasSetting(Title))
+            {
+                var option = StorageProxy.GetSetting<string>(Title);
+                for (var i = 0; i < _options.Length; i++)
+                {
+                    if (option != _options[i]) continue;
+
+                    optionIndex = i;
+                    break;
+                }
+            }
             
-            _dropdown.value = 0;
-            CurrentOption = _options[0];
+            _dropdown.value = optionIndex;
+            CurrentOption = _options[optionIndex];
         }
+        
+        public override void WriteChangesInStorage() => StorageProxy.SetSetting(Title, CurrentOption);
     }
 }

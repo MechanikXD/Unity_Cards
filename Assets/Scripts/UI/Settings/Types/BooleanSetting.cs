@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Storage;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Settings.Types
@@ -28,10 +29,13 @@ namespace UI.Settings.Types
 
         public void Load(string settingName, bool value)
         {
-            _title.SetText(settingName);
+            _titleField.SetText(settingName);
+            Title = settingName;
             _defaultValue = value;
-            IsOn = value;
-            _switch.isOn = _defaultValue;
+            IsOn = StorageProxy.HasSetting(Title) ? StorageProxy.GetSetting<bool>(Title) : _defaultValue;
+            _switch.isOn = IsOn;
         }
+        
+        public override void WriteChangesInStorage() => StorageProxy.SetSetting(Title, IsOn);
     }
 }

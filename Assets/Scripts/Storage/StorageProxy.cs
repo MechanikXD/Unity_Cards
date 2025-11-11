@@ -16,6 +16,12 @@ namespace Storage
             return (T)_settings![key];
         }
 
+        public static bool HasSetting(string key)
+        {
+            if (!_settingsLoaded) LoadSettings();
+            return _settings.ContainsKey(key);
+        }
+
         public static void SetSetting<T>(string key, T value)
         {
             if (!_settingsLoaded) LoadSettings();
@@ -51,6 +57,8 @@ namespace Storage
             Setters[typeof(T)](key, value);
             PlayerPrefs.Save();
         }
+        
+        public static bool HasKey(string key) => PlayerPrefs.HasKey(key);
         
         private static void LoadSettings()
         {

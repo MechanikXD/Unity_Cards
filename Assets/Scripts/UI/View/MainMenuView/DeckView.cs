@@ -2,6 +2,7 @@
 using Core.Cards.Card.Data;
 using Core.Cards.Deck;
 using Player.Deck;
+using Storage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ namespace UI.View.MainMenuView
 {
     public class DeckView : CanvasView
     {
+        public const string DeckIDStorageKey = "Deck";
+
         [SerializeField] private Button _backButton;
         [SerializeField] private PlayerCardDragArea _playerCardsArea;
         [SerializeField] private OtherCardDragArea _otherCardsArea;
@@ -23,14 +26,32 @@ namespace UI.View.MainMenuView
         protected override void Awake()
         {
             base.Awake();
+            int[] ids;
+            if (StorageProxy.HasKey(DeckIDStorageKey))
+            {
+                var strings = StorageProxy.Get<string>(DeckIDStorageKey).Split(',');
+                ids = new int[strings.Length];
+                for (var i = 0; i < strings.Length; i++)
+                {
+                    ids[i] = int.Parse(strings[i]);
+                }
+            }
+            else ids = _defaultDeck;
+            
             for (var i = 0; i < _db.Count; i++)
             {
                 var newModel = Instantiate(_prefab);
                 newModel.Set(_db.Get(i));
 
-                if (_defaultDeck.Contains(i)) _playerCardsArea.AddCard(newModel);
+                if (ids.Contains(i)) _playerCardsArea.AddCard(newModel);
                 else _otherCardsArea.AddCard(newModel);
             }
+        }
+
+        private void SaveCards()
+        {
+            var ids = _playerCardsArea.CardCount <= 0 ? _defaultDeck : _playerCardsArea.GetCardIDs;
+            StorageProxy.Set(DeckIDStorageKey, string.Join(',', ids));
         }
 
         private void OnEnable()
@@ -45,6 +66,7 @@ namespace UI.View.MainMenuView
 
         private void ExitLastCanvas()
         {
+            SaveCards();
             if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
     }

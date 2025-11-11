@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Storage;
 using UI.Settings;
-using UI.Settings.Types;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +46,20 @@ namespace UI.View.MainMenuView
             _groupTabs[_currentGroupIndex].ShowGroup();
         }
 
-        public void LoadGroups()
+        private void SaveChangedSettings()
+        {
+            foreach (var settingGroupTab in _groupTabs)
+            {
+                foreach (var changedSetting in settingGroupTab.GetChangedSettings())
+                {
+                    changedSetting.WriteChangesInStorage();
+                }
+            }
+            
+            StorageProxy.SaveSettings();
+        }
+
+        private void LoadGroups()
         {
             var firstDisplayed = false;
             for (var i = 0; i < _settingData.SettingGroups.Length; i++)
@@ -84,6 +97,7 @@ namespace UI.View.MainMenuView
 
         private void ExitUICanvas()
         {
+            SaveChangedSettings();
             if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
     }
