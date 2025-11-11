@@ -51,7 +51,7 @@ namespace Player.Deck
                 _attachedCards[i].IndexInLayout = i;
             }
             
-            _currentCardsInDeck.Remove(index);
+            _currentCardsInDeck.Remove(model.CardData.ID);
             return model;
         }
     }

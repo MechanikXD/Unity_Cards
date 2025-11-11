@@ -4,6 +4,7 @@ using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other;
 using UI.View;
+using UI.View.GameView;
 using UnityEngine;
 
 namespace Core.Cards.Hand

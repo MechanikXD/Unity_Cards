@@ -3,13 +3,15 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.View
+namespace UI.View.GameView
 {
     public class GameHUDCanvas : CanvasView
     {
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _pauseButton;
 
+        public void EnableButton(bool enable) => _playButton.interactable = enable;
+        
         private void OnEnable() => SubscribeToEvents();
 
         private void OnDisable() => UnSubscribeFromEvents();

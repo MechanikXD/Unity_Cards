@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UI.View
+namespace UI.View.GameView
 {
     public class StatView : CanvasView
     {

@@ -4,6 +4,7 @@ using Enemy;
 using Storage;
 using UI;
 using UI.View;
+using UI.View.GameView;
 using UI.View.MainMenuView;
 using UnityEngine;
 

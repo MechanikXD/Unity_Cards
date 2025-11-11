@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace Storage
 {
@@ -13,7 +14,9 @@ namespace Storage
         public static T GetSetting<T>(string key)
         {
             if (!_settingsLoaded) LoadSettings();
-            return (T)_settings![key];
+            var value = _settings[key];
+            // funny cast because Newton serializes floats as double, so we have to cast back to float and preserve generic.
+            return typeof(T) == typeof(float) ? (T)(object)Convert.ToSingle(value) : (T)value;
         }
 
         public static bool HasSetting(string key)
@@ -62,16 +65,22 @@ namespace Storage
         
         private static void LoadSettings()
         {
-            var serialized = PlayerPrefs.GetString(SETTINGS_KEY);
-            _settings = JsonUtility.FromJson<SerializableDictionary<string, object>>(serialized).ToDictionary();
+            if (!PlayerPrefs.HasKey(SETTINGS_KEY))
+            {
+                _settings = new Dictionary<string, object>();
+                _settingsLoaded = true;
+                return;
+            } 
+            
+            var json = PlayerPrefs.GetString(SETTINGS_KEY);
+            _settings = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             _settingsLoaded = true;
         }
 
         public static void SaveSettings()
         {
-            var serializable = new SerializableDictionary<string, object>(_settings);
-            var serialized = JsonUtility.ToJson(serializable);
-            PlayerPrefs.SetString(SETTINGS_KEY, serialized);
+            var json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
+            Set(SETTINGS_KEY, json);
         }
         
         public static void Delete(string key) => PlayerPrefs.DeleteKey(key);

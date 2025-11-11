@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace UI.View
+namespace UI.View.GameView
 {
     public class GameMenuView : CanvasView
     {

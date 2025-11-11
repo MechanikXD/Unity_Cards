@@ -73,7 +73,7 @@ namespace Core.Cards.Card
         public void SetRandomFinalAttack()
         {
             var attackRange = _data.Attack;
-            var final = Random.Range(attackRange.x, attackRange.y);
+            var final = Random.Range(attackRange.x, attackRange.y + 1);
             SetFinalAttack(final);
         }
         
