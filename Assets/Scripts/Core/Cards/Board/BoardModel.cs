@@ -124,17 +124,19 @@ namespace Core.Cards.Board
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
+                var currentIndex = i;   // To capture value
                 if (!_playerCardSlots[i].IsEmpty)   // Player has card in slot
                 {
                     var playerCard = _playerCardSlots[i].Card;
                     var playerEffects = playerCard.CardData.Effects;
-                    PlayEffects(playerEffects, TriggerType.CombatStart, GetPlayerContext);
+                    
+                    PlayEffects(playerEffects, TriggerType.CombatStart, () => GetPlayerContext(currentIndex));
                     
                     if (!_otherCardSlots[i].IsEmpty) // Both slots have cards
                     {
                         var otherCard = _otherCardSlots[i].Card;
                         var otherEffects =  otherCard.CardData.Effects;
-                        PlayEffects(otherEffects, TriggerType.CombatStart, GetOtherContext);
+                        PlayEffects(otherEffects, TriggerType.CombatStart, () => GetOtherContext(currentIndex));
                         // Difference in final power
                         var difference = playerCard.FinalAttack - otherCard.FinalAttack;
                         
@@ -155,7 +157,7 @@ namespace Core.Cards.Board
                                     Destroy(model.gameObject);
                                 }
                                 
-                                PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext); 
+                                PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex)); 
                                 playerCard.PlayRandomAnimation();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                                     cancellationToken:this.destroyCancellationToken);
@@ -175,37 +177,37 @@ namespace Core.Cards.Board
                                     Destroy(model.gameObject);
                                 }
                                 
-                                PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
+                                PlayEffects(otherEffects, TriggerType.OnHit, () => GetOtherContext(currentIndex));
                                 otherCard.PlayRandomAnimationReverse();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                                     cancellationToken:this.destroyCancellationToken);
                                 break;
                         }
                         
-                        PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
+                        PlayEffects(otherEffects, TriggerType.TurnEnd, () => GetOtherContext(currentIndex));
                     }
                     else // Player unopposed
                     {
                         _otherHand.TakeDamage(playerCard.FinalAttack);
-                        PlayEffects(playerEffects, TriggerType.OnHit, GetPlayerContext);
+                        PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex));
                         playerCard.PlayRandomAnimation();
                         await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                             cancellationToken:this.destroyCancellationToken);
                     }
                     
-                    PlayEffects(playerEffects, TriggerType.TurnEnd, GetPlayerContext);
+                    PlayEffects(playerEffects, TriggerType.TurnEnd, () => GetPlayerContext(currentIndex));
                 }
                 else if (!_otherCardSlots[i].IsEmpty) // Enemy unopposed
                 {
                     var otherCard = _otherCardSlots[i].Card;
                     var otherEffects = otherCard.CardData.Effects;
                     _playerHand.TakeDamage(otherCard.FinalAttack);
-                    PlayEffects(otherEffects, TriggerType.OnHit, GetOtherContext);
+                    PlayEffects(otherEffects, TriggerType.OnHit, () => GetOtherContext(currentIndex));
                     otherCard.PlayRandomAnimationReverse();
                     
                     await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                         cancellationToken:this.destroyCancellationToken);
-                    PlayEffects(otherEffects, TriggerType.TurnEnd, GetOtherContext);
+                    PlayEffects(otherEffects, TriggerType.TurnEnd, () => GetOtherContext(currentIndex));
                 }
 
                 if (_playerHand.IsDefeated || _otherHand.IsDefeated) break;
@@ -253,16 +255,14 @@ namespace Core.Cards.Board
             foreach (var effect in effects) effect.Execute(contextProvider());
         }
 
-        private BoardContext GetPlayerContext()
+        private BoardContext GetPlayerContext(int index)
         {
-            return new BoardContext(_playerCardSlots, _playerHand.CurrentHealth, _playerHand.CurrentHope,
-                                    _otherCardSlots, _otherHand.CurrentHealth, _otherHand.CurrentHope);
+            return new BoardContext(_playerCardSlots, index, _playerHand, _otherCardSlots, _otherHand);
         }
         
-        private BoardContext GetOtherContext()
+        private BoardContext GetOtherContext(int index)
         {
-            return new BoardContext(_otherCardSlots, _otherHand.CurrentHealth, _otherHand.CurrentHope,
-                                    _playerCardSlots, _playerHand.CurrentHealth, _playerHand.CurrentHope);
+            return new BoardContext(_otherCardSlots, index, _otherHand, _playerCardSlots, _playerHand);
         }
 
         private void OnDestroy()
@@ -273,23 +273,21 @@ namespace Core.Cards.Board
 
     public readonly struct BoardContext
     {
-        public readonly CardSlot [] Player;
-        public readonly int PlayerHealth;
-        public readonly int PlayerHope;
-        
-        public readonly CardSlot[] Other;
-        public readonly int OtherHealth;
-        public readonly int OtherHope;
+        public readonly CardSlot[] Player;
+        public readonly PlayerHand PlayerHand;
 
-        public BoardContext(CardSlot[] player, int playerHealth, int playerHope, 
-                            CardSlot[] other, int otherHealth, int otherHope)
+        public readonly CardSlot[] Other;
+        public readonly PlayerHand OtherHand;
+        public readonly int Index;
+
+        public BoardContext(CardSlot[] player, int index, PlayerHand playerHand, 
+                            CardSlot[] other, PlayerHand otherHand)
         {
-            OtherHope = otherHope;
+            Index = index;
             Other = other;
-            OtherHealth = otherHealth;
             Player = player;
-            PlayerHealth = playerHealth;
-            PlayerHope = playerHope;
+            PlayerHand = playerHand;
+            OtherHand = otherHand;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
+using Core.Cards.Card;
 using Enemy;
 using Storage;
 using UI;
-using UI.View;
 using UI.View.GameView;
 using UI.View.MainMenuView;
 using UnityEngine;
@@ -15,19 +15,22 @@ namespace Core
         [SerializeField] private BoardModel _board;
         [SerializeField] private EnemyDifficultySettings _difficultySettings;
         
-        [SerializeField] private int[] _otherCardsIds;
+        [SerializeField] private int _otherDeckSize;
         public bool GameIsFinished { get; private set; }
         
         public BoardModel Board => _board;
         public EnemyDifficultySettings DifficultySettings => _difficultySettings;
         
-        protected override void Initialize()
+        protected override void Initialize() { }
+
+        private void Start()
         {
             var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
             var ids = new int[strings.Length];
             for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
             
-            _board.StartGame(ids, _otherCardsIds);
+            var otherDeck = CardDataProvider.DataBank.TakeRandom(_otherDeckSize);
+            _board.StartGame(ids, otherDeck);
         }
 
         public void WinGame()

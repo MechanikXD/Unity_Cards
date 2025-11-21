@@ -2370,9 +2370,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _board: {fileID: 778903803}
-  _difficultySettings: {fileID: 11400000, guid: 958e820b98982b34a949280eb0434a7a, type: 2}
-  _playerCardsIds: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
-  _otherCardsIds: 0a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
+  _difficultySettings: {fileID: 11400000, guid: ef4bcc38dfad1cb4fbbe3f6e8d00a5b6, type: 2}
+  _otherDeckSize: 10
 --- !u!4 &535807822
 Transform:
   m_ObjectHideFlags: 0
