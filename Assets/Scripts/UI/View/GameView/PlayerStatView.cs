@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.View
+namespace UI.View.GameView
 {
     public class PlayerStatView : MonoBehaviour
     {

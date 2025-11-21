@@ -10,6 +10,8 @@ using Enemy;
 using Other;
 using Player;
 using TMPro;
+using UI;
+using UI.View.GameView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -118,6 +120,7 @@ namespace Core.Cards.Board
         public async UniTask PlayTurnAsync()
         {
             GlobalInputBlocker.Instance.DisableInput();
+            UIManager.Instance.GetHUDCanvas<GameHUDCanvas>().EnableButton(false);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
@@ -207,10 +210,10 @@ namespace Core.Cards.Board
 
                 if (_playerHand.IsDefeated || _otherHand.IsDefeated) break;
             }
-
             
             ClearFinalAttacks();
             GlobalInputBlocker.Instance.EnableInput();
+            UIManager.Instance.GetHUDCanvas<GameHUDCanvas>().EnableButton(true);
             NextTurn();
         }
 

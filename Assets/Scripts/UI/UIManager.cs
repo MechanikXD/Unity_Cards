@@ -84,6 +84,7 @@ namespace UI
                     uiCanvas.gameObject.SetActive(true);
                 }
                 if (uiCanvas.HideOnStart) uiCanvas.Disable();
+                else _uiStack.Push(uiCanvas);
             }
             
             foreach (var hudCanvas in _hudCanvases.Values) {

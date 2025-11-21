@@ -14,6 +14,7 @@ namespace Core.Cards.Board
         [SerializeField] private Vector3 _cardPosition =  new Vector3(0, 0, 0);
         [SerializeField] private BoardModel _board;
         
+        public bool CanAttach => _canSnapTo;
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card { get; private set; }
 

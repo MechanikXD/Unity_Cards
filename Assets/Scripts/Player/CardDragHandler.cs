@@ -4,7 +4,6 @@ using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using Other;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Player
 {
@@ -16,11 +15,11 @@ namespace Player
         [SerializeField] private Vector2 _xMoveBorders;
         
         private Vector3 _originalPosition;
-        private Plane _boardPlane = new Plane(Vector3.forward, Vector3.zero);
-        private CardModel _thisModel;
+        private Plane _plane = new Plane(Vector3.forward, Vector3.zero);
         private Camera _camera;
+        private CardModel _thisModel;
 
-        private void Awake()
+        protected void Awake()
         {
             _thisModel = GetComponent<CardModel>();
             if (Camera.main == null)
@@ -29,7 +28,7 @@ namespace Player
             }
             else _camera = Camera.main;
         }
-
+        
         public void OnMouseDown()
         {
             if (!GlobalInputBlocker.Instance.InputEnabled) return;
@@ -54,7 +53,7 @@ namespace Player
                 // Because we use transform.position, there is no z coordinate, so board can't have z as well.
                 var hit = Physics2D.OverlapPoint(transform.position, _mouseReleaseMask);
 
-                if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty)
+                if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty && slot.CanAttach)
                 {
                     slot.Attach(_thisModel);
                     _thisModel.SetPlaced();
@@ -69,10 +68,10 @@ namespace Player
         private Vector3 GetRaycastHitPoint()
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            return _boardPlane.Raycast(ray, out var intersection) 
+            return _plane.Raycast(ray, out var intersection) 
                 ? ray.GetPoint(intersection) : Vector3.zero;
         }
-
+        
         private async UniTask MoveToOriginalAsync()
         {
             await transform.MoveToAsync(_originalPosition, _cardMoveSpeed, this.GetCancellationTokenOnDestroy());
