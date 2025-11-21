@@ -1,4 +1,5 @@
-﻿using Other;
+﻿using System.Collections.Generic;
+using Other;
 using UnityEngine;
 
 namespace Core.Cards.Card.Data
@@ -11,20 +12,31 @@ namespace Core.Cards.Card.Data
         public int Count => _cards.Length;
         public CardData Get(int index) => _cards[index];
 
-        public int[] TakeRandom(int amount)
+        public int[] TakeRandom(int amount, int maxCost, bool tryFillDeck=false)
         {
             var indexes = new int[Count];
 
             for (var i = 0; i < Count; i++) indexes[i] = i;
 
             indexes.Shuffle();
-            var random = new int[amount];
+            var currentCost = 0;
+            var random = new List<int>(amount);
+            
             for (var i = 0; i < amount; i++)
             {
-                random[i] = indexes[i];
+                var data = Get(indexes[i]);
+                if (data.Cost + currentCost > maxCost)
+                {
+                    if (!tryFillDeck) break;
+                    continue;
+                }
+                
+                random.Add(indexes[i]);
+                currentCost += data.Cost;
+                if (currentCost == maxCost) break;
             }
 
-            return random;
+            return random.ToArray();
         }
     }
 }

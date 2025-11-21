@@ -60,10 +60,11 @@ namespace Core.Cards.Board
             }
         }
 
-        public void StartGame(int[] playerCardIds, int[] otherCardsIds)
+        public void StartGame(int[] playerCardIds, EnemyDifficultySettings settings)
         {
             _playerHand.Initialize(playerCardIds);
-            _otherHand.Initialize(otherCardsIds);
+            var otherDeck = settings.GetDeck();
+            _otherHand.Initialize(otherDeck);
             
             _playerHand.PlayerDefeated += GameManager.Instance.GameLoose;
             _otherHand.PlayerDefeated += GameManager.Instance.WinGame;
@@ -75,7 +76,7 @@ namespace Core.Cards.Board
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
 
-            _enemyBehaviour = new EnemyBehaviour(this, _otherHand, GameManager.Instance.DifficultySettings);
+            _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
             _enemyBehaviour.PlayTurn();
         }
 

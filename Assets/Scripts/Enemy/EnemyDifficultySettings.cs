@@ -1,10 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using Core.Cards.Card;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Enemy
 {
     [CreateAssetMenu(fileName = "Difficulty Settings", menuName = "ScriptableObjects/Difficulty Settings")]
     public class EnemyDifficultySettings : ScriptableObject
     {
+        [Header("General")]
+        [SerializeField] private int _minDeckSize;
+        // Does not guarantee that deck will be that big, this is just a ceiling for deck size
+        [SerializeField] private int _maxDeckSize = 12;
+        [SerializeField] private DeckSelectionType _selectionType;
+        [SerializeField] private int _deckMaxCost = 50;
+        
         [Header("Aggressive")]
         // Value at which enemy AI will become aggressive
         [SerializeField] private float _dangerLevelToBecomeAggressive;
@@ -49,5 +60,83 @@ namespace Enemy
         // Neutral state fields 
         public int MaxCardCountPerTurn => _maxCardCountPerTurn;
         public float MinDangerLevelToRespondNeutral => _minDangerLevelToRespondNeutral;
+
+        public int[] GetDeck()
+        {
+            return _selectionType switch
+            {
+                DeckSelectionType.Random => GetRandomDeck(),
+                DeckSelectionType.Faction => GetRandomFaction(),
+                DeckSelectionType.MaxHand => GetMaxHand(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        private int[] GetRandomDeck() =>
+            CardDataProvider.DataBank.TakeRandom(Random.Range(_minDeckSize, _maxDeckSize), _deckMaxCost);
+
+        private int[] GetRandomFaction()
+        {
+            var db = CardDataProvider.DataBank;
+            var randomFactionCard = db.Get(Random.Range(0, db.Count));
+            var faction = randomFactionCard.Background;
+            
+            var currentCost = 0;
+            var result = new List<int>();
+            
+            for (var i = 0; i < db.Count; i++)
+            {
+                var data = db.Get(i);
+                if (data.Background != faction) continue;
+                if (data.Cost + currentCost > _deckMaxCost) continue;
+                
+                result.Add(i);
+                currentCost += data.Cost;
+                if (currentCost == _deckMaxCost) break;
+            }
+
+            return result.ToArray();
+        }
+
+        private int[] GetMaxHand()
+        {
+            var db = CardDataProvider.DataBank;
+            
+            var currentCost = 0;
+            var result = new List<int>();
+            
+            for (var i = 0; i < db.Count; i++)
+            {
+                var data = db.Get(i);
+                if (data.Cost > 3) continue;
+                if (data.Cost + currentCost > _deckMaxCost) continue;
+                
+                result.Add(i);
+                currentCost += data.Cost;
+                if (currentCost == _deckMaxCost) break;
+            }
+
+            if (currentCost - _deckMaxCost <= 3) return result.ToArray();
+
+            for (var i = 0; i < db.Count; i++)
+            {
+                var data = db.Get(i);
+                if (data.Cost > 6) continue;
+                if (data.Cost + currentCost > _deckMaxCost) continue;
+                
+                result.Add(i);
+                currentCost += data.Cost;
+                if (currentCost - _deckMaxCost <= 3) break;
+            }
+
+            return result.ToArray();
+        }
+    }
+
+    public enum DeckSelectionType
+    {
+        Random,
+        Faction, // Based on card background
+        MaxHand // Select cards with min cost
     }
 }

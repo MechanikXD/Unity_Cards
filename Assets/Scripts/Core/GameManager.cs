@@ -1,6 +1,5 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
-using Core.Cards.Card;
 using Enemy;
 using Storage;
 using UI;
@@ -19,7 +18,6 @@ namespace Core
         public bool GameIsFinished { get; private set; }
         
         public BoardModel Board => _board;
-        public EnemyDifficultySettings DifficultySettings => _difficultySettings;
         
         protected override void Initialize() { }
 
@@ -29,8 +27,7 @@ namespace Core
             var ids = new int[strings.Length];
             for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
             
-            var otherDeck = CardDataProvider.DataBank.TakeRandom(_otherDeckSize);
-            _board.StartGame(ids, otherDeck);
+            _board.StartGame(ids, _difficultySettings);
         }
 
         public void WinGame()
