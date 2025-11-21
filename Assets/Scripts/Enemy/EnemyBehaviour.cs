@@ -57,7 +57,7 @@ namespace Enemy
                 
                 thisSlot.Attach(newCard);
                 newCard.Animator.enabled = true;
-                Object.Destroy(newCard.GetComponent<CardDragHandler>());
+                Object.Destroy(newCard.GetComponent<CardController>());
                 newCard.Set(input.data, null);
             }
             

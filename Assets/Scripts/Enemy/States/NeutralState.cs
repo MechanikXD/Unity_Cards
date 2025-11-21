@@ -27,7 +27,7 @@ namespace Enemy.States
 
                 if (!playerCard.IsEmpty && myCard.IsEmpty)
                 {
-                    var danger = playerCard.Card.CardData.Attack.Average();
+                    var danger = playerCard.Card.Data.Attack.Average();
                     if (danger >= StateOwner.Settings.MinDangerLevelToRespondNeutral)
                     {
                         dangerSlots.Add(i);

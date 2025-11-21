@@ -129,14 +129,14 @@ namespace Core.Cards.Board
                 if (!_playerCardSlots[i].IsEmpty)   // Player has card in slot
                 {
                     var playerCard = _playerCardSlots[i].Card;
-                    var playerEffects = playerCard.CardData.Effects;
+                    var playerEffects = playerCard.Data.Effects;
                     
                     PlayEffects(playerEffects, TriggerType.CombatStart, () => GetPlayerContext(currentIndex));
                     
                     if (!_otherCardSlots[i].IsEmpty) // Both slots have cards
                     {
                         var otherCard = _otherCardSlots[i].Card;
-                        var otherEffects =  otherCard.CardData.Effects;
+                        var otherEffects =  otherCard.Data.Effects;
                         PlayEffects(otherEffects, TriggerType.CombatStart, () => GetOtherContext(currentIndex));
                         // Difference in final power
                         var difference = playerCard.FinalAttack - otherCard.FinalAttack;
@@ -201,7 +201,7 @@ namespace Core.Cards.Board
                 else if (!_otherCardSlots[i].IsEmpty) // Enemy unopposed
                 {
                     var otherCard = _otherCardSlots[i].Card;
-                    var otherEffects = otherCard.CardData.Effects;
+                    var otherEffects = otherCard.Data.Effects;
                     _playerHand.TakeDamage(otherCard.FinalAttack);
                     PlayEffects(otherEffects, TriggerType.OnHit, () => GetOtherContext(currentIndex));
                     otherCard.PlayRandomAnimationReverse();

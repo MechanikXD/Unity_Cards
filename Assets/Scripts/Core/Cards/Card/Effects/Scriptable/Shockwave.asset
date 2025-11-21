@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05aadc344b34d17ae82b0607194fd1e, type: 3}
   m_Name: Shockwave
   m_EditorClassIdentifier: 
-  _description: 
+  _description: Deal 1 damage to adjacent slots
   _damage: 1

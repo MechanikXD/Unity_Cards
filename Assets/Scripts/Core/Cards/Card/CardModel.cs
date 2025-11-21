@@ -29,15 +29,13 @@ namespace Core.Cards.Card
         [SerializeField] private TMP_Text _healthField;
         [Header("Dynamic")]
         [SerializeField] private TMP_Text _finalAttackField;
-        public int FinalAttack { get; private set; }
         private PlayerHand _hand;
-        private CardData _data;
-        private int _currentHealth;
-        
+        public int FinalAttack { get; private set; }
+        public CardData Data { get; private set; }
+        public int CurrentHealth { get; private set; }
         public int IndexInLayout { get; set; }
-        public CardData CardData => _data;
-        public bool CanBePlaced => _hand.CanUseCard(_data.Cost);
         public bool IsDefeated { get; private set; }
+        public bool CanBePlaced => _hand.CanUseCard(Data.Cost);
         public Animator Animator => _animator;
         public SortingGroup SortingGroup => _sortingGroup;
 
@@ -48,7 +46,7 @@ namespace Core.Cards.Card
 
         public void Set(CardData data, PlayerHand owner)
         {
-            _data = data;
+            Data = data;
             _sprite.sprite = data.Sprite;
             _background.sprite = data.Background;
             _descriptionField.SetText(CardDataProvider.MakeDescription(data));
@@ -57,22 +55,22 @@ namespace Core.Cards.Card
             _attackField.SetText(CardDataProvider.AttackToString(data.Attack));
             _costField.SetText(data.Cost.ToString());
             _healthField.SetText(data.Health.ToString());
-            _currentHealth = data.Health;
+            CurrentHealth = data.Health;
             
             _hand = owner;
         }
 
         public void SetPlaced()
         {
-            _hand.GetCardFromHand(_data);
-            _hand.UseHope(_data.Cost);
+            _hand.GetCardFromHand(Data);
+            _hand.UseHope(Data.Cost);
             _hand = null;
             _animator.enabled = true;
         }
 
         public void SetRandomFinalAttack()
         {
-            var attackRange = _data.Attack;
+            var attackRange = Data.Attack;
             var final = Random.Range(attackRange.x, attackRange.y + 1);
             SetFinalAttack(final);
         }
@@ -85,13 +83,13 @@ namespace Core.Cards.Card
 
         public void TakeDamage(int damage)
         {
-            _currentHealth -= damage;
-            if (_currentHealth <= 0)
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
             {
                 IsDefeated = true;
-                _currentHealth = 0;
+                CurrentHealth = 0;
             }
-            _healthField.SetText(_currentHealth.ToString());
+            _healthField.SetText(CurrentHealth.ToString());
         }
 
         public void Clear()
@@ -107,7 +105,7 @@ namespace Core.Cards.Card
             _healthField.SetText(string.Empty);
             ClearFinalAttack();
 
-            _data = default;
+            Data = default;
         }
         
         public void ClearFinalAttack()

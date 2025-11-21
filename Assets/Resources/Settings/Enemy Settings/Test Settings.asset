@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6368393c674a94a4cbdddd9ea7469a, type: 3}
   m_Name: Test Settings
   m_EditorClassIdentifier: 
+  _minDeckSize: 4
+  _maxDeckSize: 6
+  _selectionType: 0
+  _deckMaxCost: 50
   _dangerLevelToBecomeAggressive: 5
   _ignoreDangerLevelAggressive: 5
   _tryMatchDangerLevelOnCounteractAggressive: 0
