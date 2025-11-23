@@ -19,6 +19,7 @@ namespace Other
         
         public static void CancelCardMove()
         {
+            if (GameManager.Instance == null) return;
             var board = GameManager.Instance.Board;
             foreach (var slot in board.PlayerSlots)
             {

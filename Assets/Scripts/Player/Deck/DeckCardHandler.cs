@@ -1,34 +1,55 @@
 ﻿using Core.Cards.Deck;
+using Other;
 using UI;
+using UI.View.GameView;
 using UI.View.MainMenuView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Player.Deck
 {
-    public class DeckCardHandler : MonoBehaviour, IPointerUpHandler
+    public class DeckCardHandler : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     {
+        [SerializeField] private float _holdThreshold = 0.3f;
         private DeckCardModel _thisModel;
+        private float _lastPointerDownTime;
 
         protected void Awake()
         {
             _thisModel = GetComponent<DeckCardModel>();
         }
-        
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            _lastPointerDownTime = Time.unscaledTime;
+        }
+
         public void OnPointerUp(PointerEventData eventData)
         {
-            var playerCards = UIManager.Instance.GetUICanvas<DeckView>().PlayerCards;
-            var otherCards = UIManager.Instance.GetUICanvas<DeckView>().OtherCards;
-
-            if (_thisModel.InPlayerHand)
+            var duration = Time.unscaledTime - _lastPointerDownTime;
+            
+            if (duration >= _holdThreshold)
             {
-                playerCards.RemoveCard(_thisModel.IndexInLayout);
-                otherCards.AddCard(_thisModel);
+                var detailView = UIManager.Instance.GetHUDCanvas<CardDetailView>();
+                detailView.LoadData(_thisModel.CardData);
+                detailView.Enable();
             }
-            else if (playerCards.CanAddToDeck(_thisModel.CardData.Cost))
+            else
             {
-                otherCards.RemoveCard(_thisModel.IndexInLayout);
-                playerCards.AddCard(_thisModel);
+                HideInfoOnClick.HideInfo();
+                var playerCards = UIManager.Instance.GetUICanvas<DeckView>().PlayerCards;
+                var otherCards = UIManager.Instance.GetUICanvas<DeckView>().OtherCards;
+
+                if (_thisModel.InPlayerHand)
+                {
+                    playerCards.RemoveCard(_thisModel.IndexInLayout);
+                    otherCards.AddCard(_thisModel);
+                }
+                else if (playerCards.CanAddToDeck(_thisModel.CardData.Cost))
+                {
+                    otherCards.RemoveCard(_thisModel.IndexInLayout);
+                    playerCards.AddCard(_thisModel);
+                }
             }
         }
     }

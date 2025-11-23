@@ -606,7 +606,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1128229793}
   m_HandleRect: {fileID: 1128229792}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2299,7 +2299,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1192416265}
   m_HandleRect: {fileID: 1192416264}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4431,6 +4431,7 @@ GameObject:
   - component: {fileID: 1637145780}
   - component: {fileID: 1637145781}
   - component: {fileID: 1637145782}
+  - component: {fileID: 1637145783}
   m_Layer: 5
   m_Name: Player Cards
   m_TagString: Untagged
@@ -4490,6 +4491,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 13, y: 13, z: 13, w: 13}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1637145783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637145779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880a83f5626b4c15b224203beccbcea6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1666002859
 GameObject:
   m_ObjectHideFlags: 0
@@ -4673,6 +4686,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca7ef829501482c81c0ba72ad6b4fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enterPauseOnUiOpen: 0
+  _stopTimeOnPause: 0
+  _blockInputOnPause: 0
   _sceneInputBlock: {fileID: 306755489}
   _sceneUiCanvases:
   - {fileID: 1107693696}
@@ -4818,6 +4834,7 @@ GameObject:
   - component: {fileID: 1813580283}
   - component: {fileID: 1813580284}
   - component: {fileID: 1813580285}
+  - component: {fileID: 1813580286}
   m_Layer: 5
   m_Name: Other Cards
   m_TagString: Untagged
@@ -4874,6 +4891,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 13, y: 13, z: 13, w: 13}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1813580286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813580282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880a83f5626b4c15b224203beccbcea6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1836394561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5078,6 +5107,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1902249885}
   - component: {fileID: 1902249884}
+  - component: {fileID: 1902249887}
+  - component: {fileID: 1902249886}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -5155,6 +5186,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1902249886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902249883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880a83f5626b4c15b224203beccbcea6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!61 &1902249887
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902249883}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &1920904569
 GameObject:
   m_ObjectHideFlags: 0
