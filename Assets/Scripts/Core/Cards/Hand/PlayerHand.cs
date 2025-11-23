@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other;
+using Other.Extensions;
 using UI.View;
 using UI.View.GameView;
 using UnityEngine;

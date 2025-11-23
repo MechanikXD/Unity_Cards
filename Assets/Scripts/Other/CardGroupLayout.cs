@@ -4,6 +4,7 @@ using System.Threading;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Other

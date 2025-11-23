@@ -2,6 +2,7 @@
 using Core.Behaviour.StateMachine;
 using Core.Cards.Card.Data;
 using Other;
+using Other.Extensions;
 
 namespace Enemy.States
 {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.Behaviour.StateMachine;
 using Other;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Enemy.States

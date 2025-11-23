@@ -120,8 +120,9 @@ namespace Core.Cards.Board
 
         public async UniTask PlayTurnAsync()
         {
+            HideInfoOnClick.HideAll();
             GlobalInputBlocker.Instance.DisableInput();
-            UIManager.Instance.GetHUDCanvas<GameHUDCanvas>().EnableButton(false);
+            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {
@@ -216,7 +217,7 @@ namespace Core.Cards.Board
             
             ClearFinalAttacks();
             GlobalInputBlocker.Instance.EnableInput();
-            UIManager.Instance.GetHUDCanvas<GameHUDCanvas>().EnableButton(true);
+            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(true);
             NextTurn();
         }
 

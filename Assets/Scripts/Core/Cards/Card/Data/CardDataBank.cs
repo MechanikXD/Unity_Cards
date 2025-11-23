@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Other;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Core.Cards.Card.Data

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Other
+namespace Other.Extensions
 {
     public static class ThreadingExtensions
     {

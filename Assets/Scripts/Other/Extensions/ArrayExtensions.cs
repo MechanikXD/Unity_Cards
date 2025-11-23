@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Other
+namespace Other.Extensions
 {
     public static class ArrayExtensions
     {

@@ -5,6 +5,7 @@ using Core.Cards.Card.Data;
 using Core.Cards.Hand;
 using Enemy.States;
 using Other;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Enemy
