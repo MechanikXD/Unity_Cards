@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Other;
 using Other.Extensions;
 using UnityEngine;
 
@@ -11,7 +10,12 @@ namespace Core.Cards.Card.Data
         [SerializeField] private CardData[] _cards;
 
         public int Count => _cards.Length;
-        public CardData Get(int index) => _cards[index];
+        public CardData Get(int index)
+        {
+            var card = _cards[index];
+            card.ID = index;
+            return card;
+        }
 
         public int[] TakeRandom(int amount, int maxCost, bool tryFillDeck=false)
         {

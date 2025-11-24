@@ -1,0 +1,32 @@
+﻿using Core.Cards.Card.Data;
+using Core.Cards.Hand;
+using Other.Extensions;
+using UnityEngine;
+
+namespace Player.Progression.Buffs.Enemy
+{
+    public class Strength : EnemyBuff
+    {
+        [SerializeField] private int _targetCount;
+        [SerializeField] private int _strengthCount;
+        
+        public override void Apply(PlayerHand hand)
+        {
+            var shuffled = hand.Deck.ShuffledIndexes();
+            
+            for (var i = 0; i < Mathf.Min(_targetCount, shuffled.Length); i++)
+            {
+                hand.ApplyBuffToCard(shuffled[i], Modify);
+            }
+        }
+
+        protected override CardData Modify(CardData data)
+        {
+            var v2I = data.Attack;
+            v2I.x += _strengthCount;
+            v2I.y += _strengthCount;
+            data.Attack = v2I;
+            return data;
+        }
+    }
+}

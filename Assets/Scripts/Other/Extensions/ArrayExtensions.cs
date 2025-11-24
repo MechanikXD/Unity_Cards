@@ -45,5 +45,13 @@ namespace Other.Extensions
             list.Clear();
             foreach (var v in values) list.AddLast(v);
         }
+
+        public static int[] ShuffledIndexes(this IList enumerable)
+        {
+            var indexes = new int[enumerable.Count];
+            for (var i = 0; i < enumerable.Count; i++) indexes[i] = i;
+            indexes.Shuffle();
+            return indexes;
+        }
     }
 }

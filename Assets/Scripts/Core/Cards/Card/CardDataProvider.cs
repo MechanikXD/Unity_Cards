@@ -55,9 +55,9 @@ namespace Core.Cards.Card
             return stringBuilder.ToString();
         }
         
-        public static string MakeDescription(CardEffect[] effects, string prefix)
+        public static string MakeDescription(List<CardEffect> effects, string prefix)
         {
-            if (effects == null || effects.Length == 0) return string.Empty;
+            if (effects == null || effects.Count == 0) return string.Empty;
 
             var stringBuilder = new StringBuilder();
             foreach (CardEffect effect in effects)

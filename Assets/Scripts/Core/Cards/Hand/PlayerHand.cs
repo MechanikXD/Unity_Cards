@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
-using Other;
 using Other.Extensions;
-using UI.View;
 using UI.View.GameView;
 using UnityEngine;
 
@@ -36,7 +34,9 @@ namespace Core.Cards.Hand
         private CardData[] _deck;
         private LinkedList<CardData> _currentDeck;
         private List<CardData> _hand;
-        
+
+        public CardData[] Deck => _deck;
+        public LinkedList<CardData> CurrentDeck => _currentDeck;
         public List<CardData> CardsInHand => _hand;
         
         public bool HasAnyCards => _hand.Count > 0 || _currentDeck.Count > 0;
@@ -63,6 +63,11 @@ namespace Core.Cards.Hand
             
             _statView.SetHealth(_health, _maxHealth, true);
             _statView.SetHope(_hope, _maxHope, true);
+        }
+
+        public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
+        {
+            _deck[index] = buff(_deck[index]);
         }
 
         #region Hope Related

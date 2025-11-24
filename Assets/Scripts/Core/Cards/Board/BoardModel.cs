@@ -251,7 +251,7 @@ namespace Core.Cards.Board
             }
         }
 
-        private void PlayEffects(Dictionary<TriggerType, CardEffect[]> cardData, TriggerType trigger, Func<BoardContext> contextProvider)
+        private void PlayEffects(Dictionary<TriggerType, List<CardEffect>> cardData, TriggerType trigger, Func<BoardContext> contextProvider)
         {
             if (!cardData.TryGetValue(trigger, out var effects)) return;
             foreach (var effect in effects) effect.Execute(contextProvider());
