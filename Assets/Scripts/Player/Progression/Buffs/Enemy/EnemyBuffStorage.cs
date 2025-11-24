@@ -30,6 +30,20 @@ namespace Player.Progression.Buffs.Enemy
             _buffs[buff.Activation].Add(buff);
         }
 
+        public void AddWithoutApply(EnemyBuff buff)
+        {
+            if (!_buffs.ContainsKey(buff.Activation)) 
+                _buffs.Add(buff.Activation, new List<EnemyBuff>());
+            
+            _buffs[buff.Activation].Add(buff);
+        }
+
+        public void ApplyAll(PlayerHand enemy, ActivationType ofType)
+        {
+            var buffs = GetBuffs(ofType);
+            foreach (var buff in buffs) buff.Apply(enemy);
+        }
+
         public void Remove(EnemyBuff buff)
         {
             if (_buffs.TryGetValue(buff.Activation, out var list)) list.Remove(buff);

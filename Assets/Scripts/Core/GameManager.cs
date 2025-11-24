@@ -1,6 +1,7 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
 using Enemy;
+using Player.Progression.Buffs;
 using Storage;
 using UI;
 using UI.View.GameView;
@@ -12,13 +13,16 @@ namespace Core
     public class GameManager : SingletonBase<GameManager>
     {
         [SerializeField] private BoardModel _board;
+        [SerializeField] private BuffDataBase _buffDb;
         [SerializeField] private EnemyDifficultySettings _difficultySettings;
         
-        [SerializeField] private int _otherDeckSize;
-        public bool GameIsFinished { get; private set; }
-        
+        public bool ActIsFinished { get; private set; }
+
+        public EnemyDifficultySettings DifficultySettings => _difficultySettings;
+        public int CurrentTier { get; private set; }
         public BoardModel Board => _board;
-        
+        public BuffDataBase BuffDb => _buffDb;
+
         protected override void Initialize() { }
 
         private void Start()
@@ -30,18 +34,24 @@ namespace Core
             _board.StartGame(ids, _difficultySettings);
         }
 
-        public void WinGame()
+        public void WinAct()
         {
-            GameIsFinished = true;
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Victory!");
-            UIManager.Instance.EnterUICanvas<GameResultView>();
+            ActIsFinished = true;
+            UIManager.Instance.EnterUICanvas<BuffSelectionView>();
+            UIManager.Instance.GetUICanvas<BuffSelectionView>().LoadRandomPlayerBuffs(CurrentTier);
         }
         
-        public void GameLoose()
+        public void LooseAct()
         {
-            GameIsFinished = true;
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Defeat");
+            ActIsFinished = true;
+            FinalizeGame();
+            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle(":)");
             UIManager.Instance.EnterUICanvas<GameResultView>();
+        }
+
+        private void FinalizeGame()
+        {
+            
         }
     }
 }

@@ -30,6 +30,12 @@ namespace Player.Progression.Buffs.Player
             
             _buffs[buff.Activation].Add(buff);
         }
+        
+        public void ApplyAll(ActivationType ofType)
+        {
+            var buffs = GetBuffs(ofType);
+            foreach (var buff in buffs) buff.Apply(_player);
+        }
 
         public void Remove(PlayerBuff buff)
         {
@@ -42,8 +48,9 @@ namespace Player.Progression.Buffs.Player
             StorageProxy.Delete(PLAYER_BUFF_STORAGE_KEY);
         }
         
-        public void Load(BuffDataBase db)
+        public void Load(BuffDataBase db, PlayerHand player)
         {
+            _player = player;
             _buffs = new Dictionary<ActivationType, List<PlayerBuff>>();
 
             if (!StorageProxy.HasKey(PLAYER_BUFF_STORAGE_KEY)) return;

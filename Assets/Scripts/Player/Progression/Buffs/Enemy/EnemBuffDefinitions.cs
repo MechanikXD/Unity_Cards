@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Player.Progression.Buffs.Enemy
 {
+    [CreateAssetMenu(fileName = "Strength", menuName = "ScriptableObjects/Buff/Enemy/Strength")]
     public class Strength : EnemyBuff
     {
         [SerializeField] private int _targetCount;

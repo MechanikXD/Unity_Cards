@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43bcc0046ad4dc79dd873a65705e09c, type: 3}
+  m_Name: Buff DataBase
+  m_EditorClassIdentifier: 
+  _buffs:
+  - {fileID: 11400000, guid: d86bcd279c7bf9c42a4bfd1436f31242, type: 2}
+  - {fileID: 11400000, guid: 1b2f135852ca43a4393281c89cb222ad, type: 2}

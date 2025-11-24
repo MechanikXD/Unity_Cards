@@ -9,6 +9,9 @@ using Cysharp.Threading.Tasks;
 using Enemy;
 using Other;
 using Player;
+using Player.Progression.Buffs;
+using Player.Progression.Buffs.Enemy;
+using Player.Progression.Buffs.Player;
 using TMPro;
 using UI;
 using UI.View.GameView;
@@ -25,6 +28,8 @@ namespace Core.Cards.Board
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
+        public PlayerBuffStorage PlayerBuff { get; private set; }
+        public EnemyBuffStorage EnemyBuffs { get; private set; }
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -55,8 +60,8 @@ namespace Core.Cards.Board
         {
             if (GameManager.Instance != null)
             {
-                _playerHand.PlayerDefeated -= GameManager.Instance.GameLoose;
-                _otherHand.PlayerDefeated -= GameManager.Instance.WinGame;    
+                _playerHand.PlayerDefeated -= GameManager.Instance.LooseAct;
+                _otherHand.PlayerDefeated -= GameManager.Instance.WinAct;    
             }
         }
 
@@ -66,15 +71,49 @@ namespace Core.Cards.Board
             var otherDeck = settings.GetDeck();
             _otherHand.Initialize(otherDeck);
             
-            _playerHand.PlayerDefeated += GameManager.Instance.GameLoose;
-            _otherHand.PlayerDefeated += GameManager.Instance.WinGame;
+            _playerHand.PlayerDefeated += GameManager.Instance.LooseAct;
+            _otherHand.PlayerDefeated += GameManager.Instance.WinAct;
+
+            PlayerBuff = new PlayerBuffStorage();
+            EnemyBuffs = new EnemyBuffStorage();
+            PlayerBuff.Load(GameManager.Instance.BuffDb, _playerHand);
             
+            StartAct(settings);
+        }
+
+        public void FinishAct()
+        {
+            foreach (var slot in PlayerSlots)
+            {
+                if (slot.IsEmpty) continue;
+
+                var card = slot.Detach();
+                Destroy(card.gameObject);
+            }
+            _playerHand.ResetAll();
+            
+            foreach (var slot in EnemySlots)
+            {
+                if (slot.IsEmpty) continue;
+
+                var card = slot.Detach();
+                Destroy(card.gameObject);
+            }
+            _otherHand.ResetAll();
+        }
+
+        public void StartAct(EnemyDifficultySettings settings)
+        {
             _playerHand.RefillDeck();
             var data = _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
             foreach (var cardData in data) CrateNewCardModel(cardData);
             
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
+            
+            EnemyBuffs.ApplyAll(_otherHand, ActivationType.Instant);
+            EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
+            PlayerBuff.ApplyAll(ActivationType.ActStart);
 
             _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
             _enemyBehaviour.PlayTurn();
@@ -82,11 +121,11 @@ namespace Core.Cards.Board
 
         public void NextTurn()
         {
-            if (GameManager.Instance.GameIsFinished) return;
+            if (GameManager.Instance.ActIsFinished) return;
             
             if (!HasAnyCards(_otherHand, _otherCardSlots))
             {
-                GameManager.Instance.WinGame();
+                GameManager.Instance.WinAct();
                 return;
             }
             _otherHand.DrawCardsFromDeck();
@@ -94,7 +133,7 @@ namespace Core.Cards.Board
             
             if (!HasAnyCards(_playerHand, _playerCardSlots))
             {
-                GameManager.Instance.GameLoose();
+                GameManager.Instance.LooseAct();
                 return;
             }
             var data = _playerHand.DrawCardsFromDeck();
@@ -123,6 +162,9 @@ namespace Core.Cards.Board
             HideInfoOnClick.HideAll();
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
+            
+            PlayerBuff.ApplyAll(ActivationType.ActStart);
+            EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {

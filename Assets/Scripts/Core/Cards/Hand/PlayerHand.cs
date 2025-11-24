@@ -70,6 +70,18 @@ namespace Core.Cards.Hand
             _deck[index] = buff(_deck[index]);
         }
 
+        public void ResetAll()
+        {
+            _currentDeck.Clear();
+            _hand.Clear();
+
+            _health = _maxHealth;
+            _hope = _maxHope;
+            
+            _statView.SetHealth(_health, _maxHealth, true);
+            _statView.SetHope(_hope, _maxHope, true);
+        }
+
         #region Hope Related
 
         public bool CanUseCard(int cardCost) => cardCost <= _hope;

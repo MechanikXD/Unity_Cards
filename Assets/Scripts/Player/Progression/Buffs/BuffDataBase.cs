@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Other.Extensions;
 using Player.Progression.Buffs.Enemy;
 using Player.Progression.Buffs.Player;
 using UnityEngine;
@@ -47,6 +48,42 @@ namespace Player.Progression.Buffs
                 if (_buffs[i] is PlayerBuff) _playerBuffs.Add(Get<PlayerBuff>(i));
                 else if (_buffs[i] is EnemyBuff) _enemyBuffs.Add(Get<EnemyBuff>(i));
             }
+        }
+
+        public List<PlayerBuff> RandomPlayerBuff(int amount, int tier, int maxDeviation=1)
+        {
+            var players = PlayerBuffs;
+            var indexes = players.ShuffledIndexes();
+            var result = new List<PlayerBuff>();
+            var counter = 0;
+            foreach (var index in indexes)
+            {
+                if (Mathf.Abs(players[index].Tier - tier) < maxDeviation) continue;
+
+                result.Add(players[index]);
+                counter++;
+                if (counter >= amount) break;
+            }
+
+            return result;
+        }
+
+        public List<EnemyBuff> RandomEnemyBuff(int amount, int tier, int maxDeviation=1)
+        {
+            var players = EnemyBuffs;
+            var indexes = players.ShuffledIndexes();
+            var result = new List<EnemyBuff>();
+            var counter = 0;
+            foreach (var index in indexes)
+            {
+                if (Mathf.Abs(players[index].Tier - tier) < maxDeviation) continue;
+
+                result.Add(players[index]);
+                counter++;
+                if (counter >= amount) break;
+            }
+
+            return result;
         }
     }
 }

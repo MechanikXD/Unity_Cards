@@ -1,16 +1,20 @@
 ﻿using Core.Cards.Card.Data;
 using Core.Cards.Hand;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Player.Progression.Buffs
 {
     [CreateAssetMenu(fileName = "Buff", menuName = "ScriptableObjects/Buff/")]
     public abstract class BuffBase : ScriptableObject
     {
+        [SerializeField] private Sprite _icon;
         [SerializeField] private string _title;
         [SerializeField] private int _tier;
         [SerializeField] private ActivationType _activation;
         [SerializeField] private string _description;
+
+        public Sprite Icon => _icon;
         public string Title => _title;
         public string Description => _description;
         public int Tier => _tier;
