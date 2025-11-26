@@ -1140,7 +1140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &171556420
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2511,7 +2511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _board: {fileID: 778903803}
   _buffDb: {fileID: 11400000, guid: ea0283da51b50a744a27c2c0b1b18245, type: 2}
-  _difficultySettings: {fileID: 11400000, guid: ef4bcc38dfad1cb4fbbe3f6e8d00a5b6, type: 2}
+  _difficultySettings: {fileID: 11400000, guid: c261132242e7fb148a3391a934fedd23, type: 2}
 --- !u!4 &535807822
 Transform:
   m_ObjectHideFlags: 0
@@ -6093,7 +6093,7 @@ MonoBehaviour:
   _enterPauseOnUiOpen: 1
   _stopTimeOnPause: 1
   _blockInputOnPause: 1
-  _sceneInputBlock: {fileID: 171556419}
+  _sceneInputBlock: {fileID: 171556424}
   _sceneUiCanvases:
   - {fileID: 1357813437}
   - {fileID: 260728227}

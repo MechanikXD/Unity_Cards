@@ -92,7 +92,7 @@ namespace Enemy
                 
                 result.Add(i);
                 currentCost += data.Cost;
-                if (currentCost == _deckMaxCost) break;
+                if (currentCost == _deckMaxCost || result.Count >= _maxDeckSize) break;
             }
 
             return result.ToArray();
@@ -113,7 +113,7 @@ namespace Enemy
                 
                 result.Add(i);
                 currentCost += data.Cost;
-                if (currentCost == _deckMaxCost) break;
+                if (currentCost == _deckMaxCost || result.Count >= _maxDeckSize) break;
             }
 
             if (currentCost - _deckMaxCost <= 3) return result.ToArray();
@@ -126,7 +126,7 @@ namespace Enemy
                 
                 result.Add(i);
                 currentCost += data.Cost;
-                if (currentCost - _deckMaxCost <= 3) break;
+                if (currentCost - _deckMaxCost <= 3 || result.Count >= _maxDeckSize) break;
             }
 
             return result.ToArray();

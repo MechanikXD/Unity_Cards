@@ -33,15 +33,9 @@ namespace Player.Progression.Buffs
             }
         }
 
-        public void HighLight()
-        {
-            Debug.Log($"Selected {gameObject.name} buff");
-        }
+        public void HighLight() { }
 
-        public void Deselect()
-        {
-            Debug.Log($"Deselected {gameObject.name} buff");
-        }
+        public void Deselect() { }
 
         public void Set(BuffBase buff, Color cardColor)
         {

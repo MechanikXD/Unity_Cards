@@ -13,7 +13,7 @@ namespace UI
         [SerializeField] private bool _stopTimeOnPause = true;
         [SerializeField] private bool _blockInputOnPause = true;
 
-        [SerializeField] private GameObject _sceneInputBlock;
+        [SerializeField] private Canvas _sceneInputBlock;
         [SerializeField] private CanvasView[] _sceneUiCanvases;
         [SerializeField] private CanvasView[] _sceneHudCanvases;
 
@@ -56,13 +56,13 @@ namespace UI
         private void EnterPauseState() {
             HasOpenedUI = true;
             if (_stopTimeOnPause) Time.timeScale = 0f;
-            if (_blockInputOnPause) _sceneInputBlock.SetActive(true);
+            if (_blockInputOnPause) _sceneInputBlock.enabled = true;
         }
 
         private void ExitPauseState() {
             HasOpenedUI = false;
             Time.timeScale = 1f;
-            _sceneInputBlock.SetActive(false);
+            _sceneInputBlock.enabled = false;
         }
 
         public T GetUICanvas<T>() where T : CanvasView => (T)_uiCanvases[typeof(T)];

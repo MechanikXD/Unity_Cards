@@ -37,6 +37,7 @@ namespace Core
         public void WinAct()
         {
             ActIsFinished = true;
+            Board.FinishAct();
             UIManager.Instance.EnterUICanvas<BuffSelectionView>();
             UIManager.Instance.GetUICanvas<BuffSelectionView>().LoadRandomPlayerBuffs(CurrentTier);
         }

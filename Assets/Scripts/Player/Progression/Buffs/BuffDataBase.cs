@@ -10,6 +10,7 @@ namespace Player.Progression.Buffs
     public class BuffDataBase : ScriptableObject
     {
         [SerializeField] private BuffBase[] _buffs;
+        private bool _hasParsedBuffs;
         private List<PlayerBuff> _playerBuffs;
         private List<EnemyBuff> _enemyBuffs;
 
@@ -17,7 +18,8 @@ namespace Player.Progression.Buffs
         {
             get
             {
-                if (_playerBuffs == null) ParseBuffs();
+                if (!_hasParsedBuffs) ParseBuffs();
+                
                 return _playerBuffs;
             }
         }
@@ -26,7 +28,7 @@ namespace Player.Progression.Buffs
         {
             get
             {
-                if (_enemyBuffs == null) ParseBuffs();
+                if (!_hasParsedBuffs) ParseBuffs();
                 return _enemyBuffs;
             }
         }
@@ -43,16 +45,21 @@ namespace Player.Progression.Buffs
         {
             _playerBuffs = new List<PlayerBuff>();
             _enemyBuffs = new List<EnemyBuff>();
+            Debug.Log("Parsing Buffs");
             for (var i = 0; i < _buffs.Length; i++)
             {
+                Debug.Log($"i => {_buffs[i] is PlayerBuff} / {_buffs[i] is EnemyBuff}");
                 if (_buffs[i] is PlayerBuff) _playerBuffs.Add(Get<PlayerBuff>(i));
                 else if (_buffs[i] is EnemyBuff) _enemyBuffs.Add(Get<EnemyBuff>(i));
             }
+
+            _hasParsedBuffs = true;
         }
 
         public List<PlayerBuff> RandomPlayerBuff(int amount, int tier, int maxDeviation=1)
         {
             var players = PlayerBuffs;
+            amount = Mathf.Min(amount, players.Count);
             var indexes = players.ShuffledIndexes();
             var result = new List<PlayerBuff>();
             var counter = 0;
@@ -71,6 +78,7 @@ namespace Player.Progression.Buffs
         public List<EnemyBuff> RandomEnemyBuff(int amount, int tier, int maxDeviation=1)
         {
             var players = EnemyBuffs;
+            amount = Mathf.Min(amount, players.Count);
             var indexes = players.ShuffledIndexes();
             var result = new List<EnemyBuff>();
             var counter = 0;

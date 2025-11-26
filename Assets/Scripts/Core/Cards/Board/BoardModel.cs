@@ -91,6 +91,7 @@ namespace Core.Cards.Board
                 Destroy(card.gameObject);
             }
             _playerHand.ResetAll();
+            _layout.RemoveALl();
             
             foreach (var slot in EnemySlots)
             {

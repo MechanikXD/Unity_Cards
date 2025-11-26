@@ -53,7 +53,11 @@ namespace UI.View.GameView
             
             ResetAll();
             if (_isPlayerBuffs) LoadRandomEnemyBuffs();
-            else board.StartAct(GameManager.Instance.DifficultySettings);
+            else
+            {
+                board.StartAct(GameManager.Instance.DifficultySettings);
+                Disable();
+            }
         }
 
         public void ResetAll()
@@ -70,12 +74,12 @@ namespace UI.View.GameView
         public void LoadRandomPlayerBuffs(int tier, int amount=3, int maxDeviation=1)
         {
             _currentTier = tier;
-            _currentAmount = amount;
             _currentMaxDeviation = maxDeviation;
             _isPlayerBuffs = true;
             
             var db = GameManager.Instance.BuffDb;
             var buffs = db.RandomPlayerBuff(amount, tier, maxDeviation);
+            _currentAmount = buffs.Count;
             LoadCards(buffs, _playerBuffColor);
         }
 
@@ -84,6 +88,7 @@ namespace UI.View.GameView
             var db = GameManager.Instance.BuffDb;
             _isPlayerBuffs = false;
             var buffs = db.RandomEnemyBuff(_currentAmount, _currentTier, _currentMaxDeviation);
+            _currentAmount = buffs.Count;
             LoadCards(buffs, _enemyBuffColor);
         }
 
@@ -91,7 +96,7 @@ namespace UI.View.GameView
         {
             for (var i = 0; i < _cards.Length; i++)
             {
-                if (i > buffs.Count) _cards[i].gameObject.SetActive(false);
+                if (i >= buffs.Count) _cards[i].gameObject.SetActive(false);
                 else
                 {
                     _cards[i].Set(buffs[i], color);
@@ -100,6 +105,7 @@ namespace UI.View.GameView
                 
                 _cards[i].Interactable = true;
             }
+            _selectButton.interactable = false;
         }
     }
 }

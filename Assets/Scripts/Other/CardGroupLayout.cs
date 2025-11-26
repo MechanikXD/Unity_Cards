@@ -52,6 +52,12 @@ namespace Other
             _child.RemoveAt(index);
             UpdateChildPosition();
         }
+
+        public void RemoveALl()
+        {
+            foreach (var card in _child) Destroy(card.gameObject);
+            _child.Clear();
+        }
         
         private void UpdateChildPosition(bool isInstant=false)
         {

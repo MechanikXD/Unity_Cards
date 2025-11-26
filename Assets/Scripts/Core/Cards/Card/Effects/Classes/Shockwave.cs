@@ -18,7 +18,13 @@ namespace Core.Cards.Card.Effects.Classes
                 }
                 else
                 {
-                    context.Other[context.Index - 1].Card.TakeDamage(_damage);
+                    var card = context.Other[context.Index - 1].Card;
+                    card.TakeDamage(_damage);
+                    if (card.IsDefeated)
+                    {
+                        context.Other[context.Index - 1].Detach();
+                        Destroy(card.gameObject);
+                    }
                 }
             }
 
@@ -30,7 +36,13 @@ namespace Core.Cards.Card.Effects.Classes
                 }
                 else
                 {
-                    context.Other[context.Index + 1].Card.TakeDamage(_damage);
+                    var card = context.Other[context.Index + 1].Card;
+                    card.TakeDamage(_damage);
+                    if (card.IsDefeated)
+                    {
+                        context.Other[context.Index + 1].Detach();
+                        Destroy(card.gameObject);
+                    }
                 }
             }
         }

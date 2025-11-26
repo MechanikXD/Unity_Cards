@@ -74,7 +74,6 @@ namespace Player
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (_isPlaced || !Interactable) return;
-            if (!GlobalInputBlocker.Instance.InputEnabled) return;
             HideInfoOnClick.HideAll();
 
             _isDrag = true;
