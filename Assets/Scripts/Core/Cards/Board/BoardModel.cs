@@ -9,9 +9,6 @@ using Cysharp.Threading.Tasks;
 using Enemy;
 using Other;
 using Player;
-using Player.Progression.Buffs;
-using Player.Progression.Buffs.Enemy;
-using Player.Progression.Buffs.Player;
 using TMPro;
 using UI;
 using UI.View.GameView;
@@ -28,8 +25,6 @@ namespace Core.Cards.Board
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
-        public PlayerBuffStorage PlayerBuff { get; private set; }
-        public EnemyBuffStorage EnemyBuffs { get; private set; }
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -73,10 +68,6 @@ namespace Core.Cards.Board
             
             _playerHand.PlayerDefeated += GameManager.Instance.LooseAct;
             _otherHand.PlayerDefeated += GameManager.Instance.WinAct;
-
-            PlayerBuff = new PlayerBuffStorage();
-            EnemyBuffs = new EnemyBuffStorage();
-            PlayerBuff.Load(GameManager.Instance.BuffDb, _playerHand);
             
             StartAct(settings);
         }
@@ -111,10 +102,6 @@ namespace Core.Cards.Board
             
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
-            
-            EnemyBuffs.ApplyAll(_otherHand, ActivationType.Instant);
-            EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
-            PlayerBuff.ApplyAll(ActivationType.ActStart);
 
             _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
             _enemyBehaviour.PlayTurn();
@@ -163,9 +150,6 @@ namespace Core.Cards.Board
             HideInfoOnClick.HideAll();
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
-            
-            PlayerBuff.ApplyAll(ActivationType.ActStart);
-            EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {

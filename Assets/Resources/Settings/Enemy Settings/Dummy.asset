@@ -15,7 +15,7 @@ MonoBehaviour:
   _minDeckSize: 1
   _maxDeckSize: 1
   _selectionType: 2
-  _deckMaxCost: 50
+  _deckMaxCost: 3
   _dangerLevelToBecomeAggressive: 0
   _ignoreDangerLevelAggressive: 0
   _tryMatchDangerLevelOnCounteractAggressive: 0

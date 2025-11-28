@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other.Extensions;
+using Player.Progression.Buffs;
 using UI.View.GameView;
 using UnityEngine;
 
@@ -68,6 +69,11 @@ namespace Core.Cards.Hand
         public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
         {
             _deck[index] = buff(_deck[index]);
+        }
+
+        public void ApplyBuffs(IList<BuffBase> buffs)
+        {
+            foreach (var buff in buffs) buff.Apply(this);
         }
 
         public void ResetAll()

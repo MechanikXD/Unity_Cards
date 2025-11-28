@@ -13,15 +13,12 @@ namespace Core
     public class GameManager : SingletonBase<GameManager>
     {
         [SerializeField] private BoardModel _board;
-        [SerializeField] private BuffDataBase _buffDb;
         [SerializeField] private EnemyDifficultySettings _difficultySettings;
         
         public bool ActIsFinished { get; private set; }
 
         public EnemyDifficultySettings DifficultySettings => _difficultySettings;
-        public int CurrentTier { get; private set; }
         public BoardModel Board => _board;
-        public BuffDataBase BuffDb => _buffDb;
 
         protected override void Initialize() { }
 
@@ -38,8 +35,8 @@ namespace Core
         {
             ActIsFinished = true;
             Board.FinishAct();
-            UIManager.Instance.EnterUICanvas<BuffSelectionView>();
-            UIManager.Instance.GetUICanvas<BuffSelectionView>().LoadRandomPlayerBuffs(CurrentTier);
+            // UIManager.Instance.EnterUICanvas<BuffSelectionView>();
+            // UIManager.Instance.GetUICanvas<BuffSelectionView>().LoadRandomPlayerBuffs(CurrentTier);
         }
         
         public void LooseAct()

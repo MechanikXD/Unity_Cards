@@ -15,3 +15,5 @@ MonoBehaviour:
   _buffs:
   - {fileID: 11400000, guid: d86bcd279c7bf9c42a4bfd1436f31242, type: 2}
   - {fileID: 11400000, guid: 1b2f135852ca43a4393281c89cb222ad, type: 2}
+  - {fileID: 11400000, guid: 3fdefaf960746024d89b0a49a42f98b2, type: 2}
+  - {fileID: 11400000, guid: 225180690ea283e4dbafe0be454ac893, type: 2}
