@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _icon: {fileID: 21300000, guid: 78aaee2565b32e842b28fc958d8e1abe, type: 3}
   _title: Strenght
+  _optionTitle: Select Strenght 2
   _tier: 2
   _activation: 0
   _description: 1 Random Enemy's card gain 2 Power

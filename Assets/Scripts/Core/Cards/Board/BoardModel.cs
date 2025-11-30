@@ -5,10 +5,12 @@ using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Core.Cards.Card.Effects;
 using Core.Cards.Hand;
+using Core.SessionStorage;
 using Cysharp.Threading.Tasks;
 using Enemy;
 using Other;
 using Player;
+using Player.Progression.Buffs;
 using TMPro;
 using UI;
 using UI.View.GameView;
@@ -28,7 +30,8 @@ namespace Core.Cards.Board
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
-        [SerializeField] private PlayerHand _playerHand;
+        [SerializeField] private PlayerStatView _playerStatView;
+        private PlayerHand _playerHand;
         [Space]
         [SerializeField] private Image _playerHpFill;
         [SerializeField] private TMP_Text _playerHpText;
@@ -60,9 +63,10 @@ namespace Core.Cards.Board
             }
         }
 
-        public void StartGame(int[] playerCardIds, EnemyDifficultySettings settings)
+        public void StartGame(PlayerHand player, EnemyDifficultySettings settings)
         {
-            _playerHand.Initialize(playerCardIds);
+            _playerHand = player;
+            _playerHand.SetStatView(_playerStatView);
             var otherDeck = settings.GetDeck();
             _otherHand.Initialize(otherDeck);
             
@@ -94,16 +98,21 @@ namespace Core.Cards.Board
             _otherHand.ResetAll();
         }
 
-        public void StartAct(EnemyDifficultySettings settings)
+        private void StartAct(EnemyDifficultySettings settings)
         {
+            var storage = GameStorage.Instance;
+            storage.AdvanceAct();
+            storage.PlayerBuffs.ApplyAll(_playerHand, ActivationType.ActStart);
             _playerHand.RefillDeck();
             var data = _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
             foreach (var cardData in data) CrateNewCardModel(cardData);
             
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
-
             _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
+            
+            storage.LoadEnemyBuffs(_otherHand);
+            storage.EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
             _enemyBehaviour.PlayTurn();
         }
 
@@ -150,6 +159,9 @@ namespace Core.Cards.Board
             HideInfoOnClick.HideAll();
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
+            
+            GameStorage.Instance.PlayerBuffs.ApplyAll(_playerHand, ActivationType.CombatStart);
+            GameStorage.Instance.EnemyBuffs.ApplyAll(_otherHand, ActivationType.CombatStart);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
             {

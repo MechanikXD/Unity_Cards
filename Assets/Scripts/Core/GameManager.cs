@@ -1,12 +1,15 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
+using Core.Cards.Card;
+using Core.SessionStorage;
 using Enemy;
-using Player.Progression.Buffs;
+using Other.Dialog;
 using Storage;
 using UI;
 using UI.View.GameView;
 using UI.View.MainMenuView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -24,32 +27,44 @@ namespace Core
 
         private void Start()
         {
-            var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
-            var ids = new int[strings.Length];
-            for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
-            
-            _board.StartGame(ids, _difficultySettings);
+            _board.StartGame(GameStorage.Instance.PlayerHand, _difficultySettings);
         }
 
         public void WinAct()
         {
             ActIsFinished = true;
             Board.FinishAct();
-            // UIManager.Instance.EnterUICanvas<BuffSelectionView>();
-            // UIManager.Instance.GetUICanvas<BuffSelectionView>().LoadRandomPlayerBuffs(CurrentTier);
+            SceneManager.LoadScene("Dialogs");
+
+            void InitializeDialog(Scene scene, LoadSceneMode mode)
+            {
+                if (scene != SceneManager.GetSceneByName("Dialogs")) return;
+                
+                DialogSceneController.Instance.Load(
+                    CardDataProvider.ImageNull, 
+                    new [] { "Hello", "World!" },
+                    GameStorage.Instance.GetRandomPlayerBuffOptions(3),
+                    c1 => c1.ConfirmAndLoadNext(
+                        CardDataProvider.ImageNull, 
+                        new [] { "Hello", "Evl", "World!" },
+                        GameStorage.Instance.GetRandomEnemyBuffOptions(3),
+                        c2 => c2.ConfirmAndExit()));
+                SceneManager.sceneLoaded -= InitializeDialog;
+            }
+
+            SceneManager.sceneLoaded += InitializeDialog;
         }
         
         public void LooseAct()
         {
             ActIsFinished = true;
             FinalizeGame();
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle(":)");
-            UIManager.Instance.EnterUICanvas<GameResultView>();
         }
 
         private void FinalizeGame()
         {
-            
+            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle(":)");
+            UIManager.Instance.EnterUICanvas<GameResultView>();
         }
     }
 }

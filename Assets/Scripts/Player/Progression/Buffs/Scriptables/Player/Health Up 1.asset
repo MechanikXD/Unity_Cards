@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _icon: {fileID: 21300000, guid: 36b4add6d1293cb4b9f34f40c8bd98e0, type: 3}
   _title: Health Up
+  _optionTitle: Select Health 1
   _tier: 0
   _activation: 0
   _description: Boost player helath by 2

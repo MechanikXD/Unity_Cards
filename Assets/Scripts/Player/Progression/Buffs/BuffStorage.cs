@@ -22,10 +22,10 @@ namespace Player.Progression.Buffs
             _buffs[buff.Activation].Add(buff);
         }
 
-        public void ApplyAll(PlayerHand enemy, ActivationType ofType)
+        public void ApplyAll(PlayerHand player, ActivationType ofType)
         {
             var buffs = GetBuffs(ofType);
-            foreach (var buff in buffs) buff.Apply(enemy);
+            foreach (var buff in buffs) buff.Apply(player);
         }
 
         public void Remove(T buff)

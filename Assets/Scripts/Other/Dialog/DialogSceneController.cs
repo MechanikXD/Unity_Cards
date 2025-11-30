@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Behaviour;
 using Core.SessionStorage;
 using Other.Dialog.SceneObjects;
@@ -31,19 +32,16 @@ namespace Other.Dialog
 
         protected override void Initialize() { }
 
-        public void Load(Sprite cgi, string[] dialogues, BuffBase[] options, Action<DialogSceneController> onConfirm)
+        public void Load(Sprite cgi, string[] dialogues, IList<BuffBase> options, Action<DialogSceneController> onConfirm)
         {
             _cgi.sprite = cgi;
             _dialogs = dialogues;
-            _optionsCount = options.Length;
-            _currentDialogIndex = -1;
+            _optionsCount = options.Count;
+            _dialogIsFinished = false;
+            _currentDialogIndex = 0;
             for (var i = 0; i < _dialogOptions.Length; i++)
             {
-                if (i < options.Length)
-                {
-                    _dialogOptions[i].gameObject.SetActive(true);
-                    _dialogOptions[i].Load(options[i]);
-                }
+                if (i < options.Count) _dialogOptions[i].Load(options[i]);
                 
                 _dialogOptions[i].gameObject.SetActive(false);
             }
@@ -56,7 +54,7 @@ namespace Other.Dialog
             AdvanceDialog();
         }
 
-        public void ConfirmAndLoadNext(Sprite cgi, string[] dialogues, BuffBase[] options, Action<DialogSceneController> onConfirm)
+        public void ConfirmAndLoadNext(Sprite cgi, string[] dialogues, IList<BuffBase> options, Action<DialogSceneController> onConfirm)
         {
             if (_currentlySelected == null)
             {
@@ -64,7 +62,7 @@ namespace Other.Dialog
                 return;
             }
 
-            SessionStorage.Instance.AddBuff(_currentlySelected.Buff);
+            GameStorage.Instance.AddBuff(_currentlySelected.Buff);
             Load(cgi, dialogues, options, onConfirm);
         }
 
@@ -76,7 +74,7 @@ namespace Other.Dialog
                 return;
             }
 
-            SessionStorage.Instance.AddBuff(_currentlySelected.Buff);
+            GameStorage.Instance.AddBuff(_currentlySelected.Buff);
             // Other setup here
             SceneManager.LoadScene("GameScene");
         }
@@ -95,15 +93,16 @@ namespace Other.Dialog
 
         public void AdvanceDialog()
         {
-            if (_currentDialogIndex >= _dialogs.Length) return;
+            if (_dialogIsFinished) return;
+            else if (_currentDialogIndex >= _dialogs.Length)
+            {
+                LoadOptions();
+                _dialogIsFinished = true;
+                return;
+            }
 
             _dialogWindow.SetText(_dialogs[_currentDialogIndex]);
             _currentDialogIndex++;
-
-            if (_currentDialogIndex >= _dialogs.Length)
-            {
-                LoadOptions();
-            }
         }
 
         private void LoadOptions()
@@ -112,7 +111,7 @@ namespace Other.Dialog
             {
                 _dialogOptions[i].gameObject.SetActive(true);
             }
-            _dialogWindow.SetText(string.Concat(_dialogs, '\n'));
+            _dialogWindow.SetText(string.Join('\n', _dialogs));
             _confirmButton.gameObject.SetActive(true);
         }
     }

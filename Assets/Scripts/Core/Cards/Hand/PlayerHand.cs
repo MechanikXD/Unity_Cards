@@ -66,6 +66,8 @@ namespace Core.Cards.Hand
             _statView.SetHope(_hope, _maxHope, true);
         }
 
+        public void SetStatView(PlayerStatView view) => _statView = view;
+
         public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
         {
             _deck[index] = buff(_deck[index]);

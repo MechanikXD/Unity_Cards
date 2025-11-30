@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Other.Extensions;
 using Player.Progression.Buffs.Enemy;
 using Player.Progression.Buffs.Player;
@@ -10,6 +11,7 @@ namespace Player.Progression.Buffs
     public class BuffDataBase : ScriptableObject
     {
         [SerializeField] private BuffBase[] _buffs;
+        private int _maxBuffTier;
         private bool _hasParsedBuffs;
         private List<PlayerBuff> _playerBuffs;
         private List<EnemyBuff> _enemyBuffs;
@@ -43,12 +45,11 @@ namespace Player.Progression.Buffs
 
         private void ParseBuffs()
         {
+            _maxBuffTier = _buffs.Max(b => b.Tier);
             _playerBuffs = new List<PlayerBuff>();
             _enemyBuffs = new List<EnemyBuff>();
-            Debug.Log("Parsing Buffs");
             for (var i = 0; i < _buffs.Length; i++)
             {
-                Debug.Log($"i => {_buffs[i] is PlayerBuff} / {_buffs[i] is EnemyBuff}");
                 if (_buffs[i] is PlayerBuff) _playerBuffs.Add(Get<PlayerBuff>(i));
                 else if (_buffs[i] is EnemyBuff) _enemyBuffs.Add(Get<EnemyBuff>(i));
             }
@@ -56,16 +57,17 @@ namespace Player.Progression.Buffs
             _hasParsedBuffs = true;
         }
 
-        public List<PlayerBuff> RandomPlayerBuff(int amount, int tier, int maxDeviation=1)
+        public IList<BuffBase> RandomPlayerBuff(int amount, int tier, int maxDeviation=1)
         {
+            tier = Mathf.Min(tier, _maxBuffTier);
             var players = PlayerBuffs;
             amount = Mathf.Min(amount, players.Count);
             var indexes = players.ShuffledIndexes();
-            var result = new List<PlayerBuff>();
+            var result = new List<BuffBase>();
             var counter = 0;
             foreach (var index in indexes)
             {
-                if (Mathf.Abs(players[index].Tier - tier) < maxDeviation) continue;
+                if (Mathf.Abs(players[index].Tier - tier) > maxDeviation) continue;
 
                 result.Add(players[index]);
                 counter++;
@@ -75,16 +77,17 @@ namespace Player.Progression.Buffs
             return result;
         }
 
-        public List<EnemyBuff> RandomEnemyBuff(int amount, int tier, int maxDeviation=1)
+        public IList<BuffBase> RandomEnemyBuff(int amount, int tier, int maxDeviation=1)
         {
+            tier = Mathf.Min(tier, _maxBuffTier);
             var players = EnemyBuffs;
             amount = Mathf.Min(amount, players.Count);
             var indexes = players.ShuffledIndexes();
-            var result = new List<EnemyBuff>();
+            var result = new List<BuffBase>();
             var counter = 0;
             foreach (var index in indexes)
             {
-                if (Mathf.Abs(players[index].Tier - tier) < maxDeviation) continue;
+                if (Mathf.Abs(players[index].Tier - tier) > maxDeviation) continue;
 
                 result.Add(players[index]);
                 counter++;
