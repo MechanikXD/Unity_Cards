@@ -49,19 +49,6 @@ namespace Core.SessionStorage
             _buffs.RandomEnemyBuff(amount, CurrentAct);
 
         public void AdvanceAct() => CurrentAct++;
-        
-        public void AddBuffToPlayer(PlayerBuff buff)
-        {
-            if (buff.Activation == ActivationType.Instant)
-            {
-                buff.Apply(_playerHand);
-                return;
-            }
-            
-            PlayerBuffs.Add(buff);
-        }
-
-        public void AddBuffToEnemy(EnemyBuff buff) => EnemyBuffs.Add(buff);
 
         public void LoadEnemyBuffs(PlayerHand enemy)
         {
@@ -71,8 +58,12 @@ namespace Core.SessionStorage
 
         public void AddBuff(BuffBase buff)
         {
-            if (buff is PlayerBuff playerBuff) AddBuffToPlayer(playerBuff);
-            else if (buff is EnemyBuff enemyBuff) AddBuffToEnemy(enemyBuff);
+            if (buff is PlayerBuff playerBuff)
+            {
+                if (playerBuff.Activation == ActivationType.Instant) playerBuff.Apply(_playerHand);
+                else PlayerBuffs.Add(playerBuff);
+            }
+            else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
         }
     }
 }

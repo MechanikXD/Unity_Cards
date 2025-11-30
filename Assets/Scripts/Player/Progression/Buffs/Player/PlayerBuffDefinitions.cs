@@ -10,7 +10,7 @@ namespace Player.Progression.Buffs.Player
         
         public override void Apply(PlayerHand hand)
         {
-            hand.SetMaxHealth(hand.CurrentHealth + _healthBoost);
+            hand.SetMaxHealth(hand.MaxHealth + _healthBoost);
         }
     }
 }

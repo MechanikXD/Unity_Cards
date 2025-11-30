@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other.Extensions;
-using Player.Progression.Buffs;
 using UI.View.GameView;
 using UnityEngine;
 
@@ -13,17 +12,15 @@ namespace Core.Cards.Hand
     {
         [SerializeField] private PlayerStatView _statView;
         [SerializeField] private int _defaultHealth;
-        private int _health;
-        private int _maxHealth;
-        
-        public int CurrentHealth => _health;
+
+        public int MaxHealth { get; private set; }
+        public int CurrentHealth { get; private set; }
 
         [SerializeField] private int _defaultHope;
-        private int _hope;
-        private int _maxHope;
         
-        public int CurrentHope => _hope;
-        
+        public int MaxHope { get; private set; }
+        public int CurrentHope { get; private set; }
+
         [SerializeField] private int _defaultHopeRegeneration;
         private int _hopeRegeneration;
         
@@ -51,31 +48,32 @@ namespace Core.Cards.Hand
             _currentDeck = new LinkedList<CardData>();
             _hand = new List<CardData>();
 
-            _health = _defaultHealth;
-            _maxHealth = _defaultHealth;
+            CurrentHealth = _defaultHealth;
+            MaxHealth = _defaultHealth;
 
-            _hope = _defaultHope;
-            _maxHope = _defaultHope;
+            CurrentHope = _defaultHope;
+            MaxHope = _defaultHope;
             
             StartingHandSize = _defaultStartingHandSize;
             _drawCount = _defaultCardDrawCount;
 
             _hopeRegeneration = _defaultHopeRegeneration;
             
-            _statView.SetHealth(_health, _maxHealth, true);
-            _statView.SetHope(_hope, _maxHope, true);
+            _statView.SetHealth(CurrentHealth, MaxHealth, true);
+            _statView.SetHope(CurrentHope, MaxHope, true);
         }
 
         public void SetStatView(PlayerStatView view) => _statView = view;
 
+        public void UpdateStatView(bool isInstant)
+        {
+            _statView.SetHealth(CurrentHealth, MaxHealth, isInstant);
+            _statView.SetHope(CurrentHope, MaxHope, isInstant);
+        }
+
         public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
         {
             _deck[index] = buff(_deck[index]);
-        }
-
-        public void ApplyBuffs(IList<BuffBase> buffs)
-        {
-            foreach (var buff in buffs) buff.Apply(this);
         }
 
         public void ResetAll()
@@ -83,36 +81,34 @@ namespace Core.Cards.Hand
             _currentDeck.Clear();
             _hand.Clear();
 
-            _health = _maxHealth;
-            _hope = _maxHope;
+            CurrentHope = MaxHope;
             
-            _statView.SetHealth(_health, _maxHealth, true);
-            _statView.SetHope(_hope, _maxHope, true);
+            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope, true);
         }
 
         #region Hope Related
 
-        public bool CanUseCard(int cardCost) => cardCost <= _hope;
+        public bool CanUseCard(int cardCost) => cardCost <= CurrentHope;
 
         public void UseHope(int cardCost)
         {
-            if (_hope < cardCost)
+            if (CurrentHope < cardCost)
             {
                 Debug.LogWarning("Hope will fall below 0! Check ability to use this card prior");
-                _hope = 0;
+                CurrentHope = 0;
             }
             else
             {
-                _hope -= cardCost;
+                CurrentHope -= cardCost;
             }
             
-            _statView.SetHope(_hope, _maxHope);
+            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
         }
 
         public void AddHope(int count)
         {
-            _hope = Mathf.Min(_hope + count, _maxHope);
-            _statView.SetHope(_hope, _maxHope);
+            CurrentHope = Mathf.Min(CurrentHope + count, MaxHope);
+            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
         }
 
         public void SetMaxHope(int newValue)
@@ -120,19 +116,19 @@ namespace Core.Cards.Hand
             if (newValue <= 0)
             {
                 Debug.LogWarning("Max Hope can't be less than or equal to zero!");
-                _maxHope = 1;
-                _hope = 1;
+                MaxHope = 1;
+                CurrentHope = 1;
             }
             else
             {
-                var oldMaxHope = _maxHope;
-                _maxHope = newValue;
+                var oldMaxHope = MaxHope;
+                MaxHope = newValue;
 
-                if (oldMaxHope > _maxHope) _hope = Mathf.Min(oldMaxHope, _hope);
-                else _hope += _maxHope - oldMaxHope;
+                if (oldMaxHope > MaxHope) CurrentHope = Mathf.Min(oldMaxHope, CurrentHope);
+                else CurrentHope += MaxHope - oldMaxHope;
             }
             
-            _statView.SetHope(_hope, _maxHope);
+            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
         }
 
         public void RegenerateHope() => AddHope(_hopeRegeneration);
@@ -152,21 +148,21 @@ namespace Core.Cards.Hand
 
         public void TakeDamage(int damage)
         {
-            _health -= damage;
-            if (_health <= 0)
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
             {
                 PlayerDefeated?.Invoke();
                 IsDefeated = true;
-                _health = 0;
+                CurrentHealth = 0;
             }
             
-            _statView.SetHealth(_health, _maxHealth);
+            if (_statView != null) _statView.SetHealth(CurrentHealth, MaxHealth);
         }
 
         public void RestoreHealth(int amount)
         {
-            _health = Mathf.Min(_health + amount, _maxHealth);
-            _statView.SetHealth(_health, _maxHealth);
+            CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+            if (_statView != null) _statView.SetHealth(CurrentHealth, MaxHealth);
         }
 
         public void SetMaxHealth(int newValue)
@@ -174,19 +170,19 @@ namespace Core.Cards.Hand
             if (newValue <= 0)
             {
                 Debug.LogWarning("Max Health can't be less than or equal to zero!");
-                _maxHealth = 1;
-                _health = 1;
+                MaxHealth = 1;
+                CurrentHealth = 1;
             }
             else
             {
-                var oldMaxHealth = _maxHealth;
-                _maxHealth = newValue;
+                var oldMaxHealth = MaxHealth;
+                MaxHealth = newValue;
 
-                if (oldMaxHealth > _maxHealth) _health = Mathf.Min(oldMaxHealth, _health);
-                else _health += _maxHealth - oldMaxHealth;
+                if (oldMaxHealth > MaxHealth) CurrentHealth = Mathf.Min(oldMaxHealth, CurrentHealth);
+                else CurrentHealth += MaxHealth - oldMaxHealth;
             }
             
-            _statView.SetHealth(_health, _maxHealth);
+            if (_statView != null) _statView.SetHealth(CurrentHealth, MaxHealth);
         }
 
         #endregion

@@ -73,6 +73,9 @@ namespace Core.Cards.Board
             _playerHand.PlayerDefeated += GameManager.Instance.LooseAct;
             _otherHand.PlayerDefeated += GameManager.Instance.WinAct;
             
+            _playerHand.UpdateStatView(true);
+            _otherHand.UpdateStatView(true);
+            
             StartAct(settings);
         }
 
@@ -102,17 +105,17 @@ namespace Core.Cards.Board
         {
             var storage = GameStorage.Instance;
             storage.AdvanceAct();
-            storage.PlayerBuffs.ApplyAll(_playerHand, ActivationType.ActStart);
+            
             _playerHand.RefillDeck();
+            storage.PlayerBuffs.ApplyAll(_playerHand, ActivationType.ActStart);
+            
             var data = _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
             foreach (var cardData in data) CrateNewCardModel(cardData);
             
+            storage.LoadEnemyBuffs(_otherHand);
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
             _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
-            
-            storage.LoadEnemyBuffs(_otherHand);
-            storage.EnemyBuffs.ApplyAll(_otherHand, ActivationType.ActStart);
             _enemyBehaviour.PlayTurn();
         }
 

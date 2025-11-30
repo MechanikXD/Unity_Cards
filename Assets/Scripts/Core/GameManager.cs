@@ -4,10 +4,8 @@ using Core.Cards.Card;
 using Core.SessionStorage;
 using Enemy;
 using Other.Dialog;
-using Storage;
 using UI;
 using UI.View.GameView;
-using UI.View.MainMenuView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -46,7 +44,7 @@ namespace Core
                     GameStorage.Instance.GetRandomPlayerBuffOptions(3),
                     c1 => c1.ConfirmAndLoadNext(
                         CardDataProvider.ImageNull, 
-                        new [] { "Hello", "Evl", "World!" },
+                        new [] { "Hello", "Evil", "World!" },
                         GameStorage.Instance.GetRandomEnemyBuffOptions(3),
                         c2 => c2.ConfirmAndExit()));
                 SceneManager.sceneLoaded -= InitializeDialog;
