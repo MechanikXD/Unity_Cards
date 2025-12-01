@@ -11,6 +11,7 @@ using Enemy;
 using Other;
 using Player;
 using Player.Progression.Buffs;
+using Player.Progression.SaveStates;
 using TMPro;
 using UI;
 using UI.View.GameView;
@@ -77,6 +78,30 @@ namespace Core.Cards.Board
             _otherHand.UpdateStatView(true);
             
             StartAct(settings);
+        }
+
+        public void LoadFromSerialized(SerializableBoard board, SerializablePlayerHand player)
+        {
+            var db = CardDataProvider.DataBank;
+            foreach (var card in board.PlayerCards)
+            {
+                if (card == null) continue;
+                
+                var newModel = Instantiate(_cardPrefab);
+                newModel.Set(card.Value.ToCardData(db), null);
+                newModel.Animator.enabled = true;
+            }
+            
+            foreach (var card in board.EnemyCards)
+            {
+                if (card == null) continue;
+                
+                var newModel = Instantiate(_cardPrefab);
+                newModel.Set(card.Value.ToCardData(db), null);
+                newModel.Animator.enabled = true;
+            }
+
+            foreach (var card in player._hand) CrateNewCardModel(card.ToCardData(db));
         }
 
         public void FinishAct()

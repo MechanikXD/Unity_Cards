@@ -24,9 +24,6 @@ namespace Player.Progression.Buffs
 
         public abstract void Apply(PlayerHand hand);
 
-        protected virtual CardData Modify(CardData data)
-        {
-            return default;
-        }
+        protected virtual CardData Modify(CardData data) => default;
     }
 }

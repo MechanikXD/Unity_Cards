@@ -38,15 +38,16 @@ namespace Core
             {
                 if (scene != SceneManager.GetSceneByName("Dialogs")) return;
                 
-                DialogSceneController.Instance.Load(
-                    CardDataProvider.ImageNull, 
-                    new [] { "Hello", "World!" },
-                    GameStorage.Instance.GetRandomPlayerBuffOptions(3),
-                    c1 => c1.ConfirmAndLoadNext(
-                        CardDataProvider.ImageNull, 
+                DialogSceneController.Instance.Load(new[]
+                {
+                    new DialogSettings(CardDataProvider.ImageNull,
+                        new [] { "Hello", "World!" }, 
+                        GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
+                    new DialogSettings(CardDataProvider.ImageNull, 
                         new [] { "Hello", "Evil", "World!" },
-                        GameStorage.Instance.GetRandomEnemyBuffOptions(3),
-                        c2 => c2.ConfirmAndExit()));
+                        GameStorage.Instance.GetRandomEnemyBuffOptions(3))
+                });
+                
                 SceneManager.sceneLoaded -= InitializeDialog;
             }
 

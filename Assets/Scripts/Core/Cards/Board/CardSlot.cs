@@ -19,14 +19,15 @@ namespace Core.Cards.Board
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card { get; private set; }
 
-        public void Attach(CardModel card)
+        public void Attach(CardModel card, bool instantMove=false)
         {
             IsEmpty = false;
             Card = card;
             card.transform.SetParent(transform);
             card.transform.localScale = Vector3.one;
             card.SortingGroup.sortingOrder = SORTING_ORDER;
-            card.MoveToLocalAsync(_cardPosition, _cardMoveSpeed).Forget();
+            if (instantMove) card.transform.position = _cardPosition;
+            else card.MoveToLocalAsync(_cardPosition, _cardMoveSpeed).Forget();
         }
 
         public CardModel Detach()

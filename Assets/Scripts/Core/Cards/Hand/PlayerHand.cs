@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Other.Extensions;
+using Player.Progression.SaveStates;
 using UI.View.GameView;
 using UnityEngine;
 
@@ -84,6 +85,31 @@ namespace Core.Cards.Hand
             CurrentHope = MaxHope;
             
             if (_statView != null) _statView.SetHope(CurrentHope, MaxHope, true);
+        }
+
+        public void LoadFromSerialized(SerializablePlayerHand serializable)
+        {
+            var db = CardDataProvider.DataBank;
+            MaxHealth = serializable._maxHealth;
+            CurrentHealth = serializable._currentHealth;
+            MaxHope = serializable._maxHope;
+            CurrentHope = serializable._currentHope;
+            
+            StartingHandSize = serializable._startingHandSize;
+            _drawCount = serializable._drawCount;
+            _hopeRegeneration = serializable._hopeRegeneration;
+
+            _deck = new CardData[serializable._deck.Length];
+            for (var i = 0; i < serializable._deck.Length; i++) 
+                _deck[i] = serializable._deck[i].ToCardData(db);
+            
+            _currentDeck.Clear();
+            foreach (var card in serializable._currentDeck) 
+                _currentDeck.AddLast(card.ToCardData(db));
+            
+            _hand.Clear();
+            foreach (var card in serializable._hand)
+                _hand.Add(card.ToCardData(db));
         }
 
         #region Hope Related
