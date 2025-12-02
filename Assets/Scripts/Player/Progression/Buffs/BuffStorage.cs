@@ -47,7 +47,7 @@ namespace Player.Progression.Buffs
             }
         }
 
-        public void Save()
+        public string Save()
         {
             var concat = new StringBuilder();
             foreach (var kvp in _buffs)
@@ -55,6 +55,7 @@ namespace Player.Progression.Buffs
                     concat.Append(buff.ID).Append(',');
 
             if (concat.Length > 0) concat.Remove(concat.Length - 1, 1);
+            return concat.ToString();
         }
     }
 }

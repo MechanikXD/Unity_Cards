@@ -320,7 +320,7 @@ namespace Core.Cards.Board
 
             var board = new SerializableBoard(playerCards, enemyCards);
 
-            return new BoardState(board, _playerHand.SerializeSelf(), _otherHand.SerializeSelf());
+            return new BoardState(board, _otherHand.SerializeSelf());
         }
 
         public void Deserialize(BoardState self)
@@ -344,7 +344,6 @@ namespace Core.Cards.Board
             }
             
             _otherHand.Deserialize(self.Enemy);
-            _playerHand.Deserialize(self.Player);
 
             foreach (var card in _playerHand.CardsInHand) CrateNewCardModel(card);
         }

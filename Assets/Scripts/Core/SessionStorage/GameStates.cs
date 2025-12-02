@@ -7,14 +7,11 @@ namespace Core.SessionStorage
     public struct BoardState
     {
         public SerializableBoard Board { get; }
-        public SerializablePlayerHand Player { get; }
         public SerializablePlayerHand Enemy { get; }
 
-        public BoardState(SerializableBoard board, SerializablePlayerHand player,
-            SerializablePlayerHand enemy)
+        public BoardState(SerializableBoard board, SerializablePlayerHand enemy)
         {
             Board = board;
-            Player = player;
             Enemy = enemy;
         }
     }

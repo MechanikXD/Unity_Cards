@@ -1,20 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Behaviour;
 using Core.Cards.Hand;
+using Other.Dialog;
 using Player.Progression.Buffs;
 using Player.Progression.Buffs.Enemy;
 using Player.Progression.Buffs.Player;
+using Player.Progression.SaveStates;
 using Storage;
 using UI.View.MainMenuView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Core.SessionStorage
 {
-    public class GameStorage : SingletonBase<GameStorage>
+    public class GameStorage : SingletonBase<GameStorage>, IGameSerializable<SerializableGameStorage>
     {
-        private const string PLAYER_BUFF_STORAGE_KEY = "Player Buffs";
-        private const string ENEMY_BUFF_STORAGE_KEY = "Enemy Buffs";
-        
         [SerializeField] private BuffDataBase _buffs;
         [SerializeField] private PlayerHand _playerHand;
 
@@ -23,6 +24,18 @@ namespace Core.SessionStorage
         public BuffDataBase BuffDataBase => _buffs;
         public BuffStorage<PlayerBuff> PlayerBuffs { get; } = new BuffStorage<PlayerBuff>();
         public BuffStorage<EnemyBuff> EnemyBuffs { get; } = new BuffStorage<EnemyBuff>();
+        
+        private readonly static Dictionary<string, Func<object>> SceneDataGetters = new Dictionary<string, Func<object>>
+        {
+            ["GameScene"] = () => GameManager.Instance.Board.SerializeSelf(),
+            ["Dialogs"] = () => DialogSceneController.Instance.SerializeSelf()
+        };
+        
+        private readonly static Dictionary<string, Action<object>> SceneDataSetters = new Dictionary<string, Action<object>>
+        {
+            ["GameScene"] = data => GameManager.Instance.Board.Deserialize((BoardState)data),
+            ["Dialogs"] = data => DialogSceneController.Instance.Deserialize((DialogState)data)
+        };
 
         protected override void Awake()
         {
@@ -32,15 +45,15 @@ namespace Core.SessionStorage
 
         protected override void Initialize()
         {
-            if (StorageProxy.HasKey(PLAYER_BUFF_STORAGE_KEY))
-                PlayerBuffs.Load(_buffs, StorageProxy.Get<string>(PLAYER_BUFF_STORAGE_KEY));
-            if (StorageProxy.HasKey(ENEMY_BUFF_STORAGE_KEY))
-                EnemyBuffs.Load(_buffs, StorageProxy.Get<string>(ENEMY_BUFF_STORAGE_KEY));
-            
-            var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
-            var ids = new int[strings.Length];
-            for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
-            _playerHand.Initialize(ids);
+            if (GameSerializer.HasSavedData())
+                Deserialize(GameSerializer.Deserialize().storage);
+            else
+            {
+                var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
+                var ids = new int[strings.Length];
+                for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
+                _playerHand.Initialize(ids);
+            }
         }
 
         public IList<BuffBase> GetRandomPlayerBuffOptions(int amount) =>
@@ -67,9 +80,42 @@ namespace Core.SessionStorage
             else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
         }
 
-        public void Serialize()
+        private void OnApplicationPause(bool pauseStatus) => GameSerializer.Serialize();
+
+        public SerializableGameStorage SerializeSelf()
         {
+            var sceneData = SceneDataGetters[SceneManager.GetActiveScene().name];
             
+            return new SerializableGameStorage(CurrentAct, _playerHand.SerializeSelf(),
+                PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData);
+        }
+
+        public void Deserialize(SerializableGameStorage self)
+        {
+            CurrentAct = self.Act;
+            _playerHand.Deserialize(self.PlayerHand);
+            PlayerBuffs.Load(_buffs, self.PlayerBuffs);
+            EnemyBuffs.Load(_buffs, self.EnemyBuffs);
+            SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
+        }
+    }
+
+    public struct SerializableGameStorage
+    {
+        public int Act { get; }
+        public SerializablePlayerHand PlayerHand { get; }
+        public string PlayerBuffs { get; }
+        public string EnemyBuffs { get; }
+        public object SceneData { get; }
+
+        public SerializableGameStorage(int act, SerializablePlayerHand playerHand, 
+            string playerBuffs, string enemyBuffs, object sceneData)
+        {
+            Act = act;
+            PlayerHand = playerHand;
+            PlayerBuffs = playerBuffs;
+            EnemyBuffs = enemyBuffs;
+            SceneData = sceneData;
         }
     }
 }
