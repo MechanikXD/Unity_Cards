@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
+using Core.SessionStorage;
 using Other.Extensions;
 using Player.Progression.SaveStates;
 using UI.View.GameView;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace Core.Cards.Hand
 {
-    public class PlayerHand : MonoBehaviour
+    public class PlayerHand : MonoBehaviour, IGameSerializable<SerializablePlayerHand>
     {
         [SerializeField] private PlayerStatView _statView;
         [SerializeField] private int _defaultHealth;
@@ -23,31 +24,27 @@ namespace Core.Cards.Hand
         public int CurrentHope { get; private set; }
 
         [SerializeField] private int _defaultHopeRegeneration;
-        private int _hopeRegeneration;
+        public int HopeRegeneration { get; private set; }
         
         [SerializeField] private int _defaultStartingHandSize;
         [SerializeField] private int _defaultCardDrawCount;
         public int StartingHandSize { get; private set; }
-        private int _drawCount;
+        public int DrawCount { get; private set; }
 
-        private CardData[] _deck;
-        private LinkedList<CardData> _currentDeck;
-        private List<CardData> _hand;
+        public CardData[] Deck { get; private set; }
+        public LinkedList<CardData> CurrentDeck { get; private set; }
+        public List<CardData> CardsInHand { get; private set; }
 
-        public CardData[] Deck => _deck;
-        public LinkedList<CardData> CurrentDeck => _currentDeck;
-        public List<CardData> CardsInHand => _hand;
-        
-        public bool HasAnyCards => _hand.Count > 0 || _currentDeck.Count > 0;
+        public bool HasAnyCards => CardsInHand.Count > 0 || CurrentDeck.Count > 0;
         public bool IsDefeated { get; private set; }
 
         public event Action PlayerDefeated; 
 
         public void Initialize(int[] cardIds)
         {
-            _deck = CreateDeck(cardIds);
-            _currentDeck = new LinkedList<CardData>();
-            _hand = new List<CardData>();
+            Deck = CreateDeck(cardIds);
+            CurrentDeck = new LinkedList<CardData>();
+            CardsInHand = new List<CardData>();
 
             CurrentHealth = _defaultHealth;
             MaxHealth = _defaultHealth;
@@ -56,9 +53,9 @@ namespace Core.Cards.Hand
             MaxHope = _defaultHope;
             
             StartingHandSize = _defaultStartingHandSize;
-            _drawCount = _defaultCardDrawCount;
+            DrawCount = _defaultCardDrawCount;
 
-            _hopeRegeneration = _defaultHopeRegeneration;
+            HopeRegeneration = _defaultHopeRegeneration;
             
             _statView.SetHealth(CurrentHealth, MaxHealth, true);
             _statView.SetHope(CurrentHope, MaxHope, true);
@@ -74,42 +71,17 @@ namespace Core.Cards.Hand
 
         public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
         {
-            _deck[index] = buff(_deck[index]);
+            Deck[index] = buff(Deck[index]);
         }
 
         public void ResetAll()
         {
-            _currentDeck.Clear();
-            _hand.Clear();
+            CurrentDeck.Clear();
+            CardsInHand.Clear();
 
             CurrentHope = MaxHope;
             
             if (_statView != null) _statView.SetHope(CurrentHope, MaxHope, true);
-        }
-
-        public void LoadFromSerialized(SerializablePlayerHand serializable)
-        {
-            var db = CardDataProvider.DataBank;
-            MaxHealth = serializable._maxHealth;
-            CurrentHealth = serializable._currentHealth;
-            MaxHope = serializable._maxHope;
-            CurrentHope = serializable._currentHope;
-            
-            StartingHandSize = serializable._startingHandSize;
-            _drawCount = serializable._drawCount;
-            _hopeRegeneration = serializable._hopeRegeneration;
-
-            _deck = new CardData[serializable._deck.Length];
-            for (var i = 0; i < serializable._deck.Length; i++) 
-                _deck[i] = serializable._deck[i].ToCardData(db);
-            
-            _currentDeck.Clear();
-            foreach (var card in serializable._currentDeck) 
-                _currentDeck.AddLast(card.ToCardData(db));
-            
-            _hand.Clear();
-            foreach (var card in serializable._hand)
-                _hand.Add(card.ToCardData(db));
         }
 
         #region Hope Related
@@ -157,14 +129,14 @@ namespace Core.Cards.Hand
             if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
         }
 
-        public void RegenerateHope() => AddHope(_hopeRegeneration);
+        public void RegenerateHope() => AddHope(HopeRegeneration);
 
         public void SetHopeRestore(int newValue, bool allowZeroValue=false)
         {
-            _hopeRegeneration = newValue;
-            if (_hopeRegeneration <= 0)
+            HopeRegeneration = newValue;
+            if (HopeRegeneration <= 0)
             {
-                _hopeRegeneration = allowZeroValue ? 0 : 1;
+                HopeRegeneration = allowZeroValue ? 0 : 1;
             }
         }
 
@@ -229,48 +201,48 @@ namespace Core.Cards.Hand
         
         public CardData GetCardFromHand(int index)
         {
-            var card = _hand[index];
-            _hand.RemoveAt(index);
+            var card = CardsInHand[index];
+            CardsInHand.RemoveAt(index);
             return card;
         }
         
         public CardData GetCardFromHand(CardData card)
         {
             var index = 0;
-            for (var i = 0; i < _hand.Count; i++)
+            for (var i = 0; i < CardsInHand.Count; i++)
             {
-                if (_hand[i] != card) continue;
+                if (CardsInHand[i] != card) continue;
 
                 index = i;
                 break;
             }
-            _hand.RemoveAt(index);
+            CardsInHand.RemoveAt(index);
             return card;
         }
 
         public void RefillDeck()
         {
-            _currentDeck.Clear();
-            foreach (var card in _deck) _currentDeck.AddLast(card);
-            _currentDeck.Shuffle();
+            CurrentDeck.Clear();
+            foreach (var card in Deck) CurrentDeck.AddLast(card);
+            CurrentDeck.Shuffle();
         }
 
         public CardData[] DrawCardsFromDeck(bool shuffleBeforeDraw=false) => 
-            DrawCardsFromDeck(_drawCount, shuffleBeforeDraw);
+            DrawCardsFromDeck(DrawCount, shuffleBeforeDraw);
         
         public CardData[] DrawCardsFromDeck(int count, bool shuffleBeforeDraw=false)
         {
-            if (shuffleBeforeDraw) _currentDeck.Shuffle();
-            count = Mathf.Min(_currentDeck.Count, count);
+            if (shuffleBeforeDraw) CurrentDeck.Shuffle();
+            count = Mathf.Min(CurrentDeck.Count, count);
             var drawn = new CardData[count];
             var drawnIndex = 0;
             for (var i = 0; i < count; i++)
             {
-                if (_currentDeck.Count <= 0) break;
+                if (CurrentDeck.Count <= 0) break;
                 
-                var newCard = _currentDeck.First.Value;
-                _hand.Add(newCard);
-                _currentDeck.RemoveFirst();
+                var newCard = CurrentDeck.First.Value;
+                CardsInHand.Add(newCard);
+                CurrentDeck.RemoveFirst();
                 
                 drawn[drawnIndex] = newCard;
                 drawnIndex++;
@@ -281,7 +253,7 @@ namespace Core.Cards.Hand
 
         public void SetCardDrawCount(int newCount)
         {
-            _drawCount = newCount < 0 ? 1 : newCount;
+            DrawCount = newCount < 0 ? 1 : newCount;
         }
         
         public void SetStartingHandSize(int newSize)
@@ -290,5 +262,51 @@ namespace Core.Cards.Hand
         }
 
         #endregion
+
+        public SerializablePlayerHand SerializeSelf()
+        {
+            var deck = new SerializableCardData[Deck.Length];
+            for (var i = 0; i < Deck.Length; i++) 
+                deck[i] = Deck[i].SerializeSelf();
+            
+            var currentDeck = new SerializableCardData[CurrentDeck.Count];
+            var index = 0;
+            foreach (var card in CurrentDeck)
+            {
+                currentDeck[index] = card.SerializeSelf();
+                index++;
+            }
+            
+            var currentHand = new SerializableCardData[CardsInHand.Count];
+            for (var i = 0; i < Deck.Length; i++) 
+                currentHand[i] = CardsInHand[i].SerializeSelf();
+
+            return new SerializablePlayerHand(MaxHealth, CurrentHealth, MaxHope, CurrentHope,
+                HopeRegeneration, StartingHandSize, DrawCount, deck, currentDeck, currentHand);
+        }
+
+        public void Deserialize(SerializablePlayerHand self)
+        {
+            MaxHealth = self._maxHealth;
+            CurrentHealth = self._currentHealth;
+            MaxHope = self._maxHope;
+            CurrentHope = self._currentHope;
+            
+            StartingHandSize = self._startingHandSize;
+            DrawCount = self._drawCount;
+            HopeRegeneration = self._hopeRegeneration;
+
+            Deck = new CardData[self._deck.Length];
+            for (var i = 0; i < self._deck.Length; i++) 
+                Deck[i].Deserialize(self._deck[i]);
+            
+            CurrentDeck.Clear();
+            foreach (var card in self._currentDeck) 
+                CurrentDeck.AddLast(card.ToCardData());
+            
+            CardsInHand.Clear();
+            foreach (var card in self._hand)
+                CardsInHand.Add(card.ToCardData());
+        }
     }
 }

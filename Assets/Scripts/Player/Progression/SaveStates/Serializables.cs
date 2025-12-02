@@ -1,6 +1,10 @@
 ﻿using System;
 using System.IO;
+using Core.Cards.Card;
 using Core.Cards.Card.Data;
+using Core.Cards.Hand;
+using Other.Dialog;
+using Player.Progression.Buffs;
 using UnityEditor;
 using UnityEngine;
 
@@ -42,6 +46,27 @@ namespace Player.Progression.SaveStates
             _options = options;
             _currentDialogIndex = currentDialogIndex;
         }
+
+        public SerializableDialog(DialogSettings settings)
+        {
+            _spritePath = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(settings.Cgi));
+            _dialogs = settings.Dialogues;
+            _options = new int[settings.Options.Count];
+            for (var i = 0; i < settings.Options.Count; i++) _options[i] = settings.Options[i].ID;
+            _currentDialogIndex = 0;
+        }
+
+        public DialogSettings ToDialogSetting(BuffDataBase db)
+        {
+            var sprite = Resources.Load<Sprite>(_spritePath);
+            var buffs = new BuffBase[_options.Length];
+            for (var i = 0; i < _options.Length; i++)
+            {
+                buffs[i] = db.Get<BuffBase>(_options[i]);
+            }
+
+            return new DialogSettings(sprite, _dialogs, buffs);
+        }
     }
 
     [Serializable]
@@ -77,39 +102,58 @@ namespace Player.Progression.SaveStates
             _currentDeck = currentDeck;
             _hand = hand;
         }
+
+        public SerializablePlayerHand(PlayerHand hand)
+        {
+            _maxHealth = hand.MaxHealth;
+            _currentHealth = hand.CurrentHealth;
+            _maxHope = hand.MaxHope;
+            _currentHope = hand.CurrentHope;
+            _hopeRegeneration = hand.HopeRegeneration;
+            _startingHandSize = hand.StartingHandSize;
+            _drawCount = hand.DrawCount;
+            
+            _deck = new SerializableCardData[hand.Deck.Length];
+            for (var i = 0; i < hand.Deck.Length; i++) 
+                _deck[i] = hand.Deck[i].SerializeSelf();
+            
+            _currentDeck = new SerializableCardData[hand.CurrentDeck.Count];
+            var index = 0;
+            foreach (var card in hand.CurrentDeck)
+            {
+                _currentDeck[index] = card.SerializeSelf();
+                index++;
+            }
+            
+            _hand = new SerializableCardData[hand.CardsInHand.Count];
+            for (var i = 0; i < hand.Deck.Length; i++) 
+                _hand[i] = hand.CardsInHand[i].SerializeSelf();
+        }
     }
 
     [Serializable]
     public struct SerializableCardData
     {
-        private int _cardId;
-        private int _health;
-        private Vector2Int _attack;
-        private int _cost;
+        public int CardId { get; }
+        public int Health { get; }
+        public Vector2Int Attack{ get; }
+        public int Cost{ get; }
 
         public SerializableCardData(int id, int health, Vector2Int attack, int cost)
         {
-            _cardId = id;
-            _health = health;
-            _attack = attack;
-            _cost = cost;
+            CardId = id;
+            Health = health;
+            Attack = attack;
+            Cost = cost;
         }
 
-        public void FromCardData(CardData data)
+        public CardData ToCardData()
         {
-            _cardId = data.ID;
-            _health = data.Health;
-            _attack = data.Attack;
-            _cost = data.Cost;
-        }
-
-        public CardData ToCardData(CardDataBank db)
-        {
-            var origData = db.Get(_cardId);
-            origData.Attack = _attack;
-            origData.Health = _health;
-            origData.Cost = _cost;
-            return origData;
+            var original = CardDataProvider.DataBank.Get(CardId);
+            original.Attack = Attack;
+            original.Health = Health;
+            original.Cost = Cost;
+            return original;
         }
     }
 }

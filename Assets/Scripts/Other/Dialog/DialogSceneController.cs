@@ -2,6 +2,7 @@
 using Core.Behaviour;
 using Core.SessionStorage;
 using Other.Dialog.SceneObjects;
+using Other.Extensions;
 using Player.Progression.Buffs;
 using Player.Progression.SaveStates;
 using TMPro;
@@ -11,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Other.Dialog
 {
-    public class DialogSceneController : SingletonBase<DialogSceneController>
+    public class DialogSceneController : SingletonBase<DialogSceneController>, IGameSerializable<DialogState>
     {
         private LinkedList<DialogSettings> _nextDialogs = new LinkedList<DialogSettings>();
         [SerializeField] private Image _cgi;
@@ -56,22 +57,49 @@ namespace Other.Dialog
                 _dialogOptions[i].gameObject.SetActive(false);
             }
             
+            _confirmButton.onClick.RemoveAllListeners();
+            _confirmButton.onClick.AddListener(ConfirmButtonPress);
+            
             _confirmButton.interactable = false;
             _confirmButton.gameObject.SetActive(false);
             AdvanceDialog();
         }
 
-        public void LoadFromSerialized(SerializableDialog serialized, BuffDataBase db)
+        public DialogState SerializeSelf()
         {
-            _cgi.sprite = Resources.Load<Sprite>(serialized._spritePath);
-            _dialogs = serialized._dialogs;
+            var buffIds = new int[_optionsCount];
+            for (var i = 0; i < _optionsCount; i++)
+            {
+                buffIds[i] = _dialogOptions[i].Buff.ID;
+            }
+
+            var current =
+                new SerializableDialog(_cgi.sprite, _dialogs, buffIds, _currentDialogIndex);
+            var next = new SerializableDialog[_nextDialogs.Count];
+
+            var index = 0;
+            foreach (var settings in _nextDialogs)
+            {
+                next[index] = new SerializableDialog(settings);
+                index++;
+            }
+
+            return new DialogState(current, next);
+        }
+
+        public void Deserialize(DialogState self)
+        {
+            var db = GameStorage.Instance.BuffDataBase;
+            _nextDialogs = self.Next.ToLinkedList(s => s.ToDialogSetting(db));
+            _cgi.sprite = Resources.Load<Sprite>(self.Current._spritePath);
+            _dialogs = self.Current._dialogs;
             
-            _currentDialogIndex = serialized._currentDialogIndex;
+            _currentDialogIndex = self.Current._currentDialogIndex;
             _dialogIsFinished = _currentDialogIndex >= _dialogs.Length;
             
-            _optionsCount = serialized._options.Length;
+            _optionsCount = self.Current._options.Length;
             for (var i = 0; i < _optionsCount; i++) 
-                _dialogOptions[i].Load(db.Get<BuffBase>(serialized._options[i]));
+                _dialogOptions[i].Load(db.Get<BuffBase>(self.Current._options[i]));
             
             if (_dialogIsFinished) LoadOptions();
             else
@@ -82,7 +110,7 @@ namespace Other.Dialog
             }
         }
 
-        public void ConfirmButtonPress()
+        private void ConfirmButtonPress()
         {
             if (_currentlySelected == null)
             {

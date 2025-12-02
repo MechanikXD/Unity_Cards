@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Other.Extensions
 {
@@ -52,6 +53,20 @@ namespace Other.Extensions
             for (var i = 0; i < enumerable.Count; i++) indexes[i] = i;
             indexes.Shuffle();
             return indexes;
+        }
+
+        public static LinkedList<T> ToLinkedList<T>(this IEnumerable<T> array)
+        {
+            var ll = new LinkedList<T>();
+            foreach (var val in array) ll.AddLast(val);
+            return ll;
+        }
+
+        public static LinkedList<TOut> ToLinkedList<TIn, TOut>(this IEnumerable<TIn> array, Func<TIn, TOut> processor)
+        {
+            var ll = new LinkedList<TOut>();
+            foreach (var val in array) ll.AddLast(processor(val));
+            return ll;
         }
     }
 }

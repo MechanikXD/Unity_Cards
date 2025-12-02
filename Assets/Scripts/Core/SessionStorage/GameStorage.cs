@@ -20,8 +20,9 @@ namespace Core.SessionStorage
 
         public int CurrentAct { get; private set; } = -1;
         public PlayerHand PlayerHand => _playerHand;
-        public BuffStorage<PlayerBuff> PlayerBuffs { get; private set; } = new BuffStorage<PlayerBuff>();
-        public BuffStorage<EnemyBuff> EnemyBuffs { get; private set; } = new BuffStorage<EnemyBuff>();
+        public BuffDataBase BuffDataBase => _buffs;
+        public BuffStorage<PlayerBuff> PlayerBuffs { get; } = new BuffStorage<PlayerBuff>();
+        public BuffStorage<EnemyBuff> EnemyBuffs { get; } = new BuffStorage<EnemyBuff>();
 
         protected override void Awake()
         {
@@ -64,6 +65,11 @@ namespace Core.SessionStorage
                 else PlayerBuffs.Add(playerBuff);
             }
             else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
+        }
+
+        public void Serialize()
+        {
+            
         }
     }
 }

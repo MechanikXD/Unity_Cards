@@ -20,7 +20,7 @@ using UnityEngine.UI;
 
 namespace Core.Cards.Board
 {
-    public class BoardModel : MonoBehaviour
+    public class BoardModel : MonoBehaviour, IGameSerializable<BoardState>
     {
         private const int CARD_SORTING_GROUP = 3;
         private const float FINAL_ATTACK_DISPLAY_DELAY = 0.5f;
@@ -78,30 +78,6 @@ namespace Core.Cards.Board
             _otherHand.UpdateStatView(true);
             
             StartAct(settings);
-        }
-
-        public void LoadFromSerialized(SerializableBoard board, SerializablePlayerHand player)
-        {
-            var db = CardDataProvider.DataBank;
-            foreach (var card in board.PlayerCards)
-            {
-                if (card == null) continue;
-                
-                var newModel = Instantiate(_cardPrefab);
-                newModel.Set(card.Value.ToCardData(db), null);
-                newModel.Animator.enabled = true;
-            }
-            
-            foreach (var card in board.EnemyCards)
-            {
-                if (card == null) continue;
-                
-                var newModel = Instantiate(_cardPrefab);
-                newModel.Set(card.Value.ToCardData(db), null);
-                newModel.Animator.enabled = true;
-            }
-
-            foreach (var card in player._hand) CrateNewCardModel(card.ToCardData(db));
         }
 
         public void FinishAct()
@@ -323,7 +299,56 @@ namespace Core.Cards.Board
             if (!cardData.TryGetValue(trigger, out var effects)) return;
             foreach (var effect in effects) effect.Execute(contextProvider());
         }
+        
+        public BoardState SerializeSelf()
+        {
+            var playerCards = new SerializableCardData?[_playerCardSlots.Length];
+            for (var i = 0; i < _playerCardSlots.Length; i++)
+            {
+                playerCards[i] = _playerCardSlots[i].IsEmpty
+                    ? null
+                    : _playerCardSlots[i].Card.Data.SerializeSelf();
+            }
+            
+            var enemyCards = new SerializableCardData?[_otherCardSlots.Length];
+            for (var i = 0; i < _otherCardSlots.Length; i++)
+            {
+                enemyCards[i] = _otherCardSlots[i].IsEmpty
+                    ? null
+                    : _otherCardSlots[i].Card.Data.SerializeSelf();
+            }
 
+            var board = new SerializableBoard(playerCards, enemyCards);
+
+            return new BoardState(board, _playerHand.SerializeSelf(), _otherHand.SerializeSelf());
+        }
+
+        public void Deserialize(BoardState self)
+        {
+            foreach (var card in self.Board.PlayerCards)
+            {
+                if (card == null) continue;
+                
+                var newModel = Instantiate(_cardPrefab);
+                newModel.Set(card.Value.ToCardData(), null);
+                newModel.Animator.enabled = true;
+            }
+            
+            foreach (var card in self.Board.EnemyCards)
+            {
+                if (card == null) continue;
+                
+                var newModel = Instantiate(_cardPrefab);
+                newModel.Set(card.Value.ToCardData(), null);
+                newModel.Animator.enabled = true;
+            }
+            
+            _otherHand.Deserialize(self.Enemy);
+            _playerHand.Deserialize(self.Player);
+
+            foreach (var card in _playerHand.CardsInHand) CrateNewCardModel(card);
+        }
+        
         private BoardContext GetPlayerContext(int index)
         {
             return new BoardContext(_playerCardSlots, index, _playerHand, _otherCardSlots, _otherHand);
@@ -333,7 +358,7 @@ namespace Core.Cards.Board
         {
             return new BoardContext(_otherCardSlots, index, _otherHand, _playerCardSlots, _playerHand);
         }
-
+        
         private void OnDestroy()
         {
             _enemyBehaviour.StateMachine.StopMachine();

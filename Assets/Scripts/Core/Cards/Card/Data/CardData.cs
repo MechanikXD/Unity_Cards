@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Cards.Card.Effects;
+using Core.SessionStorage;
+using Player.Progression.SaveStates;
 using UnityEngine;
 
 namespace Core.Cards.Card.Data
 {
     [Serializable]
-    public struct CardData : IEquatable<CardData>
+    public struct CardData : IEquatable<CardData>, IGameSerializable<SerializableCardData>
     {
         // [SerializeField] private int _id;
         [Header("Visual")]
@@ -96,6 +98,19 @@ namespace Core.Cards.Card.Data
                 _effectDict[effectGroup.Trigger].AddRange(effectGroup.Effects);
             }
             
+        }
+
+        public SerializableCardData SerializeSelf()
+        {
+            return new SerializableCardData(ID, Health, Attack, Cost);
+        }
+
+        public void Deserialize(SerializableCardData self)
+        {
+            this = CardDataProvider.DataBank.Get(self.CardId);
+            _attack = self.Attack;
+            _health = self.Health;
+            _cost = self.Cost;
         }
     }
 
