@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Behaviour;
 using Core.Cards.Hand;
+using Newtonsoft.Json.Linq;
 using Other.Dialog;
 using Player.Progression.Buffs;
 using Player.Progression.Buffs.Enemy;
@@ -19,6 +20,7 @@ namespace Core.SessionStorage
         [SerializeField] private BuffDataBase _buffs;
         [SerializeField] private PlayerHand _playerHand;
 
+        public bool HadLoadedData { get; private set; }
         public int CurrentAct { get; private set; } = -1;
         public PlayerHand PlayerHand => _playerHand;
         public BuffDataBase BuffDataBase => _buffs;
@@ -31,10 +33,10 @@ namespace Core.SessionStorage
             ["Dialogs"] = () => DialogSceneController.Instance.SerializeSelf()
         };
         
-        private readonly static Dictionary<string, Action<object>> SceneDataSetters = new Dictionary<string, Action<object>>
+        private readonly static Dictionary<string, Action<JObject>> SceneDataSetters = new Dictionary<string, Action<JObject>>
         {
-            ["GameScene"] = data => GameManager.Instance.Board.Deserialize((BoardState)data),
-            ["Dialogs"] = data => DialogSceneController.Instance.Deserialize((DialogState)data)
+            ["GameScene"] = data => GameManager.Instance.Board.Deserialize(data.ToObject<BoardState>()),
+            ["Dialogs"] = data => DialogSceneController.Instance.Deserialize(data.ToObject<DialogState>())
         };
 
         protected override void Awake()
@@ -45,15 +47,13 @@ namespace Core.SessionStorage
 
         protected override void Initialize()
         {
-            if (GameSerializer.HasSavedData())
-                Deserialize(GameSerializer.Deserialize().storage);
-            else
-            {
-                var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
-                var ids = new int[strings.Length];
-                for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
-                _playerHand.Initialize(ids);
-            }
+            if (GameSerializer.HasSavedData()) return;
+
+            Debug.Log("No Serialized Data detected, Initializing...");
+            var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
+            var ids = new int[strings.Length];
+            for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
+            _playerHand.Initialize(ids);
         }
 
         public IList<BuffBase> GetRandomPlayerBuffOptions(int amount) =>
@@ -80,14 +80,17 @@ namespace Core.SessionStorage
             else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
         }
 
-        private void OnApplicationPause(bool pauseStatus) => GameSerializer.Serialize();
+        private void OnApplicationFocus(bool isFocus)
+        {
+            if (!isFocus) GameSerializer.Serialize();
+        }
 
         public SerializableGameStorage SerializeSelf()
         {
             var sceneData = SceneDataGetters[SceneManager.GetActiveScene().name];
             
             return new SerializableGameStorage(CurrentAct, _playerHand.SerializeSelf(),
-                PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData);
+                PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData());
         }
 
         public void Deserialize(SerializableGameStorage self)
@@ -97,16 +100,20 @@ namespace Core.SessionStorage
             PlayerBuffs.Load(_buffs, self.PlayerBuffs);
             EnemyBuffs.Load(_buffs, self.EnemyBuffs);
             SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
+            HadLoadedData = true;
         }
+
+        public void ResetLoadedDataBool() => HadLoadedData = false;
     }
 
-    public struct SerializableGameStorage
+    [Serializable]
+    public class SerializableGameStorage
     {
         public int Act { get; }
         public SerializablePlayerHand PlayerHand { get; }
         public string PlayerBuffs { get; }
         public string EnemyBuffs { get; }
-        public object SceneData { get; }
+        public JObject SceneData { get; }
 
         public SerializableGameStorage(int act, SerializablePlayerHand playerHand, 
             string playerBuffs, string enemyBuffs, object sceneData)
@@ -115,7 +122,7 @@ namespace Core.SessionStorage
             PlayerHand = playerHand;
             PlayerBuffs = playerBuffs;
             EnemyBuffs = enemyBuffs;
-            SceneData = sceneData;
+            SceneData = JObject.FromObject(sceneData);
         }
     }
 }

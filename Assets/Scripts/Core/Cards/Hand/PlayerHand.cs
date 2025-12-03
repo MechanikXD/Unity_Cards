@@ -56,9 +56,7 @@ namespace Core.Cards.Hand
             DrawCount = _defaultCardDrawCount;
 
             HopeRegeneration = _defaultHopeRegeneration;
-            
-            _statView.SetHealth(CurrentHealth, MaxHealth, true);
-            _statView.SetHope(CurrentHope, MaxHope, true);
+            UpdateStatView(true);
         }
 
         public void SetStatView(PlayerStatView view) => _statView = view;
@@ -278,7 +276,7 @@ namespace Core.Cards.Hand
             }
             
             var currentHand = new SerializableCardData[CardsInHand.Count];
-            for (var i = 0; i < Deck.Length; i++) 
+            for (var i = 0; i < CardsInHand.Count; i++) 
                 currentHand[i] = CardsInHand[i].SerializeSelf();
 
             return new SerializablePlayerHand(MaxHealth, CurrentHealth, MaxHope, CurrentHope,
@@ -300,11 +298,11 @@ namespace Core.Cards.Hand
             for (var i = 0; i < self._deck.Length; i++) 
                 Deck[i].Deserialize(self._deck[i]);
             
-            CurrentDeck.Clear();
+            CurrentDeck = new LinkedList<CardData>();
             foreach (var card in self._currentDeck) 
                 CurrentDeck.AddLast(card.ToCardData());
-            
-            CardsInHand.Clear();
+
+            CardsInHand = new List<CardData>();
             foreach (var card in self._hand)
                 CardsInHand.Add(card.ToCardData());
         }

@@ -3,8 +3,9 @@ using Player.Progression.SaveStates;
 
 namespace Core.SessionStorage
 {
+    // NOTE: Must be classes because Newtonsoft.json doesn't hold type names of other struct-fields.
     [Serializable]
-    public struct BoardState
+    public class BoardState
     {
         public SerializableBoard Board { get; }
         public SerializablePlayerHand Enemy { get; }
@@ -17,7 +18,7 @@ namespace Core.SessionStorage
     }
 
     [Serializable]
-    public struct DialogState
+    public class DialogState
     {
         public SerializableDialog Current { get; }
         public SerializableDialog[] Next { get; }

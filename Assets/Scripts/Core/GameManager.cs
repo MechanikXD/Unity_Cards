@@ -25,7 +25,7 @@ namespace Core
 
         private void Start()
         {
-            _board.StartGame(GameStorage.Instance.PlayerHand, _difficultySettings);
+            _board.StartGame(_difficultySettings, !GameStorage.Instance.HadLoadedData);
         }
 
         public void WinAct()

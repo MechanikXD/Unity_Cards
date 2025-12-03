@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Core;
-using Core.SessionStorage;
+﻿using Core.SessionStorage;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,14 +16,22 @@ namespace UI.View.MainMenuView
         private void OnEnable()
         {
             _newGameButton.onClick.AddListener(EnterNewGameScene);
+            _continueButton.onClick.AddListener(ContinueGame);
             _changeDeckButton.onClick.AddListener(OpenDeck);
             _settingsButton.onClick.AddListener(OpenSettings);
             _exitButton.onClick.AddListener(ExitApplication);
         }
-        
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _continueButton.interactable = GameSerializer.HasSavedData();
+        }
+
         private void OnDisable()
         {
             _newGameButton.onClick.RemoveListener(EnterNewGameScene);
+            _continueButton.onClick.RemoveListener(ContinueGame);
             _changeDeckButton.onClick.RemoveListener(OpenDeck);
             _settingsButton.onClick.RemoveListener(OpenSettings);
             _exitButton.onClick.RemoveListener(ExitApplication);
@@ -45,7 +50,15 @@ namespace UI.View.MainMenuView
         {
             var data = GameSerializer.Deserialize();
             SceneManager.LoadScene(data.scene);
-            GameStorage.Instance.Deserialize(data.storage);
+
+            void DeserializeOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
+            {
+                if (scene.name == "MainMenu") return;
+                GameStorage.Instance.Deserialize(data.storage);
+                SceneManager.sceneLoaded -= DeserializeOnSceneLoad;
+            }
+
+            SceneManager.sceneLoaded += DeserializeOnSceneLoad;
         }
         
         private static void ExitApplication() => Application.Quit();

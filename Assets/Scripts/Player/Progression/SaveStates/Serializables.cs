@@ -1,8 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using Core.Cards.Card;
 using Core.Cards.Card.Data;
 using Core.Cards.Hand;
+using Newtonsoft.Json;
 using Other.Dialog;
 using Player.Progression.Buffs;
 using UnityEditor;
@@ -11,26 +13,27 @@ using UnityEngine;
 namespace Player.Progression.SaveStates
 {
     [Serializable]
-    public struct SerializableBoard
+    public class SerializableBoard
     {
-        public SerializableCardData?[] PlayerCards;
-        public SerializableCardData?[] EnemyCards;
+        public SerializableCardData?[] _playerCards;
+        public SerializableCardData?[] _enemyCards;
 
         public SerializableBoard(SerializableCardData?[] playerCards, SerializableCardData?[] enemyCards)
         {
-            PlayerCards = playerCards;
-            EnemyCards = playerCards;
+            _playerCards = playerCards;
+            _enemyCards = enemyCards;
         }
     }
 
     [Serializable]
-    public struct SerializableDialog
+    public class SerializableDialog
     {
         public string _spritePath;
         public int[] _options;
         public string[] _dialogs;
         public int _currentDialogIndex;
-
+        
+        [JsonConstructor]
         public SerializableDialog(string spritePath, string[] dialogs, int[] options, int currentDialogIndex)
         {
             _spritePath = spritePath;
@@ -70,7 +73,7 @@ namespace Player.Progression.SaveStates
     }
 
     [Serializable]
-    public struct SerializablePlayerHand
+    public class SerializablePlayerHand
     {
         public int _maxHealth;
         public int _currentHealth;
@@ -86,6 +89,7 @@ namespace Player.Progression.SaveStates
         public SerializableCardData[] _currentDeck;
         public SerializableCardData[] _hand;
 
+        [JsonConstructor]
         public SerializablePlayerHand(
             int maxHealth, int currentHealth, int maxHope, int currentHope, int hopeRegeneration,
             int startingHandSize, int drawCount, SerializableCardData[] deck,
@@ -102,7 +106,7 @@ namespace Player.Progression.SaveStates
             _currentDeck = currentDeck;
             _hand = hand;
         }
-
+        
         public SerializablePlayerHand(PlayerHand hand)
         {
             _maxHealth = hand.MaxHealth;
@@ -126,13 +130,13 @@ namespace Player.Progression.SaveStates
             }
             
             _hand = new SerializableCardData[hand.CardsInHand.Count];
-            for (var i = 0; i < hand.Deck.Length; i++) 
+            for (var i = 0; i < hand.CardsInHand.Count; i++) 
                 _hand[i] = hand.CardsInHand[i].SerializeSelf();
         }
     }
 
     [Serializable]
-    public struct SerializableCardData
+    public class SerializableCardData
     {
         public int CardId { get; }
         public int Health { get; }

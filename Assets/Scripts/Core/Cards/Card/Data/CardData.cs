@@ -107,6 +107,7 @@ namespace Core.Cards.Card.Data
 
         public void Deserialize(SerializableCardData self)
         {
+            // TODO: Pulls single index (0) (prob. in another script)
             this = CardDataProvider.DataBank.Get(self.CardId);
             _attack = self.Attack;
             _health = self.Health;

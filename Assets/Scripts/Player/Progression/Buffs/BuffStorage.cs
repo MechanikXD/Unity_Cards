@@ -39,6 +39,7 @@ namespace Player.Progression.Buffs
         {
             _buffs = new Dictionary<ActivationType, List<T>>();
 
+            if (string.IsNullOrEmpty(buffIds)) return;
             var indexes = buffIds.Split(',');
             foreach (var index in indexes)
             {

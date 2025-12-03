@@ -32,7 +32,7 @@ namespace Core.Cards.Board
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
         [SerializeField] private PlayerStatView _playerStatView;
-        private PlayerHand _playerHand;
+        private static PlayerHand PlayerHand => GameStorage.Instance.PlayerHand;
         [Space]
         [SerializeField] private Image _playerHpFill;
         [SerializeField] private TMP_Text _playerHpText;
@@ -53,31 +53,32 @@ namespace Core.Cards.Board
         public CardModel CardPrefab => _cardPrefab;
         public CardSlot[] PlayerSlots => _playerCardSlots;
         public CardSlot[] EnemySlots => _otherCardSlots;
-        public static event Action TurnStarted;
         
         private void OnDisable()
         {
             if (GameManager.Instance != null)
             {
-                _playerHand.PlayerDefeated -= GameManager.Instance.LooseAct;
+                PlayerHand.PlayerDefeated -= GameManager.Instance.LooseAct;
                 _otherHand.PlayerDefeated -= GameManager.Instance.WinAct;    
             }
         }
 
-        public void StartGame(PlayerHand player, EnemyDifficultySettings settings)
+        public void StartGame(EnemyDifficultySettings settings, bool startAct=true)
         {
-            _playerHand = player;
-            _playerHand.SetStatView(_playerStatView);
-            var otherDeck = settings.GetDeck();
-            _otherHand.Initialize(otherDeck);
+            PlayerHand.SetStatView(_playerStatView);
             
-            _playerHand.PlayerDefeated += GameManager.Instance.LooseAct;
+            PlayerHand.PlayerDefeated += GameManager.Instance.LooseAct;
             _otherHand.PlayerDefeated += GameManager.Instance.WinAct;
             
-            _playerHand.UpdateStatView(true);
+            PlayerHand.UpdateStatView(true);
             _otherHand.UpdateStatView(true);
-            
-            StartAct(settings);
+
+            if (startAct)
+            {
+                var otherDeck = settings.GetDeck();
+                _otherHand.Initialize(otherDeck);
+                StartAct(settings);
+            }
         }
 
         public void FinishAct()
@@ -89,7 +90,7 @@ namespace Core.Cards.Board
                 var card = slot.Detach();
                 Destroy(card.gameObject);
             }
-            _playerHand.ResetAll();
+            PlayerHand.ResetAll();
             _layout.RemoveALl();
             
             foreach (var slot in EnemySlots)
@@ -107,10 +108,10 @@ namespace Core.Cards.Board
             var storage = GameStorage.Instance;
             storage.AdvanceAct();
             
-            _playerHand.RefillDeck();
-            storage.PlayerBuffs.ApplyAll(_playerHand, ActivationType.ActStart);
+            PlayerHand.RefillDeck();
+            storage.PlayerBuffs.ApplyAll(PlayerHand, ActivationType.ActStart);
             
-            var data = _playerHand.DrawCardsFromDeck(_playerHand.StartingHandSize);
+            var data = PlayerHand.DrawCardsFromDeck(PlayerHand.StartingHandSize);
             foreach (var cardData in data) CrateNewCardModel(cardData);
             
             storage.LoadEnemyBuffs(_otherHand);
@@ -132,15 +133,14 @@ namespace Core.Cards.Board
             _otherHand.DrawCardsFromDeck();
             _otherHand.RegenerateHope();
             
-            if (!HasAnyCards(_playerHand, _playerCardSlots))
+            if (!HasAnyCards(PlayerHand, _playerCardSlots))
             {
                 GameManager.Instance.LooseAct();
                 return;
             }
-            var data = _playerHand.DrawCardsFromDeck();
+            var data = PlayerHand.DrawCardsFromDeck();
             foreach (var cardData in data) CrateNewCardModel(cardData);
-            _playerHand.RegenerateHope();
-            TurnStarted?.Invoke();
+            PlayerHand.RegenerateHope();
             _enemyBehaviour.PlayTurn();
         }
 
@@ -150,7 +150,7 @@ namespace Core.Cards.Board
         private void CrateNewCardModel(CardData card)
         {
             var model = Instantiate(_cardPrefab);
-            model.Set(card, _playerHand);
+            model.Set(card, PlayerHand);
             AddCardToLayout(model);
         }
         
@@ -164,7 +164,7 @@ namespace Core.Cards.Board
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
             
-            GameStorage.Instance.PlayerBuffs.ApplyAll(_playerHand, ActivationType.CombatStart);
+            GameStorage.Instance.PlayerBuffs.ApplyAll(PlayerHand, ActivationType.CombatStart);
             GameStorage.Instance.EnemyBuffs.ApplyAll(_otherHand, ActivationType.CombatStart);
             await DisplayFinalAttacksAsync();
             for (var i = 0; i < _playerCardSlots.Length; i++)
@@ -246,7 +246,7 @@ namespace Core.Cards.Board
                 {
                     var otherCard = _otherCardSlots[i].Card;
                     var otherEffects = otherCard.Data.Effects;
-                    _playerHand.TakeDamage(otherCard.FinalAttack);
+                    PlayerHand.TakeDamage(otherCard.FinalAttack);
                     PlayEffects(otherEffects, TriggerType.OnHit, () => GetOtherContext(currentIndex));
                     otherCard.PlayRandomAnimationReverse();
                     
@@ -255,7 +255,7 @@ namespace Core.Cards.Board
                     PlayEffects(otherEffects, TriggerType.TurnEnd, () => GetOtherContext(currentIndex));
                 }
 
-                if (_playerHand.IsDefeated || _otherHand.IsDefeated) break;
+                if (PlayerHand.IsDefeated || _otherHand.IsDefeated) break;
             }
             
             ClearFinalAttacks();
@@ -325,37 +325,38 @@ namespace Core.Cards.Board
 
         public void Deserialize(BoardState self)
         {
-            foreach (var card in self.Board.PlayerCards)
+            // TODO: Have to attach to slots
+            foreach (var card in self.Board._playerCards)
             {
                 if (card == null) continue;
                 
                 var newModel = Instantiate(_cardPrefab);
-                newModel.Set(card.Value.ToCardData(), null);
+                newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
             }
             
-            foreach (var card in self.Board.EnemyCards)
+            foreach (var card in self.Board._enemyCards)
             {
                 if (card == null) continue;
                 
                 var newModel = Instantiate(_cardPrefab);
-                newModel.Set(card.Value.ToCardData(), null);
+                newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
             }
             
             _otherHand.Deserialize(self.Enemy);
 
-            foreach (var card in _playerHand.CardsInHand) CrateNewCardModel(card);
+            foreach (var card in PlayerHand.CardsInHand) CrateNewCardModel(card);
         }
         
         private BoardContext GetPlayerContext(int index)
         {
-            return new BoardContext(_playerCardSlots, index, _playerHand, _otherCardSlots, _otherHand);
+            return new BoardContext(_playerCardSlots, index, PlayerHand, _otherCardSlots, _otherHand);
         }
         
         private BoardContext GetOtherContext(int index)
         {
-            return new BoardContext(_otherCardSlots, index, _otherHand, _playerCardSlots, _playerHand);
+            return new BoardContext(_otherCardSlots, index, _otherHand, _playerCardSlots, PlayerHand);
         }
         
         private void OnDestroy()
