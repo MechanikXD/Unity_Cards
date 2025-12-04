@@ -8,17 +8,15 @@ using Player.Progression.SaveStates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Other.Dialog
 {
     public class DialogSceneController : SingletonBase<DialogSceneController>, IGameSerializable<DialogState>
     {
-        // TODO: Incorrect sprite saving (only file name, not a path)
-        // TODO: Options with no buffs are also displayed
-        // TODO: Confirm button after data load is not interactable
         private LinkedList<DialogSettings> _nextDialogs = new LinkedList<DialogSettings>();
-        [SerializeField] private Image _cgi;
+        [FormerlySerializedAs("_cgi"),SerializeField] private Image _sprite;
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
 
@@ -48,7 +46,7 @@ namespace Other.Dialog
         
         public void Load(DialogSettings dialog)
         {
-            _cgi.sprite = dialog.Cgi;
+            _sprite.sprite = dialog.Sprite;
             _dialogs = dialog.Dialogues;
             _optionsCount = dialog.Options.Count;
             _dialogIsFinished = false;
@@ -77,7 +75,7 @@ namespace Other.Dialog
             }
 
             var current =
-                new SerializableDialog(_cgi.sprite, _dialogs, buffIds, _currentDialogIndex);
+                new SerializableDialog(_sprite.sprite, _dialogs, buffIds, _currentDialogIndex);
             var next = new SerializableDialog[_nextDialogs.Count];
 
             var index = 0;
@@ -94,21 +92,29 @@ namespace Other.Dialog
         {
             var db = GameStorage.Instance.BuffDataBase;
             _nextDialogs = self.Next.ToLinkedList(s => s.ToDialogSetting(db));
-            _cgi.sprite = Resources.Load<Sprite>(self.Current._spritePath);
+            _sprite.sprite = self.Current._sprite.ToSprite();
             _dialogs = self.Current._dialogs;
             
             _currentDialogIndex = self.Current._currentDialogIndex;
             _dialogIsFinished = _currentDialogIndex >= _dialogs.Length;
             
             _optionsCount = self.Current._options.Length;
-            for (var i = 0; i < _optionsCount; i++) 
-                _dialogOptions[i].Load(db.Get<BuffBase>(self.Current._options[i]));
+            for (var i = 0; i < _dialogOptions.Length; i++)
+            {
+                if (i < _optionsCount) _dialogOptions[i].Load(db.Get<BuffBase>(self.Current._options[i]));
+                _dialogOptions[i].gameObject.SetActive(false);
+            }
+            
+            _confirmButton.onClick.RemoveAllListeners();
+            _confirmButton.onClick.AddListener(ConfirmButtonPress);
             
             if (_dialogIsFinished) LoadOptions();
             else
             {
                 _currentDialogIndex -= 1;
                 if (_currentDialogIndex < 0) _currentDialogIndex = 0;
+                _confirmButton.interactable = false;
+                _confirmButton.gameObject.SetActive(false);
                 AdvanceDialog();
             }
         }
@@ -173,13 +179,13 @@ namespace Other.Dialog
 
     public struct DialogSettings
     {
-        public Sprite Cgi { get; }
+        public Sprite Sprite { get; }
         public string[] Dialogues { get; }
         public IList<BuffBase> Options { get; }
 
-        public DialogSettings(Sprite cgi, string[] dialogues, IList<BuffBase> options)
+        public DialogSettings(Sprite sprite, string[] dialogues, IList<BuffBase> options)
         {
-            Cgi = cgi;
+            Sprite = sprite;
             Dialogues = dialogues;
             Options = options;
         }

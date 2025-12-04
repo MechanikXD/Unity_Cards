@@ -26,6 +26,7 @@ namespace Core
         private void Start()
         {
             _board.StartGame(_difficultySettings, !GameStorage.Instance.HadLoadedData);
+            GameStorage.Instance.ResetLoadedDataBool();
         }
 
         public void WinAct()

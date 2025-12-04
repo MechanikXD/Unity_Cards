@@ -42,7 +42,7 @@ namespace Core.SessionStorage
         protected override void Awake()
         {
             ToSingleton(true);
-            Initialize();
+            if (!WasMarkedToDestroy) Initialize();
         }
 
         protected override void Initialize()
