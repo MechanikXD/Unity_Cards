@@ -296,7 +296,7 @@ namespace Core.Cards.Hand
 
             Deck = new CardData[self._deck.Length];
             for (var i = 0; i < self._deck.Length; i++) 
-                Deck[i].Deserialize(self._deck[i]);
+                Deck[i] = self._deck[i].ToCardData();
             
             CurrentDeck = new LinkedList<CardData>();
             foreach (var card in self._currentDeck) 

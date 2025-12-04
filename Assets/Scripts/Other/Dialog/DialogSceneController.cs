@@ -14,6 +14,9 @@ namespace Other.Dialog
 {
     public class DialogSceneController : SingletonBase<DialogSceneController>, IGameSerializable<DialogState>
     {
+        // TODO: Incorrect sprite saving (only file name, not a path)
+        // TODO: Options with no buffs are also displayed
+        // TODO: Confirm button after data load is not interactable
         private LinkedList<DialogSettings> _nextDialogs = new LinkedList<DialogSettings>();
         [SerializeField] private Image _cgi;
         [SerializeField] private TMP_Text _dialogWindow;

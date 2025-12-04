@@ -138,25 +138,25 @@ namespace Player.Progression.SaveStates
     [Serializable]
     public class SerializableCardData
     {
-        public int CardId { get; }
-        public int Health { get; }
-        public Vector2Int Attack{ get; }
-        public int Cost{ get; }
+        public int _cardId;
+        public int _health;
+        public Vector2Int _attack;
+        public int _cost;
 
         public SerializableCardData(int id, int health, Vector2Int attack, int cost)
         {
-            CardId = id;
-            Health = health;
-            Attack = attack;
-            Cost = cost;
+            _cardId = id;
+            _health = health;
+            _attack = attack;
+            _cost = cost;
         }
 
         public CardData ToCardData()
         {
-            var original = CardDataProvider.DataBank.Get(CardId);
-            original.Attack = Attack;
-            original.Health = Health;
-            original.Cost = Cost;
+            var original = CardDataProvider.DataBank.Get(_cardId);
+            original.Attack = _attack;
+            original.Health = _health;
+            original.Cost = _cost;
             return original;
         }
     }

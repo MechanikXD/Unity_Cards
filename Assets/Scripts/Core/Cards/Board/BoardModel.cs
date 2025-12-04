@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Cards.Card;
@@ -25,6 +26,7 @@ namespace Core.Cards.Board
         private const int CARD_SORTING_GROUP = 3;
         private const float FINAL_ATTACK_DISPLAY_DELAY = 0.5f;
         private const float BETWEEN_ATTACKS_DELAY = 1f; 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
@@ -49,6 +51,7 @@ namespace Core.Cards.Board
         [Space]
         [SerializeField] private Image _otherHopeFill;
         [SerializeField] private TMP_Text _otherHopeText;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         public CardModel CardPrefab => _cardPrefab;
         public CardSlot[] PlayerSlots => _playerCardSlots;
@@ -58,7 +61,7 @@ namespace Core.Cards.Board
         {
             if (GameManager.Instance != null)
             {
-                PlayerHand.PlayerDefeated -= GameManager.Instance.LooseAct;
+                if (GameStorage.Instance !=null) PlayerHand.PlayerDefeated -= GameManager.Instance.LooseAct;
                 _otherHand.PlayerDefeated -= GameManager.Instance.WinAct;    
             }
         }
@@ -326,22 +329,26 @@ namespace Core.Cards.Board
         public void Deserialize(BoardState self)
         {
             // TODO: Have to attach to slots
-            foreach (var card in self.Board._playerCards)
+            for (var i = 0; i < self.Board._playerCards.Length; i++)
             {
+                var card = self.Board._playerCards[i];
                 if (card == null) continue;
                 
                 var newModel = Instantiate(_cardPrefab);
                 newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
+                _playerCardSlots[i].Attach(newModel, true);
             }
             
-            foreach (var card in self.Board._enemyCards)
+            for (var i = 0; i < self.Board._enemyCards.Length; i++)
             {
+                var card = self.Board._enemyCards[i];
                 if (card == null) continue;
                 
                 var newModel = Instantiate(_cardPrefab);
                 newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
+                _otherCardSlots[i].Attach(newModel, true);
             }
             
             _otherHand.Deserialize(self.Enemy);
@@ -357,11 +364,6 @@ namespace Core.Cards.Board
         private BoardContext GetOtherContext(int index)
         {
             return new BoardContext(_otherCardSlots, index, _otherHand, _playerCardSlots, PlayerHand);
-        }
-        
-        private void OnDestroy()
-        {
-            _enemyBehaviour.StateMachine.StopMachine();
         }
     }
 
