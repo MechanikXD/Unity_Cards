@@ -1,7 +1,6 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
 using Core.SessionStorage;
-using Enemy;
 using Other.Dialog;
 using UI;
 using UI.View.GameView;
@@ -12,24 +11,20 @@ namespace Core
 {
     public class GameManager : SingletonBase<GameManager>
     {
-        // TODO: Difficulty selection
-        // TODO: Make db object for dialogs
         [SerializeField] private BoardModel _board;
-        [SerializeField] private EnemyDifficultySettings _difficultySettings;
         [SerializeField] private DialogDataBase _dialogDataBase;
         
         public bool ActIsFinished { get; private set; }
-
-        public EnemyDifficultySettings DifficultySettings => _difficultySettings;
         public BoardModel Board => _board;
-
-        protected override void Initialize() { }
 
         private void Start()
         {
-            _board.StartGame(_difficultySettings, !GameStorage.Instance.HadLoadedData);
-            GameStorage.Instance.ResetLoadedDataBool();
+            var gs = GameStorage.Instance;
+            Board.StartGame(gs.DifficultySettings, !gs.HadLoadedData);
+            gs.HadLoadedData = false;
         }
+        
+        protected override void Initialize() { }
 
         public void WinAct()
         {
@@ -65,7 +60,7 @@ namespace Core
 
         private void FinalizeGame()
         {
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle(":)");
+            UIManager.Instance.GetUICanvas<GameResultView>().SetStats(":)");
             UIManager.Instance.EnterUICanvas<GameResultView>();
         }
     }

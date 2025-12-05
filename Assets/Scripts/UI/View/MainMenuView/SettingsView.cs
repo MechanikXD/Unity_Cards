@@ -22,7 +22,7 @@ namespace UI.View.MainMenuView
         protected override void Awake()
         {
             base.Awake();
-            LoadGroups();
+            CreateGroups();
         }
 
         public static void AddEventOnSetting(string settingName, Action<Setting> action)
@@ -59,7 +59,7 @@ namespace UI.View.MainMenuView
             StorageProxy.SaveSettings();
         }
 
-        private void LoadGroups()
+        private void CreateGroups()
         {
             var firstDisplayed = false;
             for (var i = 0; i < _settingData.SettingGroups.Length; i++)
@@ -71,8 +71,10 @@ namespace UI.View.MainMenuView
 
                 // Create settings for this group
                 newGroup.LoadSettings(_settingData.SettingGroups[i], out var createdSettings);
-                // Load settings into dictionary
-                foreach (var setting in createdSettings) Settings.Add(setting.Key, setting.Value);
+                // Load settings into dictionary if it's empty
+                if (Settings.Count <= 0)  
+                    foreach (var setting in createdSettings) 
+                        Settings.Add(setting.Key, setting.Value);
                 
                 // Enable only first tab
                 if (!firstDisplayed)

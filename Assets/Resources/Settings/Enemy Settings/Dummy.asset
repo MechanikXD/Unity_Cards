@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6368393c674a94a4cbdddd9ea7469a, type: 3}
   m_Name: Dummy
   m_EditorClassIdentifier: 
+  _difficultyName: TEST
   _minDeckSize: 1
   _maxDeckSize: 1
   _selectionType: 2

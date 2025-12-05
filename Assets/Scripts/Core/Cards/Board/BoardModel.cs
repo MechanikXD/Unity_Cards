@@ -324,7 +324,7 @@ namespace Core.Cards.Board
                     : _otherCardSlots[i].Card.Data.SerializeSelf();
             }
 
-            var board = new SerializableBoard(playerCards, enemyCards);
+            var board = new SerializableBoard(playerCards, enemyCards, _enemyBehaviour.Settings.DifficultyName);
 
             return new BoardState(board, _otherHand.SerializeSelf());
         }
@@ -353,6 +353,7 @@ namespace Core.Cards.Board
                 _otherCardSlots[i].Attach(newModel, true);
             }
             
+            GameStorage.Instance.SetSettings(self.Board._enemyDifficultyName);
             _otherHand.Deserialize(self.Enemy);
 
             foreach (var card in PlayerHand.CardsInHand) CrateNewCardModel(card);

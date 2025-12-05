@@ -1,4 +1,5 @@
 ﻿using Core.SessionStorage;
+using Enemy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,12 +8,13 @@ namespace UI.View.MainMenuView
 {
     public class MainView : CanvasView
     {
+        [SerializeField] private EnemyDifficultySettings[] _difficultySettings;
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _changeDeckButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _exitButton;
-        
+
         private void OnEnable()
         {
             _newGameButton.onClick.AddListener(EnterNewGameScene);
@@ -36,14 +38,15 @@ namespace UI.View.MainMenuView
             _settingsButton.onClick.RemoveListener(OpenSettings);
             _exitButton.onClick.RemoveListener(ExitApplication);
         }
-        
+
         private static void OpenSettings() => UIManager.Instance.EnterUICanvas<SettingsView>();
         private static void OpenDeck() => UIManager.Instance.EnterUICanvas<DeckView>();
-        
-        private static void EnterNewGameScene()
+
+        private void EnterNewGameScene()
         {
             GameSerializer.Clear();
-            SceneManager.LoadScene("GameScene");
+            UIManager.Instance.GetHUDCanvas<DifficultySelectionView>().CreateButtons(_difficultySettings);
+            UIManager.Instance.EnterHUDCanvas<DifficultySelectionView>();
         }
 
         private void ContinueGame()
@@ -60,7 +63,7 @@ namespace UI.View.MainMenuView
 
             SceneManager.sceneLoaded += DeserializeOnSceneLoad;
         }
-        
+
         private static void ExitApplication() => Application.Quit();
     }
 }

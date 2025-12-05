@@ -10,6 +10,7 @@ namespace Enemy
     public class EnemyDifficultySettings : ScriptableObject
     {
         [Header("General")]
+        [SerializeField] private string _difficultyName;
         [SerializeField] private int _minDeckSize;
         // Does not guarantee that deck will be that big, this is just a ceiling for deck size
         [SerializeField] private int _maxDeckSize = 12;
@@ -44,7 +45,8 @@ namespace Enemy
         [SerializeField] private int _maxCardCountPerTurn;
         // If random selection is not on, will respond to card with given danger level
         [SerializeField] private float _minDangerLevelToRespondNeutral;
-        
+
+        public string DifficultyName => _difficultyName;
         // Aggressive state fields
         public float DangerLevelToBecomeAggressive => _dangerLevelToBecomeAggressive;
         public float IgnoreDangerLevelAggressive => _ignoreDangerLevelAggressive;

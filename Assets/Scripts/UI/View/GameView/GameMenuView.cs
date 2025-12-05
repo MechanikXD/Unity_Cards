@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.SessionStorage;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -27,12 +28,18 @@ namespace UI.View.GameView
             _exitButton.onClick.RemoveListener(ExitApplication);
         }
 
-        private void ExitCanvas()
+        private static void ExitCanvas()
         {
             if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
 
-        private void ToMainMenu() => SceneManager.LoadScene("MainMenu");
-        private void ExitApplication() => Application.Quit();
+        private static void ToMainMenu()
+        {
+            GameSerializer.Serialize();
+            Destroy(GameStorage.Instance.gameObject);
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        private static void ExitApplication() => Application.Quit();
     }
 }

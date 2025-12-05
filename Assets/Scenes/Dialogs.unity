@@ -1546,6 +1546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sprite: {fileID: 1899416397}
+  _foreground: {fileID: 1291228476}
   _dialogWindow: {fileID: 2139159451}
   _confirmButton: {fileID: 785722791}
   _dialogOptions:

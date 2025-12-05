@@ -15,11 +15,14 @@ namespace Player.Progression.SaveStates
     {
         public SerializableCardData?[] _playerCards;
         public SerializableCardData?[] _enemyCards;
+        public string _enemyDifficultyName;
 
-        public SerializableBoard(SerializableCardData?[] playerCards, SerializableCardData?[] enemyCards)
+        public SerializableBoard(SerializableCardData?[] playerCards, 
+            SerializableCardData?[] enemyCards, string enemyDifficultyName)
         {
             _playerCards = playerCards;
             _enemyCards = enemyCards;
+            _enemyDifficultyName = enemyDifficultyName;
         }
     }
 
@@ -33,7 +36,8 @@ namespace Player.Progression.SaveStates
         public int _currentDialogIndex;
         
         [JsonConstructor]
-        public SerializableDialog(string spritePath, string? foregroundPath, string[] dialogs, int[] options, int currentDialogIndex)
+        public SerializableDialog(string spritePath, string? foregroundPath, string[] dialogs, 
+            int[] options, int currentDialogIndex)
         {
             _spritePath = spritePath;
             _foregroundPath = foregroundPath;

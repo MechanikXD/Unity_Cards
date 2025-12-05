@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6368393c674a94a4cbdddd9ea7469a, type: 3}
   m_Name: Normal Settings
   m_EditorClassIdentifier: 
+  _difficultyName: Normal
+  _minDeckSize: 0
+  _maxDeckSize: 12
+  _selectionType: 0
+  _deckMaxCost: 50
   _dangerLevelToBecomeAggressive: 3
   _ignoreDangerLevelAggressive: 4
   _tryMatchDangerLevelOnCounteractAggressive: 0

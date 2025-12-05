@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Behaviour;
 using Core.Cards.Hand;
+using Enemy;
 using Newtonsoft.Json.Linq;
 using Other.Dialog;
 using Player.Progression.Buffs;
@@ -19,8 +21,9 @@ namespace Core.SessionStorage
     {
         [SerializeField] private BuffDataBase _buffs;
         [SerializeField] private PlayerHand _playerHand;
+        public EnemyDifficultySettings DifficultySettings { get; private set; }
 
-        public bool HadLoadedData { get; private set; }
+        public bool HadLoadedData { get; set; }
         public int CurrentAct { get; private set; } = -1;
         public PlayerHand PlayerHand => _playerHand;
         public BuffDataBase BuffDataBase => _buffs;
@@ -55,6 +58,14 @@ namespace Core.SessionStorage
             for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
             _playerHand.Initialize(ids);
         }
+        
+        public void SetSettings(EnemyDifficultySettings settings) => 
+            DifficultySettings = settings;
+        
+        public void SetSettings(string settings) =>
+            DifficultySettings =
+                Resources.LoadAll<EnemyDifficultySettings>("Settings/Enemy Settings")
+                    .First(s => s.DifficultyName == settings);
 
         public IList<BuffBase> GetRandomPlayerBuffOptions(int amount) =>
             _buffs.RandomPlayerBuff(amount, CurrentAct);
@@ -102,8 +113,6 @@ namespace Core.SessionStorage
             SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
             if (SceneManager.GetActiveScene().name == "GameScene") HadLoadedData = true;
         }
-
-        public void ResetLoadedDataBool() => HadLoadedData = false;
     }
 
     [Serializable]
