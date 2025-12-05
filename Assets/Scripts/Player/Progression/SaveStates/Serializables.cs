@@ -27,14 +27,16 @@ namespace Player.Progression.SaveStates
     public class SerializableDialog
     {
         public string _spritePath;
+        public string? _foregroundPath;
         public int[] _options;
         public string[] _dialogs;
         public int _currentDialogIndex;
         
         [JsonConstructor]
-        public SerializableDialog(string spritePath, string[] dialogs, int[] options, int currentDialogIndex)
+        public SerializableDialog(string spritePath, string? foregroundPath, string[] dialogs, int[] options, int currentDialogIndex)
         {
             _spritePath = spritePath;
+            _foregroundPath = foregroundPath;
             _dialogs = dialogs;
             _options = options;
             _currentDialogIndex = currentDialogIndex;
@@ -43,6 +45,7 @@ namespace Player.Progression.SaveStates
         public SerializableDialog(DialogSettings settings)
         {
             _spritePath = settings.SpritePath;
+            _foregroundPath = settings.ForegroundPath;
             _dialogs = settings.Dialogues;
             _options = new int[settings.Options.Count];
             for (var i = 0; i < settings.Options.Count; i++) _options[i] = settings.Options[i].ID;
@@ -57,7 +60,7 @@ namespace Player.Progression.SaveStates
                 buffs[i] = db.Get<BuffBase>(_options[i]);
             }
 
-            return new DialogSettings(_spritePath, _dialogs, buffs);
+            return new DialogSettings(_spritePath, _foregroundPath, _dialogs, buffs);
         }
     }
 

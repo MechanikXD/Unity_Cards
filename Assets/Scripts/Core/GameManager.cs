@@ -1,6 +1,5 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
-using Core.Cards.Card;
 using Core.SessionStorage;
 using Enemy;
 using Other.Dialog;
@@ -13,8 +12,11 @@ namespace Core
 {
     public class GameManager : SingletonBase<GameManager>
     {
+        // TODO: Difficulty selection
+        // TODO: Make db object for dialogs
         [SerializeField] private BoardModel _board;
         [SerializeField] private EnemyDifficultySettings _difficultySettings;
+        [SerializeField] private DialogDataBase _dialogDataBase;
         
         public bool ActIsFinished { get; private set; }
 
@@ -38,15 +40,15 @@ namespace Core
             void InitializeDialog(Scene scene, LoadSceneMode mode)
             {
                 if (scene != SceneManager.GetSceneByName("Dialogs")) return;
-                
+
+                var first = _dialogDataBase.GetRandom();
+                var second = _dialogDataBase.GetRandom();
                 DialogSceneController.Instance.Load(new[]
                 {
-                    new DialogSettings("Backgrounds/GreymoorBG",
-                        new [] { "Hello", "World!" }, 
-                        GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
-                    new DialogSettings("Backgrounds/GreymoorBG", 
-                        new [] { "Hello", "Evil", "World!" },
-                        GameStorage.Instance.GetRandomEnemyBuffOptions(3))
+                    new DialogSettings(first._backgroundImagePath, first._foregroundImagePath,
+                        first._dialogs, GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
+                    new DialogSettings(second._backgroundImagePath, second._foregroundImagePath,
+                        second._dialogs, GameStorage.Instance.GetRandomEnemyBuffOptions(3))
                 });
                 
                 SceneManager.sceneLoaded -= InitializeDialog;

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Core.Behaviour;
+using Core.Cards.Card;
 using Core.SessionStorage;
+using JetBrains.Annotations;
 using Other.Dialog.SceneObjects;
 using Other.Extensions;
 using Player.Progression.Buffs;
@@ -8,7 +10,6 @@ using Player.Progression.SaveStates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Other.Dialog
@@ -16,8 +17,10 @@ namespace Other.Dialog
     public class DialogSceneController : SingletonBase<DialogSceneController>, IGameSerializable<DialogState>
     {
         private LinkedList<DialogSettings> _nextDialogs = new LinkedList<DialogSettings>();
-        [FormerlySerializedAs("_cgi"),SerializeField] private Image _sprite;
+        [SerializeField] private Image _sprite;
+        [SerializeField] private Image _foreground;
         private string _currentSpritePath;
+        [CanBeNull] private string _currentForegroundPath;
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
         // Because my button is nested inside actual gameObject of button:
@@ -50,6 +53,10 @@ namespace Other.Dialog
         public void Load(DialogSettings dialog)
         {
             _sprite.sprite = dialog.Sprite;
+            _foreground.sprite = dialog.Foreground == null
+                ? CardDataProvider.ImageNull
+                : dialog.Foreground;
+            _currentForegroundPath = dialog.ForegroundPath;
             _currentSpritePath = dialog.SpritePath;
             _dialogs = dialog.Dialogues;
             _optionsCount = dialog.Options.Count;
@@ -79,7 +86,7 @@ namespace Other.Dialog
             }
 
             var current =
-                new SerializableDialog(_currentSpritePath, _dialogs, buffIds, _currentDialogIndex);
+                new SerializableDialog(_currentSpritePath, _currentForegroundPath, _dialogs, buffIds, _currentDialogIndex);
             var next = new SerializableDialog[_nextDialogs.Count];
 
             var index = 0;
@@ -98,6 +105,10 @@ namespace Other.Dialog
             _nextDialogs = self.Next.ToLinkedList(s => s.ToDialogSetting(db));
             _currentSpritePath = self.Current._spritePath;
             _sprite.sprite = Resources.Load<Sprite>(self.Current._spritePath);
+            _foreground.sprite = self.Current._foregroundPath == null
+                ? CardDataProvider.ImageNull
+                : Resources.Load<Sprite>(self.Current._foregroundPath);
+            _currentForegroundPath = self.Current._foregroundPath;
             _dialogs = self.Current._dialogs;
             
             _currentDialogIndex = self.Current._currentDialogIndex;
@@ -186,14 +197,18 @@ namespace Other.Dialog
     public struct DialogSettings
     {
         public readonly Sprite Sprite;
+        [CanBeNull] public readonly Sprite Foreground;
         public readonly string SpritePath;
+        [CanBeNull] public readonly string ForegroundPath;
         public readonly string[] Dialogues;
         public readonly IList<BuffBase> Options;
 
-        public DialogSettings(string spritePath, string[] dialogues, IList<BuffBase> options)
+        public DialogSettings(string spritePath, [CanBeNull] string foregroundPath, string[] dialogues, IList<BuffBase> options)
         {
             SpritePath = spritePath;
+            ForegroundPath = foregroundPath;
             Sprite = Resources.Load<Sprite>(spritePath);
+            Foreground = Resources.Load<Sprite>(foregroundPath);
             Dialogues = dialogues;
             Options = options;
         }
