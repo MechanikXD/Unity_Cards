@@ -26,23 +26,15 @@ namespace Player.Progression.SaveStates
     [Serializable]
     public class SerializableDialog
     {
-        public SerializableTexture _sprite;
+        public string _spritePath;
         public int[] _options;
         public string[] _dialogs;
         public int _currentDialogIndex;
         
         [JsonConstructor]
-        public SerializableDialog(SerializableTexture sprite, string[] dialogs, int[] options, int currentDialogIndex)
+        public SerializableDialog(string spritePath, string[] dialogs, int[] options, int currentDialogIndex)
         {
-            _sprite = sprite;
-            _dialogs = dialogs;
-            _options = options;
-            _currentDialogIndex = currentDialogIndex;
-        }
-
-        public SerializableDialog(Sprite sprite, string[] dialogs, int[] options, int currentDialogIndex)
-        {
-            _sprite = new SerializableTexture(sprite);
+            _spritePath = spritePath;
             _dialogs = dialogs;
             _options = options;
             _currentDialogIndex = currentDialogIndex;
@@ -50,7 +42,7 @@ namespace Player.Progression.SaveStates
 
         public SerializableDialog(DialogSettings settings)
         {
-            _sprite = new SerializableTexture(settings.Sprite);
+            _spritePath = settings.SpritePath;
             _dialogs = settings.Dialogues;
             _options = new int[settings.Options.Count];
             for (var i = 0; i < settings.Options.Count; i++) _options[i] = settings.Options[i].ID;
@@ -65,7 +57,7 @@ namespace Player.Progression.SaveStates
                 buffs[i] = db.Get<BuffBase>(_options[i]);
             }
 
-            return new DialogSettings(_sprite.ToSprite(), _dialogs, buffs);
+            return new DialogSettings(_spritePath, _dialogs, buffs);
         }
     }
 
@@ -155,37 +147,6 @@ namespace Player.Progression.SaveStates
             original.Health = _health;
             original.Cost = _cost;
             return original;
-        }
-    }
-
-    [Serializable]
-    public class SerializableTexture
-    {
-        public int _width;
-        public int _height;
-        public byte[] _bytes;
-        // TODO: Rect contains vector2 that causes loop
-        public Rect _rect;
-        // Vector 2 causes serialize loop -> separate x and y
-        public float _pivotX;
-        public float _pivotY;
-
-        public SerializableTexture(Sprite sprite)
-        {
-            var tex = sprite.texture;
-            _width = tex.width;
-            _height = tex.height;
-            _bytes = tex.GetRawTextureData();
-            _rect = sprite.rect;
-            _pivotX = sprite.pivot.x;
-            _pivotY = sprite.pivot.y;
-        }
-        
-        public Sprite ToSprite()
-        {
-            var tex = new Texture2D(_width, _height);
-            tex.LoadRawTextureData(_bytes); 
-            return Sprite.Create(tex, _rect, new Vector2(_pivotX, _pivotY));
         }
     }
 }

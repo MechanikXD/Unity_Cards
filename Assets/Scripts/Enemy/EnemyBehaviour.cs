@@ -35,6 +35,7 @@ namespace Enemy
 
         public void PlayTurn()
         {
+            if (Hand.CardsInHand.Count == 0) return;
             ((EnemyState)StateMachine.CurrentState).PlayTurn();
         }
 

@@ -17,8 +17,11 @@ namespace Other.Dialog
     {
         private LinkedList<DialogSettings> _nextDialogs = new LinkedList<DialogSettings>();
         [FormerlySerializedAs("_cgi"),SerializeField] private Image _sprite;
+        private string _currentSpritePath;
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
+        // Because my button is nested inside actual gameObject of button:
+        private GameObject ConfirmButtonGameObject => _confirmButton.transform.parent.gameObject;
 
         [SerializeField] private OptionButton[] _dialogOptions;
         private int _optionsCount;
@@ -47,6 +50,7 @@ namespace Other.Dialog
         public void Load(DialogSettings dialog)
         {
             _sprite.sprite = dialog.Sprite;
+            _currentSpritePath = dialog.SpritePath;
             _dialogs = dialog.Dialogues;
             _optionsCount = dialog.Options.Count;
             _dialogIsFinished = false;
@@ -62,7 +66,7 @@ namespace Other.Dialog
             _confirmButton.onClick.AddListener(ConfirmButtonPress);
             
             _confirmButton.interactable = false;
-            _confirmButton.gameObject.SetActive(false);
+            ConfirmButtonGameObject.SetActive(false);
             AdvanceDialog();
         }
 
@@ -75,7 +79,7 @@ namespace Other.Dialog
             }
 
             var current =
-                new SerializableDialog(_sprite.sprite, _dialogs, buffIds, _currentDialogIndex);
+                new SerializableDialog(_currentSpritePath, _dialogs, buffIds, _currentDialogIndex);
             var next = new SerializableDialog[_nextDialogs.Count];
 
             var index = 0;
@@ -92,7 +96,8 @@ namespace Other.Dialog
         {
             var db = GameStorage.Instance.BuffDataBase;
             _nextDialogs = self.Next.ToLinkedList(s => s.ToDialogSetting(db));
-            _sprite.sprite = self.Current._sprite.ToSprite();
+            _currentSpritePath = self.Current._spritePath;
+            _sprite.sprite = Resources.Load<Sprite>(self.Current._spritePath);
             _dialogs = self.Current._dialogs;
             
             _currentDialogIndex = self.Current._currentDialogIndex;
@@ -114,7 +119,7 @@ namespace Other.Dialog
                 _currentDialogIndex -= 1;
                 if (_currentDialogIndex < 0) _currentDialogIndex = 0;
                 _confirmButton.interactable = false;
-                _confirmButton.gameObject.SetActive(false);
+                ConfirmButtonGameObject.SetActive(false);
                 AdvanceDialog();
             }
         }
@@ -173,19 +178,22 @@ namespace Other.Dialog
                 _dialogOptions[i].gameObject.SetActive(true);
             }
             _dialogWindow.SetText(string.Join('\n', _dialogs));
-            _confirmButton.gameObject.SetActive(true);
+            _confirmButton.interactable = false;
+            ConfirmButtonGameObject.SetActive(true);
         }
     }
 
     public struct DialogSettings
     {
-        public Sprite Sprite { get; }
-        public string[] Dialogues { get; }
-        public IList<BuffBase> Options { get; }
+        public readonly Sprite Sprite;
+        public readonly string SpritePath;
+        public readonly string[] Dialogues;
+        public readonly IList<BuffBase> Options;
 
-        public DialogSettings(Sprite sprite, string[] dialogues, IList<BuffBase> options)
+        public DialogSettings(string spritePath, string[] dialogues, IList<BuffBase> options)
         {
-            Sprite = sprite;
+            SpritePath = spritePath;
+            Sprite = Resources.Load<Sprite>(spritePath);
             Dialogues = dialogues;
             Options = options;
         }

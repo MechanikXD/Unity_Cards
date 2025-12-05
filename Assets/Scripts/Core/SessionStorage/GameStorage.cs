@@ -100,7 +100,7 @@ namespace Core.SessionStorage
             PlayerBuffs.Load(_buffs, self.PlayerBuffs);
             EnemyBuffs.Load(_buffs, self.EnemyBuffs);
             SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
-            HadLoadedData = true;
+            if (SceneManager.GetActiveScene().name == "GameScene") HadLoadedData = true;
         }
 
         public void ResetLoadedDataBool() => HadLoadedData = false;

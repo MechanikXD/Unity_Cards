@@ -69,6 +69,7 @@ namespace Core.Cards.Board
         public void StartGame(EnemyDifficultySettings settings, bool startAct=true)
         {
             PlayerHand.SetStatView(_playerStatView);
+            InitializeEnemy(settings);
             
             PlayerHand.PlayerDefeated += GameManager.Instance.LooseAct;
             _otherHand.PlayerDefeated += GameManager.Instance.WinAct;
@@ -76,12 +77,7 @@ namespace Core.Cards.Board
             PlayerHand.UpdateStatView(true);
             _otherHand.UpdateStatView(true);
 
-            if (startAct)
-            {
-                var otherDeck = settings.GetDeck();
-                _otherHand.Initialize(otherDeck);
-                StartAct(settings);
-            }
+            if (startAct) StartAct();
         }
 
         public void FinishAct()
@@ -106,7 +102,7 @@ namespace Core.Cards.Board
             _otherHand.ResetAll();
         }
 
-        private void StartAct(EnemyDifficultySettings settings)
+        private void StartAct()
         {
             var storage = GameStorage.Instance;
             storage.AdvanceAct();
@@ -117,11 +113,18 @@ namespace Core.Cards.Board
             var data = PlayerHand.DrawCardsFromDeck(PlayerHand.StartingHandSize);
             foreach (var cardData in data) CrateNewCardModel(cardData);
             
-            storage.LoadEnemyBuffs(_otherHand);
             _otherHand.RefillDeck();
             _otherHand.DrawCardsFromDeck(_otherHand.StartingHandSize);
-            _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
+            
             _enemyBehaviour.PlayTurn();
+        }
+
+        private void InitializeEnemy(EnemyDifficultySettings settings)
+        {
+            var otherDeck = settings.GetDeck();
+            _otherHand.Initialize(otherDeck);
+            GameStorage.Instance.LoadEnemyBuffs(_otherHand);
+            _enemyBehaviour = new EnemyBehaviour(this, _otherHand, settings);
         }
 
         public void NextTurn()
@@ -328,7 +331,6 @@ namespace Core.Cards.Board
 
         public void Deserialize(BoardState self)
         {
-            // TODO: Have to attach to slots
             for (var i = 0; i < self.Board._playerCards.Length; i++)
             {
                 var card = self.Board._playerCards[i];

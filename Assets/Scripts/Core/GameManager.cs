@@ -41,10 +41,10 @@ namespace Core
                 
                 DialogSceneController.Instance.Load(new[]
                 {
-                    new DialogSettings(CardDataProvider.ImageNull,
+                    new DialogSettings("Backgrounds/GreymoorBG",
                         new [] { "Hello", "World!" }, 
                         GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
-                    new DialogSettings(CardDataProvider.ImageNull, 
+                    new DialogSettings("Backgrounds/GreymoorBG", 
                         new [] { "Hello", "Evil", "World!" },
                         GameStorage.Instance.GetRandomEnemyBuffOptions(3))
                 });
