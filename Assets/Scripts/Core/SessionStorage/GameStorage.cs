@@ -52,7 +52,6 @@ namespace Core.SessionStorage
         {
             if (GameSerializer.HasSavedData()) return;
 
-            Debug.Log("No Serialized Data detected, Initializing...");
             var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
             var ids = new int[strings.Length];
             for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);

@@ -14,7 +14,6 @@ namespace Core.SessionStorage
         public static void Serialize()
         {
             var sceneName = SceneManager.GetActiveScene().name;
-            Debug.Log("Save: " + JsonConvert.SerializeObject(GameStorage.Instance.SerializeSelf()));
             StorageProxy.Set(STORAGE_DATA_KEY, JsonConvert.SerializeObject(GameStorage.Instance.SerializeSelf()));
             StorageProxy.Set(STORAGE_SCENE_KEY, sceneName);
         }
@@ -23,7 +22,6 @@ namespace Core.SessionStorage
         {
             var scene = StorageProxy.Get<string>(STORAGE_SCENE_KEY);
             var json = StorageProxy.Get<string>(STORAGE_DATA_KEY);
-            Debug.Log("Load:" + json);
             var storageData = JsonConvert.DeserializeObject<SerializableGameStorage>(json);
             return (scene, storageData);
         }
