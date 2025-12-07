@@ -23,6 +23,13 @@ namespace Structure
             _pool = new Stack<TObject>(initialSize);
             _onPull = onPull ?? DefaultPull;
             _onReturn = onReturn ?? DefaultReturn;
+
+            for (var i = 0; i < initialSize; i++)
+            {
+                var newObj = Object.Instantiate(prefab);
+                _onReturn(newObj);
+                _pool.Push(newObj);
+            }
         }
 
         public TObject Pull()

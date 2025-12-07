@@ -24,8 +24,6 @@ namespace Dialogs
         [CanBeNull] private string _currentForegroundPath;
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
-        // Because my button is nested inside actual gameObject of button:
-        private GameObject ConfirmButtonGameObject => _confirmButton.transform.parent.gameObject;
 
         [SerializeField] private BuffOptionButton[] _dialogOptions;
         private int _optionsCount;
@@ -69,7 +67,7 @@ namespace Dialogs
             _confirmButton.onClick.AddListener(HandleConfirmButtonPress);
             
             _confirmButton.interactable = false;
-            ConfirmButtonGameObject.SetActive(false);
+            _confirmButton.gameObject.SetActive(false);
             AdvanceDialog();
         }
 
@@ -126,7 +124,7 @@ namespace Dialogs
                 _currentDialogIndex -= 1;
                 if (_currentDialogIndex < 0) _currentDialogIndex = 0;
                 _confirmButton.interactable = false;
-                ConfirmButtonGameObject.SetActive(false);
+                _confirmButton.gameObject.SetActive(false);
                 AdvanceDialog();
             }
         }
@@ -184,7 +182,7 @@ namespace Dialogs
             }
             _dialogWindow.SetText(string.Join('\n', _dialogs));
             _confirmButton.interactable = false;
-            ConfirmButtonGameObject.SetActive(true);
+            _confirmButton.gameObject.SetActive(true);
         }
     }
 

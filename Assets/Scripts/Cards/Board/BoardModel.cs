@@ -12,6 +12,7 @@ using Other.Interactions;
 using ProgressionBuffs;
 using SaveLoad;
 using SaveLoad.Serializeables;
+using Structure;
 using Structure.Managers;
 using UI;
 using UI.View.GameView;
@@ -32,6 +33,7 @@ namespace Cards.Board
         [SerializeField] private CardModel _cardPrefab;
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
+        private ObjectPool<CardModel> _modelPool;
         
         [Header("Player")]
         [SerializeField] private CardSlot[] _playerCardSlots;
@@ -62,6 +64,8 @@ namespace Cards.Board
             PlayerData.UpdateStatView(true);
             _enemyData.UpdateStatView(true);
 
+            _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
+
             if (startAct) StartAct();
         }
 
@@ -72,7 +76,7 @@ namespace Cards.Board
                 if (slot.IsEmpty) continue;
 
                 var card = slot.Detach();
-                Destroy(card.gameObject);
+                _modelPool.Return(card);
             }
             PlayerData.Reset();
             _layout.RemoveALl();
@@ -82,7 +86,7 @@ namespace Cards.Board
                 if (slot.IsEmpty) continue;
 
                 var card = slot.Detach();
-                Destroy(card.gameObject);
+                _modelPool.Return(card);
             }
             _enemyData.Reset();
         }
@@ -170,7 +174,7 @@ namespace Cards.Board
                                 if (otherCard.IsDefeated)
                                 {
                                     var model = _enemyCardSlots[i].Detach();
-                                    Destroy(model.gameObject);
+                                    _modelPool.Return(model);
                                 }
                                 
                                 PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex)); 
@@ -190,7 +194,7 @@ namespace Cards.Board
                                 if (playerCard.IsDefeated)
                                 {
                                     var model = _playerCardSlots[i].Detach();
-                                    Destroy(model.gameObject);
+                                    _modelPool.Return(model);
                                 }
                                 
                                 PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
@@ -290,7 +294,7 @@ namespace Cards.Board
         // Player only method to create and add new card to layout
         private void CrateNewCardModel(CardData card)
         {
-            var model = Instantiate(_cardPrefab);
+            var model = _modelPool.Pull();
             model.Set(card, PlayerData);
             AddCardToLayout(model);
         }
@@ -331,12 +335,13 @@ namespace Cards.Board
 
         public void Deserialize(BoardState self)
         {
+            _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
             for (var i = 0; i < self.Board._playerCards.Length; i++)
             {
                 var card = self.Board._playerCards[i];
                 if (card == null) continue;
                 
-                var newModel = Instantiate(_cardPrefab);
+                var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
                 _playerCardSlots[i].Attach(newModel, true);
@@ -347,7 +352,7 @@ namespace Cards.Board
                 var card = self.Board._enemyCards[i];
                 if (card == null) continue;
                 
-                var newModel = Instantiate(_cardPrefab);
+                var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
                 newModel.Animator.enabled = true;
                 _enemyCardSlots[i].Attach(newModel, true);
