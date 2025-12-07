@@ -261,9 +261,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -319,9 +319,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -831,9 +831,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -889,9 +889,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -1016,7 +1016,6 @@ GameObject:
   - component: {fileID: 171556424}
   - component: {fileID: 171556423}
   - component: {fileID: 171556422}
-  - component: {fileID: 171556421}
   m_Layer: 5
   m_Name: Input Blocker
   m_TagString: Untagged
@@ -1044,18 +1043,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!225 &171556421
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 171556419}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &171556422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,7 +1104,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 7
+  m_SortingOrder: 77
   m_TargetDisplay: 0
 --- !u!1 &260728225
 GameObject:
@@ -1355,7 +1342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 357649924}
   m_Layer: 5
-  m_Name: Hope
+  m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1915,9 +1902,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1973,9 +1960,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -2993,20 +2980,12 @@ MonoBehaviour:
   - {fileID: 2055172251}
   - {fileID: 1399591988}
   _playerStatView: {fileID: 1363271658}
-  _playerHpFill: {fileID: 481658892}
-  _playerHpText: {fileID: 1414551522}
-  _playerHopeFill: {fileID: 421580879}
-  _playerHopeText: {fileID: 1658196194}
-  _otherCardSlots:
+  _enemyCardSlots:
   - {fileID: 742721394}
   - {fileID: 1814490748}
   - {fileID: 1685426660}
   - {fileID: 1462161887}
-  _otherHand: {fileID: 1183337761}
-  _otherHpFill: {fileID: 1438611444}
-  _otherHpText: {fileID: 368568351}
-  _otherHopeFill: {fileID: 263331146}
-  _otherHopeText: {fileID: 1163852385}
+  _enemyData: {fileID: 1183337761}
 --- !u!61 &778903804
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3123,7 +3102,7 @@ MonoBehaviour:
   m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3992,8 +3971,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statView: {fileID: 1183337762}
   _defaultHealth: 30
-  _defaultHope: 10
-  _defaultHopeRegeneration: 2
+  _defaultLight: 10
+  _defaultLightRegeneration: 2
   _defaultStartingHandSize: 5
   _defaultCardDrawCount: 2
 --- !u!114 &1183337762
@@ -4010,8 +3989,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthText: {fileID: 368568351}
   _healthFill: {fileID: 1438611444}
-  _hopeText: {fileID: 1163852385}
-  _hopeFill: {fileID: 263331146}
+  _lightText: {fileID: 1163852385}
+  _lightFill: {fileID: 263331146}
 --- !u!1 &1209841873
 GameObject:
   m_ObjectHideFlags: 0
@@ -4109,7 +4088,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1262649541}
   m_Layer: 5
-  m_Name: Hope
+  m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4147,7 +4126,7 @@ GameObject:
   - component: {fileID: 1270904175}
   - component: {fileID: 1270904177}
   m_Layer: 0
-  m_Name: Session Storage
+  m_Name: Session Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4166,7 +4145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buffs: {fileID: 11400000, guid: ea0283da51b50a744a27c2c0b1b18245, type: 2}
-  _playerHand: {fileID: 1270904177}
+  _playerData: {fileID: 1270904177}
 --- !u!4 &1270904176
 Transform:
   m_ObjectHideFlags: 0
@@ -4196,8 +4175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statView: {fileID: 1363271658}
   _defaultHealth: 50
-  _defaultHope: 10
-  _defaultHopeRegeneration: 2
+  _defaultLight: 10
+  _defaultLightRegeneration: 2
   _defaultStartingHandSize: 5
   _defaultCardDrawCount: 1
 --- !u!1 &1296222689
@@ -4211,7 +4190,6 @@ GameObject:
   - component: {fileID: 1296222690}
   - component: {fileID: 1296222692}
   - component: {fileID: 1296222691}
-  - component: {fileID: 1296222693}
   m_Layer: 5
   m_Name: 'Statuses [Canvas]'
   m_TagString: Untagged
@@ -4286,21 +4264,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1296222693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1296222689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15193e0276354bd5bab38f7887005d34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hideOnStart: 0
-  _playerView: {fileID: 1363271658}
-  _otherView: {fileID: 1183337762}
 --- !u!1 &1298593717
 GameObject:
   m_ObjectHideFlags: 0
@@ -4671,8 +4634,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthText: {fileID: 1414551522}
   _healthFill: {fileID: 481658892}
-  _hopeText: {fileID: 1658196194}
-  _hopeFill: {fileID: 421580879}
+  _lightText: {fileID: 1658196194}
+  _lightFill: {fileID: 421580879}
 --- !u!1 &1387607794
 GameObject:
   m_ObjectHideFlags: 0
@@ -4683,7 +4646,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1387607795}
   m_Layer: 0
-  m_Name: Other Card Slots
+  m_Name: Enemy Card Slots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5442,9 +5405,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5500,9 +5463,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -5586,7 +5549,6 @@ MonoBehaviour:
   - {fileID: 260728227}
   _sceneHudCanvases:
   - {fileID: 536029736}
-  - {fileID: 1296222693}
   - {fileID: 934284642}
 --- !u!1 &1636099614
 GameObject:
@@ -7316,7 +7278,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7390,9 +7352,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7448,9 +7410,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -7500,9 +7462,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7558,9 +7520,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -7611,14 +7573,14 @@ MonoBehaviour:
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -1843197933104017171, guid: 5ad0c9fce7bd27f41ad7418404decd0a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
@@ -7657,9 +7619,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7715,9 +7677,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -7750,7 +7712,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7831,9 +7793,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7889,9 +7851,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
@@ -8000,7 +7962,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8088,9 +8050,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.5924529, g: 0.5924529, b: 0.5924529, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8120,7 +8082,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8453,7 +8415,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

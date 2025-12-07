@@ -1643,14 +1643,14 @@ MonoBehaviour:
   m_Color: {r: 0.35686275, g: 0.11372549, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -1843197933104017171, guid: 5ad0c9fce7bd27f41ad7418404decd0a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
@@ -1715,7 +1715,7 @@ GameObject:
   - component: {fileID: 1678970942}
   - component: {fileID: 1678970941}
   m_Layer: 0
-  m_Name: Save Storage
+  m_Name: Session Storage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1735,8 +1735,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statView: {fileID: 0}
   _defaultHealth: 50
-  _defaultHope: 10
-  _defaultHopeRegeneration: 2
+  _defaultLight: 10
+  _defaultLightRegeneration: 2
   _defaultStartingHandSize: 5
   _defaultCardDrawCount: 1
 --- !u!114 &1678970942
@@ -1752,7 +1752,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buffs: {fileID: 11400000, guid: ea0283da51b50a744a27c2c0b1b18245, type: 2}
-  _playerHand: {fileID: 1678970941}
+  _playerData: {fileID: 1678970941}
 --- !u!4 &1678970943
 Transform:
   m_ObjectHideFlags: 0
@@ -2020,16 +2020,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.3584906, g: 0.11231566, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -1843197933104017171, guid: 5ad0c9fce7bd27f41ad7418404decd0a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
