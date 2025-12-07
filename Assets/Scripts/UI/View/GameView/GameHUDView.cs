@@ -1,6 +1,6 @@
-﻿using Core;
-using Cysharp.Threading.Tasks;
-using Other;
+﻿using Cysharp.Threading.Tasks;
+using Other.Interactions;
+using Structure.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 

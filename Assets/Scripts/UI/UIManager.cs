@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Behaviour;
+using Structure;
 using UnityEngine;
 
 namespace UI

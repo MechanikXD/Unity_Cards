@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Core.Behaviour.StateMachine;
-using Core.Cards.Board;
-using Core.Cards.Card.Data;
-using Core.Cards.Hand;
+using Cards.Board;
+using Cards.Card;
+using Cards.Card.Data;
+using Cards.Hand;
 using Enemy.States;
-using Player;
+using Structure.StateMachine;
 using UnityEngine;
 
 namespace Enemy

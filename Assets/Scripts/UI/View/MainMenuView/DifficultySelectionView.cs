@@ -1,5 +1,5 @@
 ﻿using Enemy;
-using Other;
+using Other.Buttons;
 using UnityEngine;
 
 namespace UI.View.MainMenuView

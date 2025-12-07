@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using Core.Behaviour.StateMachine;
-using Core.Cards.Board;
-using Core.Cards.Card.Data;
-using Core.Cards.Hand;
+using Cards.Board;
+using Cards.Card.Data;
+using Cards.Hand;
 using Enemy.States;
-using Other;
 using Other.Extensions;
+using Structure.StateMachine;
 using UnityEngine;
 
 namespace Enemy

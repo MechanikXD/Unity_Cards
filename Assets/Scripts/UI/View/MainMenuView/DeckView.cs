@@ -1,9 +1,8 @@
 ﻿using System.Linq;
-using Core.Cards.Card.Data;
-using Core.Cards.Deck;
-using Other;
-using Player.Deck;
-using Storage;
+using Cards.Card.Data;
+using Cards.Deck;
+using Other.Interactions;
+using Structure;
 using UnityEngine;
 using UnityEngine.UI;
 
