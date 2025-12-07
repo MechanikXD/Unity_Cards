@@ -10,36 +10,44 @@ using UnityEngine;
 
 namespace Cards.Hand
 {
-    public class PlayerHand : MonoBehaviour, IGameSerializable<SerializablePlayerHand>
+    /// <summary>
+    /// PlayerData represents one of the players with deck, health and "light".
+    /// </summary>
+    public class PlayerData : MonoBehaviour, IGameSerializable<SerializablePlayerHand>
     {
-        [SerializeField] private PlayerStatView _statView;
+        [SerializeField] private PlayerStatView _statView; // To display values within this class
+        //          Health
         [SerializeField] private int _defaultHealth;
-
         public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
+        //          Light
+        [SerializeField] private int _defaultLight;
+        public int MaxLight { get; private set; } // Max amount of "Light"
+        public int CurrentLight { get; private set; } // Currency used to play cards
 
-        [SerializeField] private int _defaultHope;
-        
-        public int MaxHope { get; private set; }
-        public int CurrentHope { get; private set; }
-
-        [SerializeField] private int _defaultHopeRegeneration;
-        public int HopeRegeneration { get; private set; }
-        
+        [SerializeField] private int _defaultLightRegeneration;
+        public int LightRegeneration { get; private set; } // Amount of "Light" that will be added each turn
+        //          Card Draw
         [SerializeField] private int _defaultStartingHandSize;
         [SerializeField] private int _defaultCardDrawCount;
-        public int StartingHandSize { get; private set; }
-        public int DrawCount { get; private set; }
+        public int StartingHandSize { get; private set; } // Amount of cards in hand at the start of the game
+        public int DrawCount { get; private set; } // Amount of cards added per turn
 
-        public CardData[] Deck { get; private set; }
+        // All cards in this player hand; INTERACT AS IF ITS READONLY, UNLESS CHANGED WITH BUFFS
+        public CardData[] Deck { get; private set; } 
+        // Deck that player has draw cards from during the game
         public LinkedList<CardData> CurrentDeck { get; private set; }
+        // Cards that player can play (as in player hand)
         public List<CardData> CardsInHand { get; private set; }
 
         public bool HasAnyCards => CardsInHand.Count > 0 || CurrentDeck.Count > 0;
         public bool IsDefeated { get; private set; }
-
         public event Action PlayerDefeated; 
-
+        
+        /// <summary>
+        /// Use to initialize this class, all values are taken from serialized fields.
+        /// </summary>
+        /// <param name="cardIds"> the deck of this player </param>
         public void Initialize(int[] cardIds)
         {
             Deck = CreateDeck(cardIds);
@@ -49,97 +57,105 @@ namespace Cards.Hand
             CurrentHealth = _defaultHealth;
             MaxHealth = _defaultHealth;
 
-            CurrentHope = _defaultHope;
-            MaxHope = _defaultHope;
+            CurrentLight = _defaultLight;
+            MaxLight = _defaultLight;
             
             StartingHandSize = _defaultStartingHandSize;
             DrawCount = _defaultCardDrawCount;
 
-            HopeRegeneration = _defaultHopeRegeneration;
+            LightRegeneration = _defaultLightRegeneration;
             UpdateStatView(true);
         }
-
+        
+        // Workaround, because player hand located on a class that migrate between scenes.
         public void SetStatView(PlayerStatView view) => _statView = view;
-
+        
+        /// <summary> Update attached StatView of this player  </summary>
+        /// <param name="isInstant"> update instantly (no smoothing) </param>
         public void UpdateStatView(bool isInstant)
         {
             _statView.SetHealth(CurrentHealth, MaxHealth, isInstant);
-            _statView.SetHope(CurrentHope, MaxHope, isInstant);
+            _statView.SetLight(CurrentLight, MaxLight, isInstant);
         }
 
+        // Used to apply buffs to cards, because cards are structs, and we don't want to modify they elsewhere
         public void ApplyBuffToCard(int index, Func<CardData, CardData> buff)
         {
             Deck[index] = buff(Deck[index]);
         }
 
-        public void ResetAll()
+        /// <summary>
+        /// Resets player current deck, hand and light (use on act end for clean up)
+        /// </summary>
+        public void Reset()
         {
             CurrentDeck.Clear();
             CardsInHand.Clear();
 
-            CurrentHope = MaxHope;
+            CurrentLight = MaxLight;
             
-            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope, true);
+            if (_statView != null) _statView.SetLight(CurrentLight, MaxLight, true);
         }
 
-        #region Hope Related
+        // Methods to modify light-related values within this class
+        #region Light Related
 
-        public bool CanUseCard(int cardCost) => cardCost <= CurrentHope;
+        public bool CanUseCard(int cardCost) => cardCost <= CurrentLight;
 
-        public void UseHope(int cardCost)
+        public void UseLight(int cardCost)
         {
-            if (CurrentHope < cardCost)
+            if (CurrentLight < cardCost)
             {
                 Debug.LogWarning("Hope will fall below 0! Check ability to use this card prior");
-                CurrentHope = 0;
+                CurrentLight = 0;
             }
             else
             {
-                CurrentHope -= cardCost;
+                CurrentLight -= cardCost;
             }
             
-            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
+            if (_statView != null) _statView.SetLight(CurrentLight, MaxLight);
         }
 
-        public void AddHope(int count)
+        public void AddLight(int count)
         {
-            CurrentHope = Mathf.Min(CurrentHope + count, MaxHope);
-            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
+            CurrentLight = Mathf.Min(CurrentLight + count, MaxLight);
+            if (_statView != null) _statView.SetLight(CurrentLight, MaxLight);
         }
 
-        public void SetMaxHope(int newValue)
+        public void SetMaxLight(int newValue)
         {
             if (newValue <= 0)
             {
                 Debug.LogWarning("Max Hope can't be less than or equal to zero!");
-                MaxHope = 1;
-                CurrentHope = 1;
+                MaxLight = 1;
+                CurrentLight = 1;
             }
             else
             {
-                var oldMaxHope = MaxHope;
-                MaxHope = newValue;
+                var oldMaxHope = MaxLight;
+                MaxLight = newValue;
 
-                if (oldMaxHope > MaxHope) CurrentHope = Mathf.Min(oldMaxHope, CurrentHope);
-                else CurrentHope += MaxHope - oldMaxHope;
+                if (oldMaxHope > MaxLight) CurrentLight = Mathf.Min(oldMaxHope, CurrentLight);
+                else CurrentLight += MaxLight - oldMaxHope;
             }
             
-            if (_statView != null) _statView.SetHope(CurrentHope, MaxHope);
+            if (_statView != null) _statView.SetLight(CurrentLight, MaxLight);
         }
 
-        public void RegenerateHope() => AddHope(HopeRegeneration);
+        public void RegenerateLight() => AddLight(LightRegeneration);
 
-        public void SetHopeRestore(int newValue, bool allowZeroValue=false)
+        public void SetLightRestore(int newValue, bool allowZeroValue=false)
         {
-            HopeRegeneration = newValue;
-            if (HopeRegeneration <= 0)
+            LightRegeneration = newValue;
+            if (LightRegeneration <= 0)
             {
-                HopeRegeneration = allowZeroValue ? 0 : 1;
+                LightRegeneration = allowZeroValue ? 0 : 1;
             }
         }
 
         #endregion
-
+        // Methods to modify health-related values within this class
         #region Health Related
 
         public void TakeDamage(int damage)
@@ -182,10 +198,11 @@ namespace Cards.Hand
         }
 
         #endregion
-
+        // Methods to modify card-related values within this class
         #region Card Related
 
-        private CardData[] CreateDeck(int[] ids)
+        // Creates array of cards from it ids
+        private static CardData[] CreateDeck(int[] ids)
         {
             var db = CardDataProvider.DataBank;
             var deck = new CardData[ids.Length];
@@ -197,6 +214,10 @@ namespace Cards.Hand
             return deck;
         }
         
+        /// <summary>
+        /// Take and remove card from players hand at index
+        /// </summary>
+        /// <param name="index"> Index of the card </param>
         public CardData GetCardFromHand(int index)
         {
             var card = CardsInHand[index];
@@ -204,9 +225,13 @@ namespace Cards.Hand
             return card;
         }
         
+        /// <summary>
+        /// Take and remove card from players hand using data of this card
+        /// </summary>
+        /// <param name="card"></param>
         public CardData GetCardFromHand(CardData card)
         {
-            var index = 0;
+            var index = -1;
             for (var i = 0; i < CardsInHand.Count; i++)
             {
                 if (CardsInHand[i] != card) continue;
@@ -214,10 +239,14 @@ namespace Cards.Hand
                 index = i;
                 break;
             }
+
+            if (index == -1) return default;    // No card found 
+            var result = CardsInHand[index];
             CardsInHand.RemoveAt(index);
-            return card;
+            return result;
         }
 
+        /// <summary>  Add all cards from deck to current deck  </summary>
         public void RefillDeck()
         {
             CurrentDeck.Clear();
@@ -279,20 +308,20 @@ namespace Cards.Hand
             for (var i = 0; i < CardsInHand.Count; i++) 
                 currentHand[i] = CardsInHand[i].SerializeSelf();
 
-            return new SerializablePlayerHand(MaxHealth, CurrentHealth, MaxHope, CurrentHope,
-                HopeRegeneration, StartingHandSize, DrawCount, deck, currentDeck, currentHand);
+            return new SerializablePlayerHand(MaxHealth, CurrentHealth, MaxLight, CurrentLight,
+                LightRegeneration, StartingHandSize, DrawCount, deck, currentDeck, currentHand);
         }
 
         public void Deserialize(SerializablePlayerHand self)
         {
             MaxHealth = self._maxHealth;
             CurrentHealth = self._currentHealth;
-            MaxHope = self._maxHope;
-            CurrentHope = self._currentHope;
+            MaxLight = self._maxHope;
+            CurrentLight = self._currentHope;
             
             StartingHandSize = self._startingHandSize;
             DrawCount = self._drawCount;
-            HopeRegeneration = self._hopeRegeneration;
+            LightRegeneration = self._hopeRegeneration;
 
             Deck = new CardData[self._deck.Length];
             for (var i = 0; i < self._deck.Length; i++) 

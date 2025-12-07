@@ -99,7 +99,7 @@ namespace Cards.Card
                 // Because we use transform.position, there is no z coordinate, so board can't have z as well.
                 var hit = Physics2D.OverlapPoint(transform.position, _mouseReleaseMask);
 
-                if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty && slot.CanAttach)
+                if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty && slot.CanSnapTo)
                 {
                     slot.Attach(_thisModel);
                     _thisModel.SetPlaced();

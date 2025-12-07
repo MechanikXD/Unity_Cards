@@ -103,31 +103,31 @@ namespace SaveLoad.Serializeables
             _hand = hand;
         }
         
-        public SerializablePlayerHand(PlayerHand hand)
+        public SerializablePlayerHand(PlayerData data)
         {
-            _maxHealth = hand.MaxHealth;
-            _currentHealth = hand.CurrentHealth;
-            _maxHope = hand.MaxHope;
-            _currentHope = hand.CurrentHope;
-            _hopeRegeneration = hand.HopeRegeneration;
-            _startingHandSize = hand.StartingHandSize;
-            _drawCount = hand.DrawCount;
+            _maxHealth = data.MaxHealth;
+            _currentHealth = data.CurrentHealth;
+            _maxHope = data.MaxLight;
+            _currentHope = data.CurrentLight;
+            _hopeRegeneration = data.LightRegeneration;
+            _startingHandSize = data.StartingHandSize;
+            _drawCount = data.DrawCount;
             
-            _deck = new SerializableCardData[hand.Deck.Length];
-            for (var i = 0; i < hand.Deck.Length; i++) 
-                _deck[i] = hand.Deck[i].SerializeSelf();
+            _deck = new SerializableCardData[data.Deck.Length];
+            for (var i = 0; i < data.Deck.Length; i++) 
+                _deck[i] = data.Deck[i].SerializeSelf();
             
-            _currentDeck = new SerializableCardData[hand.CurrentDeck.Count];
+            _currentDeck = new SerializableCardData[data.CurrentDeck.Count];
             var index = 0;
-            foreach (var card in hand.CurrentDeck)
+            foreach (var card in data.CurrentDeck)
             {
                 _currentDeck[index] = card.SerializeSelf();
                 index++;
             }
             
-            _hand = new SerializableCardData[hand.CardsInHand.Count];
-            for (var i = 0; i < hand.CardsInHand.Count; i++) 
-                _hand[i] = hand.CardsInHand[i].SerializeSelf();
+            _hand = new SerializableCardData[data.CardsInHand.Count];
+            for (var i = 0; i < data.CardsInHand.Count; i++) 
+                _hand[i] = data.CardsInHand[i].SerializeSelf();
         }
     }
 

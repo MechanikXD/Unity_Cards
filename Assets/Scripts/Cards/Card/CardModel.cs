@@ -18,16 +18,18 @@ namespace Cards.Card
         private const string EMPTY_FINAL_ATTACK_CHAR = "#";
         private CancellationTokenSource _cts = new CancellationTokenSource();
         [SerializeField] private SortingGroup _sortingGroup;
+        // Animator stuff
         [SerializeField] private Animator _animator;
         [SerializeField] private string[] _cardAnimations = {
             "Forward Attack", "Left Attack", "Right Attack"
         };
         [SerializeField] private string _reverseAnimationSuffix = " Reverse";
+        // Action and movement speed/position
         [SerializeField] private float _liftSpeed = 3f;
         [SerializeField] private Vector3 _moveStartLift = new Vector3(0f, 0f, 1f);
         [SerializeField] private GameObject _buttonRoot;
-        [SerializeField] private PseudoButton _destroyButton;
-        [SerializeField] private PseudoButton _moveButton;
+        [SerializeField] private CardActionButton _destroyButton;
+        [SerializeField] private CardActionButton _moveButton;
         
         [Header("Visual")]
         [SerializeField] private SpriteRenderer _sprite;
@@ -38,9 +40,8 @@ namespace Cards.Card
         [SerializeField] private TMP_Text _costField;
         [SerializeField] private TMP_Text _attackField;
         [SerializeField] private TMP_Text _healthField;
-        [Header("Dynamic")]
         [SerializeField] private TMP_Text _finalAttackField;
-        public PlayerHand Hand { get; private set; }
+        public PlayerData Hand { get; private set; }
         public int FinalAttack { get; private set; }
         public CardData Data { get; private set; }
         public int CurrentHealth { get; private set; }
@@ -63,7 +64,7 @@ namespace Cards.Card
             _moveButton.AddListener(StartMove);
         }
 
-        public void Set(CardData data, PlayerHand owner)
+        public void Set(CardData data, PlayerData owner)
         {
             Data = data;
             _sprite.sprite = data.Sprite;
@@ -82,7 +83,7 @@ namespace Cards.Card
         public void SetPlaced()
         {
             Hand.GetCardFromHand(Data);
-            Hand.UseHope(Data.Cost);
+            Hand.UseLight(Data.Cost);
             Hand = null;
             _animator.enabled = true;
         }
@@ -124,6 +125,7 @@ namespace Cards.Card
             _healthField.SetText(string.Empty);
             ClearFinalAttack();
 
+            Hand = null;
             Data = default;
         }
         
@@ -133,20 +135,13 @@ namespace Cards.Card
             _finalAttackField.SetText(EMPTY_FINAL_ATTACK_CHAR);
         }
 
-        public void PlayRandomAnimation()
-        {
-            PlayAnimation(_cardAnimations.GetRandom());
-        }
+        public void PlayRandomAnimation() => PlayAnimation(_cardAnimations.GetRandom());
 
-        public void PlayRandomAnimationReverse()
-        {
+        public void PlayRandomAnimationReverse() => 
             PlayAnimation(_cardAnimations.GetRandom() + _reverseAnimationSuffix);
-        }
 
-        public void PlayAnimation(string animationName)
-        {
+        public void PlayAnimation(string animationName) => 
             _animator.Play(animationName, -1, 0f);
-        }
 
         public void ShowActions()
         {
@@ -177,7 +172,7 @@ namespace Cards.Card
         
         public void MoveCard(CardSlot newSlot)
         {
-            if (!newSlot.IsEmpty || !newSlot.CanAttach)
+            if (!newSlot.IsEmpty || !newSlot.CanSnapTo)
             {
                 CancelMove();
                 return;

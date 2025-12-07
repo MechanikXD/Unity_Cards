@@ -2,14 +2,12 @@
 using Cards.Card.Data;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace Cards.Deck
 {
     public class DeckCardModel : MonoBehaviour
     {
-        [SerializeField] private SortingGroup _sortingGroup;
         [Header("Visual")]
         [SerializeField] private Image _sprite;
         [SerializeField] private Image _background;
@@ -23,8 +21,7 @@ namespace Cards.Deck
         public bool InPlayerHand { get; set; }
         public int IndexInLayout { get; set; }
         public CardData CardData { get; private set; }
-        public SortingGroup SortingGroup => _sortingGroup;
-        
+
         public void Set(CardData data)
         {
             CardData = data;

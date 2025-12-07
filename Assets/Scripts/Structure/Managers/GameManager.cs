@@ -17,7 +17,7 @@ namespace Structure.Managers
 
         private void Start()
         {
-            var gs = GameStorage.Instance;
+            var gs = SessionManager.Instance;
             Board.StartGame(gs.DifficultySettings, !gs.HadLoadedData);
             gs.HadLoadedData = false;
         }
@@ -39,9 +39,9 @@ namespace Structure.Managers
                 DialogSceneController.Instance.Load(new[]
                 {
                     new DialogSettings(first._backgroundImagePath, first._foregroundImagePath,
-                        first._dialogs, GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
+                        first._dialogs, SessionManager.Instance.GetRandomPlayerBuffOptions(3)),
                     new DialogSettings(second._backgroundImagePath, second._foregroundImagePath,
-                        second._dialogs, GameStorage.Instance.GetRandomEnemyBuffOptions(3))
+                        second._dialogs, SessionManager.Instance.GetRandomEnemyBuffOptions(3))
                 });
                 
                 SceneManager.sceneLoaded -= InitializeDialog;

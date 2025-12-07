@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Other.Buttons
 {
-    public class OptionButton : MonoBehaviour
+    public class BuffOptionButton : MonoBehaviour
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _title;
@@ -14,15 +14,9 @@ namespace Other.Buttons
         
         public BuffBase Buff { get; private set; }
 
-        private void OnEnable()
-        {
-            _button.onClick.AddListener(NotifyController);
-        }
-        
-        private void OnDisable()
-        {
-            _button.onClick.RemoveListener(NotifyController);
-        }
+        private void OnEnable() => _button.onClick.AddListener(NotifyController);
+
+        private void OnDisable() => _button.onClick.RemoveListener(NotifyController);
 
         public void Load(BuffBase option)
         {

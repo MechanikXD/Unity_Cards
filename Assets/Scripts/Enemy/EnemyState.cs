@@ -13,12 +13,12 @@ namespace Enemy
     {
         // For quick access
         protected readonly BoardModel Board;
-        protected readonly PlayerHand Hand;
+        protected readonly PlayerData Data;
 
         protected EnemyState(StateMachine<EnemyBehaviour> sm, EnemyBehaviour owner) : base(sm, owner)
         {
             Board = owner.Board;
-            Hand = owner.Hand;
+            Data = owner.Data;
         }
 
         protected abstract float GetCurrentStateDangerMultiplier();
@@ -37,7 +37,7 @@ namespace Enemy
                 var myDangerLevel = myCards[i].IsEmpty ?  0 : myCards[i].Card.Data.Attack.Average();
                 var difference = playerDangerLevel - myDangerLevel;
                 
-                if (myDangerLevel == 0 && Hand.CurrentHealth - playerDangerLevel <= 0)
+                if (myDangerLevel == 0 && Data.CurrentHealth - playerDangerLevel <= 0)
                 {
                     dangerLevels[i] = float.MaxValue;
                 }
@@ -52,7 +52,7 @@ namespace Enemy
         
         protected CardData? GetCardWithLeastCost()
         {
-            var hand = Hand.CardsInHand;
+            var hand = Data.CardsInHand;
             var leastHopeCost = int.MaxValue;
             var leastHopeCostIndex = -1;
             
@@ -64,20 +64,20 @@ namespace Enemy
                 leastHopeCostIndex = i;
             }
 
-            if (leastHopeCostIndex != -1 && Hand.CanUseCard(leastHopeCost)) 
-                return Hand.GetCardFromHand(leastHopeCostIndex);
+            if (leastHopeCostIndex != -1 && Data.CanUseCard(leastHopeCost)) 
+                return Data.GetCardFromHand(leastHopeCostIndex);
             else return null;
         }
 
         protected CardData? GetCardWithMatchingCost(float match)
         {
-            var hand = Hand.CardsInHand;
+            var hand = Data.CardsInHand;
             var closestDangerDiff = float.MaxValue;
             var closestDangerIndex = -1;
             
             for (var i = 0; i < hand.Count; i++)
             {
-                if (!Hand.CanUseCard(hand[i].Cost)) continue;
+                if (!Data.CanUseCard(hand[i].Cost)) continue;
                 
                 var attack = hand[i].Attack.Average();
                 var difference = Mathf.Abs(match - attack);
@@ -88,7 +88,7 @@ namespace Enemy
                 closestDangerIndex = i;
             }
 
-            if (closestDangerIndex != -1) return Hand.GetCardFromHand(closestDangerIndex);
+            if (closestDangerIndex != -1) return Data.GetCardFromHand(closestDangerIndex);
             else return null;
         }
         

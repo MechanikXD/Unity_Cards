@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Cards.Deck
 {
-    public class OtherCardDragArea : MonoBehaviour
+    public class OtherCardArea : MonoBehaviour
     {
         [SerializeField] private Transform _root;
         private readonly List<DeckCardModel> _attachedCards = new List<DeckCardModel>();

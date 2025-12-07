@@ -11,13 +11,13 @@ namespace ProgressionBuffs.Enemy
         [SerializeField] private int _targetCount;
         [SerializeField] private int _strengthCount;
         
-        public override void Apply(PlayerHand hand)
+        public override void Apply(PlayerData data)
         {
-            var shuffled = hand.Deck.ShuffledIndexes();
+            var shuffled = data.Deck.ShuffledIndexes();
             
             for (var i = 0; i < Mathf.Min(_targetCount, shuffled.Length); i++)
             {
-                hand.ApplyBuffToCard(shuffled[i], Modify);
+                data.ApplyBuffToCard(shuffled[i], Modify);
             }
         }
 

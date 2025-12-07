@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Other.Buttons
 {
-    public class PseudoButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public class CardActionButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField] private bool _interactable;
         private readonly HashSet<Action> _events = new HashSet<Action>();

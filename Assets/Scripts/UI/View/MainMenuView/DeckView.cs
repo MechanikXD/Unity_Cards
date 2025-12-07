@@ -13,15 +13,15 @@ namespace UI.View.MainMenuView
         public const string DeckIDStorageKey = "Deck";
 
         [SerializeField] private Button _backButton;
-        [SerializeField] private PlayerCardDragArea _playerCardsArea;
-        [SerializeField] private OtherCardDragArea _otherCardsArea;
+        [SerializeField] private PlayerCardArea _playerCardsArea;
+        [SerializeField] private OtherCardArea _otherCardsArea;
 
         [SerializeField] private int[] _defaultDeck;
         [SerializeField] private DeckCardModel _prefab;
         [SerializeField] private CardDataBank _db;
 
-        public PlayerCardDragArea PlayerCards => _playerCardsArea;
-        public OtherCardDragArea OtherCards => _otherCardsArea;
+        public PlayerCardArea PlayerCards => _playerCardsArea;
+        public OtherCardArea OtherCards => _otherCardsArea;
 
         protected override void Awake()
         {

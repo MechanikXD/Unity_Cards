@@ -59,7 +59,7 @@ namespace UI.View.MainMenuView
             void DeserializeOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
             {
                 if (scene.name == "MainMenu") return;
-                GameStorage.Instance.Deserialize(data.storage);
+                SessionManager.Instance.Deserialize(data.storage);
                 SceneManager.sceneLoaded -= DeserializeOnSceneLoad;
             }
 

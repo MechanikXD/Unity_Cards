@@ -22,7 +22,7 @@ namespace ProgressionBuffs
             _buffs[buff.Activation].Add(buff);
         }
 
-        public void ApplyAll(PlayerHand player, ActivationType ofType)
+        public void ApplyAll(PlayerData player, ActivationType ofType)
         {
             var buffs = GetBuffs(ofType);
             foreach (var buff in buffs) buff.Apply(player);

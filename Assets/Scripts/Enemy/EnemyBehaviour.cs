@@ -12,18 +12,18 @@ namespace Enemy
     public class EnemyBehaviour
     {
         public StateMachine<EnemyBehaviour> StateMachine { get; private set; }
-        public PlayerHand Hand { get; private set; }
+        public PlayerData Data { get; private set; }
         public BoardModel Board { get; private set; }
         public EnemyDifficultySettings Settings { get; private set; }
 
         private readonly List<(CardData data, int index)> _inputBuffer;
 
-        public EnemyBehaviour(BoardModel board, PlayerHand hand, EnemyDifficultySettings settings)
+        public EnemyBehaviour(BoardModel board, PlayerData data, EnemyDifficultySettings settings)
         {
             _inputBuffer =  new List<(CardData data, int index)>();
             Board = board;
             Settings = settings;
-            Hand = hand;
+            Data = data;
             StateMachine = new StateMachine<EnemyBehaviour>();
             var aggressiveState = new AggressiveState(StateMachine, this);
             var defensiveState = new DefensiveState(StateMachine, this);
@@ -35,16 +35,16 @@ namespace Enemy
 
         public void PlayTurn()
         {
-            if (Hand.CardsInHand.Count == 0) return;
+            if (Data.CardsInHand.Count == 0) return;
             ((EnemyState)StateMachine.CurrentState).PlayTurn();
         }
 
         public void PlayCard(CardData card, int slotIndex)
         {
-            if (!Hand.CanUseCard(card.Cost)) return;
+            if (!Data.CanUseCard(card.Cost)) return;
             
             _inputBuffer.Add((card, slotIndex));
-            Hand.UseHope(card.Cost);
+            Data.UseLight(card.Cost);
         }
 
         public void FinishTurn()

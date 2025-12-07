@@ -13,7 +13,7 @@ namespace Enemy.States
         public override void PlayTurn()
         {
             var rng = new System.Random();
-            var cardsShuffle = Hand.CardsInHand.Shuffled();
+            var cardsShuffle = Data.CardsInHand.Shuffled();
             var shuffledIndex = 0;
             
             var cardsToPlay = rng.Next(1, StateOwner.Settings.MaxCardCountPerTurn + 1);
@@ -47,9 +47,9 @@ namespace Enemy.States
             {
                 if (cardsToPlay <= 0) break;
                 
-                if (Hand.CanUseCard(cardsShuffle[shuffledIndex].Cost))
+                if (Data.CanUseCard(cardsShuffle[shuffledIndex].Cost))
                 {
-                    StateOwner.PlayCard(Hand.GetCardFromHand(cardsShuffle[shuffledIndex]), index);
+                    StateOwner.PlayCard(Data.GetCardFromHand(cardsShuffle[shuffledIndex]), index);
                     cardsToPlay--;
                 }
                 
@@ -67,9 +67,9 @@ namespace Enemy.States
             {
                 if (cardsToPlay <= 0) break;
                 
-                if (Hand.CanUseCard(cardsShuffle[shuffledIndex].Cost))
+                if (Data.CanUseCard(cardsShuffle[shuffledIndex].Cost))
                 {
-                    StateOwner.PlayCard(Hand.GetCardFromHand(cardsShuffle[shuffledIndex]), index);
+                    StateOwner.PlayCard(Data.GetCardFromHand(cardsShuffle[shuffledIndex]), index);
                     cardsToPlay--;
                 }
                 

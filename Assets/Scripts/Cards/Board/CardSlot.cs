@@ -1,22 +1,22 @@
 ﻿using Cards.Card;
 using Cysharp.Threading.Tasks;
-using Other;
 using Other.Interactions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Cards.Board
 {
+    /// <summary> Slot for card located on the game board </summary>
     public class CardSlot : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     {
         private const int SORTING_ORDER = 3;
-        [SerializeField] private int _cardIndex;
+        [SerializeField] private int _cardIndex; // Index of slot
         [SerializeField] private float _cardMoveSpeed = 10f;
-        [SerializeField] private bool _canSnapTo = true;
+        [SerializeField] private bool _canSnapTo = true; // Prevent placement on enemy slots
         [SerializeField] private Vector3 _cardPosition =  new Vector3(0, 0, 0);
         [SerializeField] private BoardModel _board;
         
-        public bool CanAttach => _canSnapTo;
+        public bool CanSnapTo => _canSnapTo;
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card { get; private set; }
 
@@ -40,6 +40,7 @@ namespace Cards.Board
             return cardModel;
         }
 
+        // Show card actions if this slot has card attached
         public void OnPointerUp(PointerEventData eventData)
         {
             if (!IsEmpty || !AnyRequireMove())
@@ -61,7 +62,8 @@ namespace Cards.Board
             }
         }
 
-        public bool AnyRequireMove()
+        // Check for other models containing 'RequestMove' check
+        private bool AnyRequireMove()
         {
             var playerSlots = _board.PlayerSlots;
             foreach (var slot in playerSlots)

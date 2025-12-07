@@ -54,34 +54,26 @@ namespace Cards.Card.Data
             }
         }
 
-        public void AddEffect(TriggerType trigger, CardEffect effect) => Effects[trigger].Add(effect);
-        public void RemoveEffect(TriggerType trigger, CardEffect effect) => Effects[trigger].Remove(effect);
+        public void AddEffect(TriggerType trigger, CardEffect effect) => 
+            Effects[trigger].Add(effect);
+        public void RemoveEffect(TriggerType trigger, CardEffect effect) => 
+            Effects[trigger].Remove(effect);
 
-        public static bool operator ==(CardData thisCard, CardData otherCard)
-        {
-            return thisCard.Equals(otherCard);
-        }
+        public static bool operator ==(CardData thisCard, CardData otherCard) => 
+            thisCard.Equals(otherCard);
 
-        public static bool operator !=(CardData thisCard, CardData otherCard)
-        {
-            return !(thisCard == otherCard);
-        }
+        public static bool operator !=(CardData thisCard, CardData otherCard) => 
+            !(thisCard == otherCard);
 
-        public bool Equals(CardData other)
-        {
-            return ID == other.ID && _affinity == other._affinity && _health == other._health &&
-                   _attack.Equals(other._attack) && _cost == other._cost;
-        }
+        public bool Equals(CardData other) =>
+            ID == other.ID && _affinity == other._affinity && _health == other._health &&
+            _attack.Equals(other._attack) && _cost == other._cost;
 
-        public override bool Equals(object obj)
-        {
-            return obj is CardData other && Equals(other);
-        }
+        public override bool Equals(object obj) => 
+            obj is CardData other && Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(ID, (int)_affinity, _health, _attack, _cost);
-        }
+        public override int GetHashCode() => 
+            HashCode.Combine(ID, (int)_affinity, _health, _attack, _cost);
 
         private void ParseEffects()
         {
@@ -98,10 +90,8 @@ namespace Cards.Card.Data
             
         }
 
-        public SerializableCardData SerializeSelf()
-        {
-            return new SerializableCardData(ID, Health, Attack, Cost);
-        }
+        public SerializableCardData SerializeSelf() => 
+            new SerializableCardData(ID, Health, Attack, Cost);
     }
 
     [Serializable]

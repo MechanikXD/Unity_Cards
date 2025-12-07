@@ -37,7 +37,7 @@ namespace UI.View.GameView
         private static void ToMainMenu()
         {
             GameSerializer.Serialize();
-            Destroy(GameStorage.Instance.gameObject);
+            Destroy(SessionManager.Instance.gameObject);
             SceneManager.LoadScene("MainMenu");
         }
 

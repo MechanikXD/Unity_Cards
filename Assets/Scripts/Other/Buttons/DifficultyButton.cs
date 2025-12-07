@@ -13,15 +13,9 @@ namespace Other.Buttons
         [SerializeField] private TMP_Text _title;
         private EnemyDifficultySettings _settings;
 
-        private void OnEnable()
-        {
-            _button.onClick.AddListener(LoadGameSceneWithSettings);
-        }
+        private void OnEnable() => _button.onClick.AddListener(LoadGameSceneWithSettings);
 
-        private void OnDisable()
-        {
-            _button.onClick.RemoveListener(LoadGameSceneWithSettings);
-        }
+        private void OnDisable() => _button.onClick.RemoveListener(LoadGameSceneWithSettings);
 
         public void SetData(EnemyDifficultySettings settings)
         {
@@ -35,7 +29,7 @@ namespace Other.Buttons
 
             void PassSettings(Scene scene, LoadSceneMode loadSceneMode)
             {
-                GameStorage.Instance.SetSettings(_settings);
+                SessionManager.Instance.SetSettings(_settings);
                 SceneManager.sceneLoaded -= PassSettings;
             }
             

@@ -8,9 +8,9 @@ namespace ProgressionBuffs.Player
     {
         [SerializeField] private int _healthBoost;
         
-        public override void Apply(PlayerHand hand)
+        public override void Apply(PlayerData data)
         {
-            hand.SetMaxHealth(hand.MaxHealth + _healthBoost);
+            data.SetMaxHealth(data.MaxHealth + _healthBoost);
         }
     }
 }

@@ -13,15 +13,15 @@ namespace SaveLoad
         public static void Serialize()
         {
             var sceneName = SceneManager.GetActiveScene().name;
-            StorageProxy.Set(STORAGE_DATA_KEY, JsonConvert.SerializeObject(GameStorage.Instance.SerializeSelf()));
+            StorageProxy.Set(STORAGE_DATA_KEY, JsonConvert.SerializeObject(SessionManager.Instance.SerializeSelf()));
             StorageProxy.Set(STORAGE_SCENE_KEY, sceneName);
         }
 
-        public static (string scene, SerializableGameStorage storage) Deserialize()
+        public static (string scene, SerializableGameSession storage) Deserialize()
         {
             var scene = StorageProxy.Get<string>(STORAGE_SCENE_KEY);
             var json = StorageProxy.Get<string>(STORAGE_DATA_KEY);
-            var storageData = JsonConvert.DeserializeObject<SerializableGameStorage>(json);
+            var storageData = JsonConvert.DeserializeObject<SerializableGameSession>(json);
             return (scene, storageData);
         }
 

@@ -14,7 +14,7 @@ namespace Cards.Card.Effects.Classes
             {
                 if (context.Other[context.Index - 1].IsEmpty)
                 {
-                    context.OtherHand.TakeDamage(_damage);
+                    context.OtherData.TakeDamage(_damage);
                 }
                 else
                 {
@@ -32,7 +32,7 @@ namespace Cards.Card.Effects.Classes
             {
                 if (context.Other[context.Index + 1].IsEmpty)
                 {
-                    context.OtherHand.TakeDamage(_damage);
+                    context.OtherData.TakeDamage(_damage);
                 }
                 else
                 {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Cards.Deck
 {
-    public class PlayerCardDragArea : MonoBehaviour
+    public class PlayerCardArea : MonoBehaviour
     {
         [SerializeField] private Transform _root;
         [SerializeField] private int _maxCapacity;

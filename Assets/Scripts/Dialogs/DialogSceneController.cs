@@ -27,18 +27,15 @@ namespace Dialogs
         // Because my button is nested inside actual gameObject of button:
         private GameObject ConfirmButtonGameObject => _confirmButton.transform.parent.gameObject;
 
-        [SerializeField] private OptionButton[] _dialogOptions;
+        [SerializeField] private BuffOptionButton[] _dialogOptions;
         private int _optionsCount;
         private bool _dialogIsFinished;
         private string[] _dialogs;
         private int _currentDialogIndex;
         
-        private OptionButton _currentlySelected;
+        private BuffOptionButton _currentlySelected;
 
-        private void OnDisable()
-        {
-            _confirmButton.onClick.RemoveAllListeners();
-        }
+        private void OnDisable() => _confirmButton.onClick.RemoveAllListeners();
 
         protected override void Initialize() { }
 
@@ -54,9 +51,7 @@ namespace Dialogs
         public void Load(DialogSettings dialog)
         {
             _sprite.sprite = dialog.Sprite;
-            _foreground.sprite = dialog.Foreground == null
-                ? CardDataProvider.ImageNull
-                : dialog.Foreground;
+            _foreground.sprite = dialog.Foreground;
             _currentForegroundPath = dialog.ForegroundPath;
             _currentSpritePath = dialog.SpritePath;
             _dialogs = dialog.Dialogues;
@@ -71,7 +66,7 @@ namespace Dialogs
             }
             
             _confirmButton.onClick.RemoveAllListeners();
-            _confirmButton.onClick.AddListener(ConfirmButtonPress);
+            _confirmButton.onClick.AddListener(HandleConfirmButtonPress);
             
             _confirmButton.interactable = false;
             ConfirmButtonGameObject.SetActive(false);
@@ -102,13 +97,13 @@ namespace Dialogs
 
         public void Deserialize(DialogState self)
         {
-            var db = GameStorage.Instance.BuffDataBase;
+            var db = SessionManager.Instance.BuffDataBase;
             _nextDialogs = self.Next.ToLinkedList(s => s.ToDialogSetting(db));
             _currentSpritePath = self.Current._spritePath;
             _sprite.sprite = Resources.Load<Sprite>(self.Current._spritePath);
-            _foreground.sprite = self.Current._foregroundPath == null
-                ? CardDataProvider.ImageNull
-                : Resources.Load<Sprite>(self.Current._foregroundPath);
+            _foreground.sprite = string.IsNullOrEmpty(self.Current._foregroundPath) ? 
+                CardDataProvider.ImageNull :
+                Resources.Load<Sprite>(self.Current._foregroundPath);
             _currentForegroundPath = self.Current._foregroundPath;
             _dialogs = self.Current._dialogs;
             
@@ -123,7 +118,7 @@ namespace Dialogs
             }
             
             _confirmButton.onClick.RemoveAllListeners();
-            _confirmButton.onClick.AddListener(ConfirmButtonPress);
+            _confirmButton.onClick.AddListener(HandleConfirmButtonPress);
             
             if (_dialogIsFinished) LoadOptions();
             else
@@ -136,19 +131,17 @@ namespace Dialogs
             }
         }
 
-        private void ConfirmButtonPress()
+        private void HandleConfirmButtonPress()
         {
             if (_currentlySelected == null)
             {
                 _confirmButton.interactable = false;
                 return;
             }
-            GameStorage.Instance.AddBuff(_currentlySelected.Buff);
-            
+            SessionManager.Instance.AddBuff(_currentlySelected.Buff);
+
             if (_nextDialogs.Count == 0)
-            {
                 SceneManager.LoadScene("GameScene");
-            }
             else
             {
                 var next = _nextDialogs.First;
@@ -157,7 +150,7 @@ namespace Dialogs
             }
         }
         
-        public void SelectOption(OptionButton selected)
+        public void SelectOption(BuffOptionButton selected)
         {
             foreach (var button in _dialogOptions)
             {
@@ -198,7 +191,7 @@ namespace Dialogs
     public struct DialogSettings
     {
         public readonly Sprite Sprite;
-        [CanBeNull] public readonly Sprite Foreground;
+        public readonly Sprite Foreground;
         public readonly string SpritePath;
         [CanBeNull] public readonly string ForegroundPath;
         public readonly string[] Dialogues;
@@ -209,7 +202,9 @@ namespace Dialogs
             SpritePath = spritePath;
             ForegroundPath = foregroundPath;
             Sprite = Resources.Load<Sprite>(spritePath);
-            Foreground = Resources.Load<Sprite>(foregroundPath);
+            Foreground = string.IsNullOrEmpty(foregroundPath) ? 
+                CardDataProvider.ImageNull :
+                Resources.Load<Sprite>(foregroundPath);
             Dialogues = dialogues;
             Options = options;
         }

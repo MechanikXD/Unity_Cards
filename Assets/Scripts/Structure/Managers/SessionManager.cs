@@ -16,15 +16,15 @@ using UnityEngine.SceneManagement;
 
 namespace Structure.Managers
 {
-    public class GameStorage : SingletonBase<GameStorage>, IGameSerializable<SerializableGameStorage>
+    public class SessionManager : SingletonBase<SessionManager>, IGameSerializable<SerializableGameSession>
     {
         [SerializeField] private BuffDataBase _buffs;
-        [SerializeField] private PlayerHand _playerHand;
+        [SerializeField] private PlayerData _playerData;
         public EnemyDifficultySettings DifficultySettings { get; private set; }
 
         public bool HadLoadedData { get; set; }
         public int CurrentAct { get; private set; } = -1;
-        public PlayerHand PlayerHand => _playerHand;
+        public PlayerData PlayerData => _playerData;
         public BuffDataBase BuffDataBase => _buffs;
         public BuffStorage<PlayerBuff> PlayerBuffs { get; } = new BuffStorage<PlayerBuff>();
         public BuffStorage<EnemyBuff> EnemyBuffs { get; } = new BuffStorage<EnemyBuff>();
@@ -54,7 +54,7 @@ namespace Structure.Managers
             var strings = StorageProxy.Get<string>(DeckView.DeckIDStorageKey).Split(',');
             var ids = new int[strings.Length];
             for (var i = 0; i < strings.Length; i++) ids[i] = int.Parse(strings[i]);
-            _playerHand.Initialize(ids);
+            _playerData.Initialize(ids);
         }
         
         public void SetSettings(EnemyDifficultySettings settings) => 
@@ -73,7 +73,7 @@ namespace Structure.Managers
 
         public void AdvanceAct() => CurrentAct++;
 
-        public void LoadEnemyBuffs(PlayerHand enemy)
+        public void LoadEnemyBuffs(PlayerData enemy)
         {
             foreach (var enemyBuff in EnemyBuffs.GetBuffs(ActivationType.Instant)) enemyBuff.Apply(enemy);
             foreach (var enemyBuff in EnemyBuffs.GetBuffs(ActivationType.ActStart)) enemyBuff.Apply(enemy);
@@ -83,7 +83,7 @@ namespace Structure.Managers
         {
             if (buff is PlayerBuff playerBuff)
             {
-                if (playerBuff.Activation == ActivationType.Instant) playerBuff.Apply(_playerHand);
+                if (playerBuff.Activation == ActivationType.Instant) playerBuff.Apply(_playerData);
                 else PlayerBuffs.Add(playerBuff);
             }
             else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
@@ -94,18 +94,18 @@ namespace Structure.Managers
             if (!isFocus) GameSerializer.Serialize();
         }
 
-        public SerializableGameStorage SerializeSelf()
+        public SerializableGameSession SerializeSelf()
         {
             var sceneData = SceneDataGetters[SceneManager.GetActiveScene().name];
             
-            return new SerializableGameStorage(CurrentAct, _playerHand.SerializeSelf(),
+            return new SerializableGameSession(CurrentAct, _playerData.SerializeSelf(),
                 PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData());
         }
 
-        public void Deserialize(SerializableGameStorage self)
+        public void Deserialize(SerializableGameSession self)
         {
             CurrentAct = self.Act;
-            _playerHand.Deserialize(self.PlayerHand);
+            _playerData.Deserialize(self.PlayerHand);
             PlayerBuffs.Load(_buffs, self.PlayerBuffs);
             EnemyBuffs.Load(_buffs, self.EnemyBuffs);
             SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
@@ -114,7 +114,7 @@ namespace Structure.Managers
     }
 
     [Serializable]
-    public class SerializableGameStorage
+    public class SerializableGameSession
     {
         public int Act { get; }
         public SerializablePlayerHand PlayerHand { get; }
@@ -122,7 +122,7 @@ namespace Structure.Managers
         public string EnemyBuffs { get; }
         public JObject SceneData { get; }
 
-        public SerializableGameStorage(int act, SerializablePlayerHand playerHand, 
+        public SerializableGameSession(int act, SerializablePlayerHand playerHand, 
             string playerBuffs, string enemyBuffs, object sceneData)
         {
             Act = act;
