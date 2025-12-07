@@ -3,20 +3,24 @@ using System.Linq;
 using System.Threading;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Other
 {
     public class CardGroupLayout : MonoBehaviour
     {
-        private const float SNAP_DISTANCE = 10f;
+        private const int MIN_SORTING_ORDER = 3;
+        [SerializeField] private float _spacing;
+        [SerializeField] private float _xOffset;
         [SerializeField] private Vector3 _rotation;
         [SerializeField] private float _moveSpeed;
-        [SerializeField] private float _spacing;
         private float _currentSpacing;
-        private List<RectTransform> _child = new List<RectTransform>();
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private int _objectsChangingPosition;
+        private List<CardModel> _child = new List<CardModel>();
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        
+        private int _objectsChangingPositionCount;
         private bool _isChangingPosition;
 
         private void Awake()
@@ -27,45 +31,62 @@ namespace Other
 
         private void LoadChildren()
         {
-            _child = transform.childCount == 0
-                ? new List<RectTransform>()
-                : gameObject.transform.Cast<RectTransform>().ToList();
-            UpdateChildPosition();
+            _child = transform.childCount > 0 
+                ? GetComponentsInChildren<CardModel>().ToList() 
+                : new List<CardModel>();
+            UpdateChildPosition(true);
         }
 
-        public void AddChild(RectTransform child)
+        public void AddChild(CardModel child)
         {
             _child.Add(child);
             child.transform.SetParent(transform);
-            child.localScale = Vector3.one;
-            child.rotation = Quaternion.Euler(_rotation);
+            child.transform.rotation = Quaternion.Euler(_rotation);
             UpdateChildPosition();
         }
 
-        public void RemoveChild(int index)
+        public void RemoveChild(int index, [CanBeNull] Transform newParent=null)
         {
-            _child[index].rotation = Quaternion.identity;
+            _child[index].transform.rotation = Quaternion.identity;
+            _child[index].transform.SetParent(newParent);
             _child.RemoveAt(index);
             UpdateChildPosition();
         }
-        
-        private void UpdateChildPosition()
+
+        public void RemoveALl()
         {
-            if (_isChangingPosition) _cts.Cancel();
+            foreach (var card in _child) Destroy(card.gameObject);
+            _child.Clear();
+        }
+        
+        private void UpdateChildPosition(bool isInstant=false)
+        {
+            if (_isChangingPosition) _cts = _cts.Reset();
             _isChangingPosition = true;
-            _objectsChangingPosition = _child.Count;
+            // Mark how many cards are moving so we know when to unflag _isChangingPosition
+            _objectsChangingPositionCount = _child.Count;
             
             AdjustSpacing(out var totalWidth);
-            
-            var currentPosition = -totalWidth / 2;
+
+            var currentOrder = MIN_SORTING_ORDER;
+            var currentPosition = -totalWidth / 2 + _xOffset;
             for (var i = 0; i < _child.Count; i++)
             {
-                _child[i].GetComponent<CardModel>().IndexInLayout = i;
+                _child[i].IndexInLayout = i;
+                _child[i].SortingGroup.sortingOrder = currentOrder;
+                var target = new Vector3(currentPosition, 0, 0);
                 
-                _child[i] .SetSiblingIndex(i);
-                MoveRectAsync(_child[i], new Vector2(currentPosition, 
-                    _child[i].anchoredPosition.y), _cts.Token).Forget();
-                currentPosition += _spacing;
+                if (isInstant) _child[i].transform.localPosition = target;
+                else MoveChildAsync(_child[i].transform, target).Forget();
+                
+                currentPosition += _currentSpacing;
+                currentOrder++;
+            }
+
+            if (isInstant)
+            {
+                _objectsChangingPositionCount = 0;
+                _isChangingPosition = false;
             }
         }
 
@@ -84,21 +105,12 @@ namespace Other
             }
         }
 
-        private async UniTask MoveRectAsync(RectTransform rectTransform, Vector2 final,
-            CancellationToken ct)
+        private async UniTask MoveChildAsync(Transform cardTransform, Vector3 final)
         {
-            var current = rectTransform.anchoredPosition;
-            while (Vector2.Distance(current, final) < SNAP_DISTANCE)
-            {
-                current = Vector2.Lerp(current, final, _moveSpeed);
-                rectTransform.anchoredPosition = current;
-                await UniTask.NextFrame(cancellationToken: ct);
-            }
+            await cardTransform.MoveToLocalAsync(final, _moveSpeed, _cts.Token);
 
-            rectTransform.anchoredPosition = final;
-
-            _objectsChangingPosition--;
-            if (_objectsChangingPosition <= 0)
+            _objectsChangingPositionCount--;
+            if (_objectsChangingPositionCount <= 0)
             {
                 _isChangingPosition = false;
             }

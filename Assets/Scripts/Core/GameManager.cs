@@ -1,43 +1,66 @@
 ﻿using Core.Behaviour;
 using Core.Cards.Board;
-using Enemy;
+using Core.SessionStorage;
+using Other.Dialog;
 using UI;
-using UI.View;
+using UI.View.GameView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
     public class GameManager : SingletonBase<GameManager>
     {
         [SerializeField] private BoardModel _board;
-        [SerializeField] private Transform _controlCanvas;
-        [SerializeField] private EnemyDifficultySettings _difficultySettings;
+        [SerializeField] private DialogDataBase _dialogDataBase;
         
-        // TODO: THIS IS TEMP, replace with actual values
-        [SerializeField] private int[] _playerCardsIds;
-        [SerializeField] private int[] _otherCardsIds;
-        public bool GameIsFinished { get; private set; }
-        
+        public bool ActIsFinished { get; private set; }
         public BoardModel Board => _board;
-        public Transform ControlCanvas => _controlCanvas;
-        public EnemyDifficultySettings DifficultySettings => _difficultySettings;
-        
-        protected override void Initialize()
+
+        private void Start()
         {
-            _board.StartGame(_playerCardsIds, _otherCardsIds);
+            var gs = GameStorage.Instance;
+            Board.StartGame(gs.DifficultySettings, !gs.HadLoadedData);
+            gs.HadLoadedData = false;
+        }
+        
+        protected override void Initialize() { }
+
+        public void WinAct()
+        {
+            ActIsFinished = true;
+            Board.FinishAct();
+            SceneManager.LoadScene("Dialogs");
+
+            void InitializeDialog(Scene scene, LoadSceneMode mode)
+            {
+                if (scene != SceneManager.GetSceneByName("Dialogs")) return;
+
+                var first = _dialogDataBase.GetRandom();
+                var second = _dialogDataBase.GetRandom();
+                DialogSceneController.Instance.Load(new[]
+                {
+                    new DialogSettings(first._backgroundImagePath, first._foregroundImagePath,
+                        first._dialogs, GameStorage.Instance.GetRandomPlayerBuffOptions(3)),
+                    new DialogSettings(second._backgroundImagePath, second._foregroundImagePath,
+                        second._dialogs, GameStorage.Instance.GetRandomEnemyBuffOptions(3))
+                });
+                
+                SceneManager.sceneLoaded -= InitializeDialog;
+            }
+
+            SceneManager.sceneLoaded += InitializeDialog;
+        }
+        
+        public void LooseAct()
+        {
+            ActIsFinished = true;
+            FinalizeGame();
         }
 
-        public void WinGame()
+        private void FinalizeGame()
         {
-            GameIsFinished = true;
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Victory!");
-            UIManager.Instance.EnterUICanvas<GameResultView>();
-        }
-        
-        public void GameLoose()
-        {
-            GameIsFinished = true;
-            UIManager.Instance.GetUICanvas<GameResultView>().SetTitle("Defeat");
+            UIManager.Instance.GetUICanvas<GameResultView>().SetStats(":)");
             UIManager.Instance.EnterUICanvas<GameResultView>();
         }
     }

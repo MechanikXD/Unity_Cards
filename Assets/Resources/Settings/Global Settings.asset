@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7310b2440e74009b827714ff990b6b9, type: 3}
+  m_Name: Global Settings
+  m_EditorClassIdentifier: 
+  _settingGroups:
+  - _groupTitle: First
+    _sliders:
+    - _settingName: Test slider
+      _order: 1
+      _defaultValue: 1
+      _bounds: {x: 0, y: 2}
+      _wholeNumbers: 0
+    _booleans:
+    - _settingName: test bool
+      _order: 0
+      _isOnByDefault: 0
+    _dropdowns: []
+  - _groupTitle: Second
+    _sliders: []
+    _booleans: []
+    _dropdowns:
+    - _settingName: Test Dropdown
+      _order: 1
+      _values:
+      - First
+      - Second
+      - more
+      - I need more
+      - MORE
+      - MOOOOORE
