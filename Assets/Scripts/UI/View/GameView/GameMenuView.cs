@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.SessionStorage;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ namespace UI.View.GameView
     public class GameMenuView : CanvasView
     {
         [SerializeField] private Button _resumeButton;
-        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _mainMenuButton;
         [SerializeField] private Button _exitButton;
 
         private void OnEnable() => SubscribeToEvents();
@@ -16,23 +17,29 @@ namespace UI.View.GameView
         private void SubscribeToEvents()
         {
             _resumeButton.onClick.AddListener(ExitCanvas);
-            _restartButton.onClick.AddListener(RestartScene);
+            _mainMenuButton.onClick.AddListener(ToMainMenu);
             _exitButton.onClick.AddListener(ExitApplication);
         }
 
         private void UnSubscribeFromEvents()
         {
             _resumeButton.onClick.RemoveListener(ExitCanvas);
-            _restartButton.onClick.RemoveListener(RestartScene);
+            _mainMenuButton.onClick.RemoveListener(ToMainMenu);
             _exitButton.onClick.RemoveListener(ExitApplication);
         }
 
-        private void ExitCanvas()
+        private static void ExitCanvas()
         {
             if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
 
-        private void RestartScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        private void ExitApplication() => Application.Quit();
+        private static void ToMainMenu()
+        {
+            GameSerializer.Serialize();
+            Destroy(GameStorage.Instance.gameObject);
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        private static void ExitApplication() => Application.Quit();
     }
 }

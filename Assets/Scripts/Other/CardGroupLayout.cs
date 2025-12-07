@@ -4,6 +4,7 @@ using System.Threading;
 using Core.Cards.Card;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Other
@@ -50,6 +51,12 @@ namespace Other
             _child[index].transform.SetParent(newParent);
             _child.RemoveAt(index);
             UpdateChildPosition();
+        }
+
+        public void RemoveALl()
+        {
+            foreach (var card in _child) Destroy(card.gameObject);
+            _child.Clear();
         }
         
         private void UpdateChildPosition(bool isInstant=false)

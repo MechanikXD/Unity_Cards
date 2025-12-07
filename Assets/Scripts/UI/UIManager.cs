@@ -9,8 +9,11 @@ namespace UI
     {
         private Dictionary<Type, CanvasView> _uiCanvases;
         private Dictionary<Type, CanvasView> _hudCanvases;
+        [SerializeField] private bool _enterPauseOnUiOpen = true;
+        [SerializeField] private bool _stopTimeOnPause = true;
+        [SerializeField] private bool _blockInputOnPause = true;
 
-        [SerializeField] private GameObject _sceneInputBlock;
+        [SerializeField] private Canvas _sceneInputBlock;
         [SerializeField] private CanvasView[] _sceneUiCanvases;
         [SerializeField] private CanvasView[] _sceneHudCanvases;
 
@@ -28,7 +31,7 @@ namespace UI
         }
 
         public void EnterUICanvas<T>() where T : CanvasView {
-            if (!HasOpenedUI) EnterPauseState();
+            if (!HasOpenedUI && _enterPauseOnUiOpen) EnterPauseState();
             
             if (_uiStack.Count > 0) _uiStack.Peek().Disable();
             var canvas = GetUICanvas<T>();
@@ -44,9 +47,7 @@ namespace UI
             else ExitPauseState();
         }
         
-        public void EnterHUDCanvas<T>() where T : CanvasView {
-            GetHUDCanvas<T>().Enable();
-        }
+        public void EnterHUDCanvas<T>() where T : CanvasView => GetHUDCanvas<T>().Enable();
 
         public void ExitHudCanvas<T>() where T : CanvasView {
             if (_hudCanvases.TryGetValue(typeof(T), out var hud)) hud.Disable();
@@ -54,14 +55,14 @@ namespace UI
         
         private void EnterPauseState() {
             HasOpenedUI = true;
-            Time.timeScale = 0f;
-            _sceneInputBlock.SetActive(true);
+            if (_stopTimeOnPause) Time.timeScale = 0f;
+            if (_blockInputOnPause) _sceneInputBlock.enabled = true;
         }
 
         private void ExitPauseState() {
             HasOpenedUI = false;
             Time.timeScale = 1f;
-            _sceneInputBlock.SetActive(false);
+            _sceneInputBlock.enabled = false;
         }
 
         public T GetUICanvas<T>() where T : CanvasView => (T)_uiCanvases[typeof(T)];

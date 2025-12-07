@@ -36,7 +36,10 @@ MonoBehaviour:
     _health: 6
     _attack: {x: 3, y: 5}
     _cost: 5
-    _effects: []
+    _effects:
+    - _trigger: 1
+      _effects:
+      - {fileID: 11400000, guid: 05c61f1c10f6ed549b225619ddf63f67, type: 2}
   - _id: 3
     _sprite: {fileID: 21300000, guid: b67039eff4aa351469b095fe78b8d402, type: 3}
     _background: {fileID: 21300000, guid: 99f60c2523296fe4a8f35aea4b024202, type: 3}

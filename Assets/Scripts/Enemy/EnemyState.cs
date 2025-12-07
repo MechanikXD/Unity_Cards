@@ -5,6 +5,7 @@ using Core.Cards.Card.Data;
 using Core.Cards.Hand;
 using Enemy.States;
 using Other;
+using Other.Extensions;
 using UnityEngine;
 
 namespace Enemy
@@ -33,8 +34,8 @@ namespace Enemy
 
             for (var i = 0; i < myCards.Length; i++)
             {
-                var playerDangerLevel = playerCards[i].IsEmpty ? 0 : playerCards[i].Card.CardData.Attack.Average();
-                var myDangerLevel = myCards[i].IsEmpty ?  0 : myCards[i].Card.CardData.Attack.Average();
+                var playerDangerLevel = playerCards[i].IsEmpty ? 0 : playerCards[i].Card.Data.Attack.Average();
+                var myDangerLevel = myCards[i].IsEmpty ?  0 : myCards[i].Card.Data.Attack.Average();
                 var difference = playerDangerLevel - myDangerLevel;
                 
                 if (myDangerLevel == 0 && Hand.CurrentHealth - playerDangerLevel <= 0)

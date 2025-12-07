@@ -35,6 +35,7 @@ namespace Enemy
 
         public void PlayTurn()
         {
+            if (Hand.CardsInHand.Count == 0) return;
             ((EnemyState)StateMachine.CurrentState).PlayTurn();
         }
 
@@ -57,7 +58,7 @@ namespace Enemy
                 
                 thisSlot.Attach(newCard);
                 newCard.Animator.enabled = true;
-                Object.Destroy(newCard.GetComponent<CardDragHandler>());
+                newCard.GetComponent<CardController>().Interactable = false;
                 newCard.Set(input.data, null);
             }
             

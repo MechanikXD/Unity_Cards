@@ -2,7 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Other
+namespace Other.Extensions
 {
     public static class TransformExtensions
     {

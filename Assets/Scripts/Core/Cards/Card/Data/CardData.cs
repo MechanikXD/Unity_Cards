@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Core.Cards.Card.Effects;
+using Player.Progression.SaveStates;
 using UnityEngine;
 
 namespace Core.Cards.Card.Data
@@ -9,7 +9,6 @@ namespace Core.Cards.Card.Data
     [Serializable]
     public struct CardData : IEquatable<CardData>
     {
-        [SerializeField] private int _id;
         [Header("Visual")]
         [SerializeField] private Sprite _sprite;
         [SerializeField] private Sprite _background;
@@ -21,26 +20,43 @@ namespace Core.Cards.Card.Data
         [Header("Effects")]
         [SerializeField] private EffectGroup[] _effects;
 
-        public int ID => _id;
+        public int ID { get; internal set; }
 
         public Sprite Sprite => _sprite;
         public Sprite Background => _background;
         public CardAffinity Affinity => _affinity;
         
-        public int Health =>  _health;
-        public Vector2Int Attack => _attack;
-        public int Cost => _cost;
+        public int Health
+        {
+            get => _health;
+            set => _health = value;
+        }
 
-        public Dictionary<TriggerType, CardEffect[]> Effects
+        public Vector2Int Attack
+        {
+            get => _attack;
+            set => _attack = value;
+        }
+
+        public int Cost
+        {
+            get => _cost;
+            set => _cost = value;
+        }
+
+        private Dictionary<TriggerType, List<CardEffect>> _effectDict;
+        public Dictionary<TriggerType, List<CardEffect>> Effects
         {
             get
             {
-                return _effects != null
-                    ? _effects.ToDictionary(e => e.Trigger, e => e.Effects)
-                    : new Dictionary<TriggerType, CardEffect[]>();
+                if (_effectDict == null) ParseEffects();
+                return _effectDict;
             }
         }
-        
+
+        public void AddEffect(TriggerType trigger, CardEffect effect) => Effects[trigger].Add(effect);
+        public void RemoveEffect(TriggerType trigger, CardEffect effect) => Effects[trigger].Remove(effect);
+
         public static bool operator ==(CardData thisCard, CardData otherCard)
         {
             return thisCard.Equals(otherCard);
@@ -53,7 +69,7 @@ namespace Core.Cards.Card.Data
 
         public bool Equals(CardData other)
         {
-            return _id == other._id && _affinity == other._affinity && _health == other._health &&
+            return ID == other.ID && _affinity == other._affinity && _health == other._health &&
                    _attack.Equals(other._attack) && _cost == other._cost;
         }
 
@@ -64,7 +80,27 @@ namespace Core.Cards.Card.Data
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_id, (int)_affinity, _health, _attack, _cost);
+            return HashCode.Combine(ID, (int)_affinity, _health, _attack, _cost);
+        }
+
+        private void ParseEffects()
+        {
+            _effectDict = new Dictionary<TriggerType, List<CardEffect>>();
+            foreach (var effectGroup in _effects)
+            {
+                if (!_effectDict.ContainsKey(effectGroup.Trigger))
+                {
+                    _effectDict.Add(effectGroup.Trigger, new List<CardEffect>());
+                }    
+                
+                _effectDict[effectGroup.Trigger].AddRange(effectGroup.Effects);
+            }
+            
+        }
+
+        public SerializableCardData SerializeSelf()
+        {
+            return new SerializableCardData(ID, Health, Attack, Cost);
         }
     }
 

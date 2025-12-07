@@ -2,6 +2,7 @@
 using Core.Behaviour.StateMachine;
 using Core.Cards.Card.Data;
 using Other;
+using Other.Extensions;
 
 namespace Enemy.States
 {
@@ -32,7 +33,7 @@ namespace Enemy.States
                         break;
                     // player card only
                     case false when myCard.IsEmpty:
-                        var danger = playerCard.Card.CardData.Attack.Average();
+                        var danger = playerCard.Card.Data.Attack.Average();
                         if (danger >= StateOwner.Settings.IgnoreDangerLevelAggressive)
                         {
                             counteractSlots.Add(i);
@@ -44,7 +45,7 @@ namespace Enemy.States
                         break;
                     // My card only
                     case true when !myCard.IsEmpty:
-                        var attackValue = myCard.Card.CardData.Attack.Average();
+                        var attackValue = myCard.Card.Data.Attack.Average();
                         totalPressure += attackValue;
                         break;
                 }
@@ -60,7 +61,7 @@ namespace Enemy.States
                 }
                 else
                 {
-                    var attack = Board.PlayerSlots[index].Card.CardData.Attack.Average();
+                    var attack = Board.PlayerSlots[index].Card.Data.Attack.Average();
                     card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
                 }
 
@@ -89,7 +90,7 @@ namespace Enemy.States
                     }
                     else
                     {
-                        var attack = playerCard.Card.CardData.Attack.Average();
+                        var attack = playerCard.Card.Data.Attack.Average();
                         card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
                     }
                 }

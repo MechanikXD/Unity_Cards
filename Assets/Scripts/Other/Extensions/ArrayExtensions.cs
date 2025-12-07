@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
-namespace Other
+namespace Other.Extensions
 {
     public static class ArrayExtensions
     {
@@ -44,6 +45,28 @@ namespace Other
             // Rebuild linked list
             list.Clear();
             foreach (var v in values) list.AddLast(v);
+        }
+
+        public static int[] ShuffledIndexes(this IList enumerable)
+        {
+            var indexes = new int[enumerable.Count];
+            for (var i = 0; i < enumerable.Count; i++) indexes[i] = i;
+            indexes.Shuffle();
+            return indexes;
+        }
+
+        public static LinkedList<T> ToLinkedList<T>(this IEnumerable<T> array)
+        {
+            var ll = new LinkedList<T>();
+            foreach (var val in array) ll.AddLast(val);
+            return ll;
+        }
+
+        public static LinkedList<TOut> ToLinkedList<TIn, TOut>(this IEnumerable<TIn> array, Func<TIn, TOut> processor)
+        {
+            var ll = new LinkedList<TOut>();
+            foreach (var val in array) ll.AddLast(processor(val));
+            return ll;
         }
     }
 }

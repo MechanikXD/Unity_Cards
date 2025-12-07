@@ -1,11 +1,12 @@
 ﻿using Core;
 using Cysharp.Threading.Tasks;
+using Other;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.View.GameView
 {
-    public class GameHUDCanvas : CanvasView
+    public class GameHUDView : CanvasView
     {
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _pauseButton;
@@ -35,6 +36,7 @@ namespace UI.View.GameView
 
         private void PlayTurn()
         {
+            HideInfoOnClick.HideAll();
             if (GameManager.Instance != null) GameManager.Instance.Board.PlayTurnAsync().Forget();
         }
     }

@@ -2,6 +2,7 @@
 using Core.Behaviour.StateMachine;
 using Core.Cards.Card.Data;
 using Other;
+using Other.Extensions;
 
 namespace Enemy.States
 {
@@ -24,7 +25,7 @@ namespace Enemy.States
 
                 if (playerCard.IsEmpty || !myCard.IsEmpty) continue;
 
-                var playerAttack = playerCard.Card.CardData.Attack.Average();
+                var playerAttack = playerCard.Card.Data.Attack.Average();
                         
                 if (playerAttack > StateOwner.Settings.ImmediateRespondToDangerLevelDefensive)
                     immediateRespondSlots.Add(i);
@@ -71,7 +72,7 @@ namespace Enemy.States
                     }
                     else
                     {
-                        var attack = playerCard.Card.CardData.Attack.Average();
+                        var attack = playerCard.Card.Data.Attack.Average();
                         card = GetCardWithMatchingCost(attack) ?? GetCardWithLeastCost();
                     }
                 }

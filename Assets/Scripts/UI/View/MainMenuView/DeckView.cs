@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Core.Cards.Card.Data;
 using Core.Cards.Deck;
+using Other;
 using Player.Deck;
 using Storage;
 using UnityEngine;
@@ -67,6 +68,7 @@ namespace UI.View.MainMenuView
         private void ExitLastCanvas()
         {
             SaveCards();
+            HideInfoOnClick.HideInfo();
             if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
     }
