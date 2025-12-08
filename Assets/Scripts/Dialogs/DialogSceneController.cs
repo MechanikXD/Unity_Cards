@@ -9,6 +9,7 @@ using SaveLoad.Serializeables;
 using Structure;
 using Structure.Managers;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -138,8 +139,8 @@ namespace Dialogs
             }
             SessionManager.Instance.AddBuff(_currentlySelected.Buff);
 
-            if (_nextDialogs.Count == 0)
-                SceneManager.LoadScene("GameScene");
+            if (_nextDialogs.Count == 0) UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene("GameScene"));
             else
             {
                 var next = _nextDialogs.First;

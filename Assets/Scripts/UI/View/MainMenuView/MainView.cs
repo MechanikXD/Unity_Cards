@@ -54,7 +54,8 @@ namespace UI.View.MainMenuView
         private void ContinueGame()
         {
             var data = GameSerializer.Deserialize();
-            SceneManager.LoadScene(data.scene);
+            UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene(data.scene));
 
             void DeserializeOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
             {
@@ -66,6 +67,6 @@ namespace UI.View.MainMenuView
             SceneManager.sceneLoaded += DeserializeOnSceneLoad;
         }
 
-        private static void ExitApplication() => Application.Quit();
+        private static void ExitApplication() => UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(Application.Quit);
     }
 }

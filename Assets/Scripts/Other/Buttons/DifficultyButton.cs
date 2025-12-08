@@ -1,6 +1,7 @@
 ﻿using Enemy;
 using Structure.Managers;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -25,7 +26,8 @@ namespace Other.Buttons
 
         private void LoadGameSceneWithSettings()
         {
-            SceneManager.LoadScene("GameScene");
+            UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene("GameScene"));
 
             void PassSettings(Scene scene, LoadSceneMode loadSceneMode)
             {
