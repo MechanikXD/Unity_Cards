@@ -2833,9 +2833,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardIndex: 0
-  _cardMoveSpeed: 1
+  _cardMoveSpeed: 4
   _canSnapTo: 0
-  _cardPosition: {x: 0, y: 2.5, z: -0.05}
+  _cardPosition: {x: 0, y: 0, z: -0.05}
   _board: {fileID: 778903803}
 --- !u!4 &742721395
 Transform:
@@ -3038,12 +3038,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardPrefab: {fileID: 2156658722798406469, guid: f1ba6b7adc80bc44fb77ce0bbd47e115, type: 3}
   _layout: {fileID: 2020779073}
+  _cardSpawn: {x: 15, y: -2, z: 0}
   _playerCardSlots:
   - {fileID: 1391429279}
   - {fileID: 2122681900}
   - {fileID: 2055172251}
   - {fileID: 1399591988}
   _playerStatView: {fileID: 1363271658}
+  _slotRelativeCardSpawn: {x: 0, y: 5, z: 0}
   _enemyCardSlots:
   - {fileID: 742721394}
   - {fileID: 1814490748}
@@ -3594,7 +3596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1038300498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5451,9 +5453,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardIndex: 3
-  _cardMoveSpeed: 1
+  _cardMoveSpeed: 4
   _canSnapTo: 0
-  _cardPosition: {x: 0, y: 2.5, z: -0.05}
+  _cardPosition: {x: 0, y: 0, z: -0.05}
   _board: {fileID: 778903803}
 --- !u!4 &1462161888
 Transform:
@@ -5919,9 +5921,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardIndex: 2
-  _cardMoveSpeed: 1
+  _cardMoveSpeed: 4
   _canSnapTo: 0
-  _cardPosition: {x: 0, y: 2.5, z: -0.05}
+  _cardPosition: {x: 0, y: 0, z: -0.05}
   _board: {fileID: 778903803}
 --- !u!4 &1685426661
 Transform:
@@ -6173,9 +6175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardIndex: 1
-  _cardMoveSpeed: 1
+  _cardMoveSpeed: 4
   _canSnapTo: 0
-  _cardPosition: {x: 0, y: 2.5, z: -0.05}
+  _cardPosition: {x: 0, y: 0, z: -0.05}
   _board: {fileID: 778903803}
 --- !u!4 &1814490749
 Transform:

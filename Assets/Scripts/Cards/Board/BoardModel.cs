@@ -34,18 +34,20 @@ namespace Cards.Board
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
         private ObjectPool<CardModel> _modelPool;
-        
+
         [Header("Player")]
+        [SerializeField] private Vector3 _cardSpawn;
         [SerializeField] private CardSlot[] _playerCardSlots;
         [SerializeField] private PlayerStatView _playerStatView;
         // Workaround to ease access to player
         private static PlayerData PlayerData => SessionManager.Instance.PlayerData;
-        [Header("Other")]
+
+        [Header("Enemy")]
+        [SerializeField] private Vector3 _slotRelativeCardSpawn;
         [SerializeField] private CardSlot[] _enemyCardSlots;
         [SerializeField] private PlayerData _enemyData;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-        public CardModel CardPrefab => _cardPrefab;
         public CardSlot[] PlayerSlots => _playerCardSlots;
         public CardSlot[] EnemySlots => _enemyCardSlots;
         
@@ -296,12 +298,29 @@ namespace Cards.Board
         {
             var model = _modelPool.Pull();
             model.Set(card, PlayerData);
+            model.transform.position = _cardSpawn;
+            model.Animator.enabled = false;
+            model.Controller.Interactable = true;
             AddCardToLayout(model);
         }
         public void AddCardToLayout(CardModel rect) => _layout.AddChild(rect);
         public void RemoveCardFromLayout(int index) => _layout.RemoveChild(index);
 
         #endregion
+
+        public void PlaceEnemyCard(CardData data, int index)
+        {
+            var thisSlot = EnemySlots[index];
+            if (!thisSlot.IsEmpty) return;
+
+            var newCard = _modelPool.Pull();
+            newCard.transform.position = thisSlot.transform.position + _slotRelativeCardSpawn;
+            newCard.Animator.enabled = true;
+            newCard.Controller.Interactable = false;
+            newCard.Set(data, null);
+            
+            thisSlot.Attach(newCard);
+        }
         
         // To play effect of certain activation type...
         private static void PlayEffects(Dictionary<TriggerType, List<CardEffect>> cardData, TriggerType trigger, Func<BoardContext> contextProvider)
@@ -343,6 +362,7 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
+                newModel.transform.position = _cardSpawn;
                 newModel.Animator.enabled = true;
                 _playerCardSlots[i].Attach(newModel, true);
             }
@@ -354,6 +374,8 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
+                newModel.transform.position =
+                    _enemyCardSlots[i].transform.position + _slotRelativeCardSpawn;
                 newModel.Animator.enabled = true;
                 _enemyCardSlots[i].Attach(newModel, true);
             }
@@ -379,7 +401,7 @@ namespace Cards.Board
         // Board context from enemy card
         private BoardContext GetEnemyContext(int index) => 
             new BoardContext(_enemyCardSlots, index, _enemyData, _playerCardSlots, PlayerData);
-
+        
         private void UnsubscribeFromEvents()
         {
             if (GameManager.Instance != null)

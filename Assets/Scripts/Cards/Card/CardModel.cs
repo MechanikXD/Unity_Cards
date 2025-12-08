@@ -17,6 +17,7 @@ namespace Cards.Card
     {
         private const string EMPTY_FINAL_ATTACK_CHAR = "#";
         private CancellationTokenSource _cts = new CancellationTokenSource();
+        [SerializeField] private CardController _controller;
         [SerializeField] private SortingGroup _sortingGroup;
         // Animator stuff
         [SerializeField] private Animator _animator;
@@ -41,6 +42,7 @@ namespace Cards.Card
         [SerializeField] private TMP_Text _attackField;
         [SerializeField] private TMP_Text _healthField;
         [SerializeField] private TMP_Text _finalAttackField;
+        public CardController Controller => _controller;
         public PlayerData Hand { get; private set; }
         public int FinalAttack { get; private set; }
         public CardData Data { get; private set; }

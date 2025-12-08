@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using Cards.Board;
-using Cards.Card;
 using Cards.Card.Data;
 using Cards.Hand;
 using Enemy.States;
 using Structure.StateMachine;
-using UnityEngine;
 
 namespace Enemy
 {
@@ -49,18 +47,8 @@ namespace Enemy
 
         public void FinishTurn()
         {
-            foreach (var input in _inputBuffer)
-            {
-                var thisSlot = Board.EnemySlots[input.index];
-                if (!thisSlot.IsEmpty) continue;
-
-                var newCard = Object.Instantiate(Board.CardPrefab);
-                
-                thisSlot.Attach(newCard);
-                newCard.Animator.enabled = true;
-                newCard.GetComponent<CardController>().Interactable = false;
-                newCard.Set(input.data, null);
-            }
+            foreach (var input in _inputBuffer) 
+                Board.PlaceEnemyCard(input.data, input.index);
             
             ((EnemyState)StateMachine.CurrentState).AutoChangeState();
             _inputBuffer.Clear();
