@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Cards.Hand;
 using Dialogs;
 using Enemy;
@@ -28,6 +29,8 @@ namespace Structure.Managers
         public BuffDataBase BuffDataBase => _buffs;
         public BuffStorage<PlayerBuff> PlayerBuffs { get; } = new BuffStorage<PlayerBuff>();
         public BuffStorage<EnemyBuff> EnemyBuffs { get; } = new BuffStorage<EnemyBuff>();
+
+        private readonly Dictionary<string, float> _statistics = new Dictionary<string, float>();
         
         private readonly static Dictionary<string, Func<object>> SceneDataGetters = new Dictionary<string, Func<object>>
         {
@@ -71,7 +74,37 @@ namespace Structure.Managers
         public IList<BuffBase> GetRandomEnemyBuffOptions(int amount) =>
             _buffs.RandomEnemyBuff(amount, CurrentAct);
 
-        public void AdvanceAct() => CurrentAct++;
+        public void AdvanceAct()
+        {
+            CurrentAct++;
+            AddStatistics(nameof(CurrentAct), CurrentAct);
+        }
+
+        public void AddStatistics(string key, float newValue)
+        {
+            if (!_statistics.TryAdd(key, newValue)) 
+                _statistics[key] = newValue;
+        }
+        
+        public void AddStatistics(string key, Func<float, float> modify, float defaultValue=0f)
+        {
+            if (!_statistics.TryAdd(key, modify(defaultValue))) 
+                _statistics[key] = modify(_statistics[key]);
+        }
+        
+        public void IncrementStatistics(string key)
+        {
+            if (!_statistics.TryAdd(key, 1f)) 
+                _statistics[key]++;
+        }
+
+        public string GetFormatedStats()
+        {
+            var sb = new StringBuilder();
+            foreach (var kvp in _statistics) sb.AppendLine($"{kvp.Key}: {kvp.Value}");
+
+            return sb.ToString();
+        }
 
         public void LoadEnemyBuffs(PlayerData enemy)
         {

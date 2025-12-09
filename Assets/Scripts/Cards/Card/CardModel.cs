@@ -174,12 +174,8 @@ namespace Cards.Card
         
         public void MoveCard(CardSlot newSlot)
         {
-            if (!newSlot.IsEmpty || !newSlot.CanSnapTo)
-            {
-                CancelMove();
-                return;
-            }
-            newSlot.Attach(this);
+            if (!newSlot.CanSnapTo || !newSlot.IsEmpty) CancelMove();
+            else newSlot.Attach(this);
         }
 
         public void CancelMove()
@@ -191,6 +187,7 @@ namespace Cards.Card
         public async UniTask MoveToLocalAsync(Vector3 final, float moveSpeed, float snapDistance = 0.1f, bool reenableAnimator=true)
         {
             _cts = _cts.Reset();
+            Controller.Interactable = false;
             _animator.enabled = false;
             var current = transform.localPosition;
             while (Vector3.Distance(current, final) > snapDistance)
@@ -201,11 +198,32 @@ namespace Cards.Card
             }
 
             transform.localPosition = final;
+            Controller.Interactable = true;
             if (reenableAnimator)
             {
                 RequestMove = false;
                 _animator.enabled = true;
             }
+        }
+
+        public async UniTask SwapCardsAsync(CardSlot from, CardSlot to, float moveSpeed, float snapDistance = 0.1f)
+        {
+            to.Deactivate();
+            from.Deactivate();
+            
+            Controller.Interactable = false;
+            var otherCard = to.Detach();
+            otherCard.Controller.Interactable = false;
+            
+            await otherCard.MoveToLocalAsync(otherCard.transform.localPosition + _moveStartLift,
+                moveSpeed, snapDistance, reenableAnimator:false);
+            otherCard.Controller.Interactable = false; // Because it's set true after each move
+            
+            to.Attach(this);
+            from.Attach(otherCard);
+
+            to.Activate();
+            from.Activate();
         }
 
         private void OnDestroy() => _cts.Cancel();

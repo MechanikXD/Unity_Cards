@@ -14,6 +14,7 @@ using SaveLoad;
 using SaveLoad.Serializeables;
 using Structure;
 using Structure.Managers;
+using TMPro;
 using UI;
 using UI.View.GameView;
 using UnityEngine;
@@ -34,6 +35,12 @@ namespace Cards.Board
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
         private ObjectPool<CardModel> _modelPool;
+        [SerializeField] private CanvasGroup _turnDisplay;
+        [SerializeField] private TMP_Text _turnCounter;
+        [SerializeField] private float _turnShowSpeed = 5f;
+        [SerializeField] private float _turnStayTime = 0.5f;
+        [SerializeField] private float _turnHideSpeed = 2f;
+        private int _currentTurn;
 
         [Header("Player")]
         [SerializeField] private Vector3 _cardSpawn;
@@ -68,6 +75,10 @@ namespace Cards.Board
 
             _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
 
+            _currentTurn = 0;
+            _turnCounter.SetText(_currentTurn.ToString());
+            DisplayTurn().Forget();
+            
             if (startAct) StartAct();
         }
 
@@ -128,6 +139,12 @@ namespace Cards.Board
                 GameManager.Instance.LooseAct();
                 return;
             }
+            
+            _currentTurn++;
+            _turnCounter.SetText(_currentTurn.ToString());
+            SessionManager.Instance.IncrementStatistics("Total Turns");
+            DisplayTurn().Forget();
+            
             var data = PlayerData.DrawCardsFromDeck();
             foreach (var cardData in data) CrateNewCardModel(cardData);
             PlayerData.RegenerateLight();
@@ -177,6 +194,7 @@ namespace Cards.Board
                                 {
                                     var model = _enemyCardSlots[i].Detach();
                                     _modelPool.Return(model);
+                                    SessionManager.Instance.IncrementStatistics("Cards Defeated");
                                 }
                                 
                                 PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex)); 
@@ -286,6 +304,26 @@ namespace Cards.Board
             }
         }
 
+        private async UniTask DisplayTurn(float valueSnap = 0.05f)
+        {
+            while (Mathf.Abs(1f - _turnDisplay.alpha) > valueSnap)
+            {
+                _turnDisplay.alpha = Mathf.Lerp(_turnDisplay.alpha, 1f, _turnShowSpeed * Time.deltaTime);
+                await UniTask.NextFrame(_turnDisplay.GetCancellationTokenOnDestroy());
+            }
+
+            _turnDisplay.alpha = 1f;
+            await UniTask.WaitForSeconds(_turnStayTime, 
+                cancellationToken:_turnDisplay.GetCancellationTokenOnDestroy());
+            while (_turnDisplay.alpha > valueSnap)
+            {
+                _turnDisplay.alpha = Mathf.Lerp(_turnDisplay.alpha, 0f, _turnHideSpeed * Time.deltaTime);
+                await UniTask.NextFrame(_turnDisplay.GetCancellationTokenOnDestroy());
+            }
+
+            _turnDisplay.alpha = 0f;
+        } 
+
         #endregion
 
         #region Player Data and Layout
@@ -308,6 +346,19 @@ namespace Cards.Board
 
         #endregion
 
+        // Check for other models containing 'RequestMove' check
+        public bool AnyRequireMove()
+        {
+            foreach (var slot in PlayerSlots)
+            {
+                if (!slot.IsEmpty && slot.Card.RequestMove)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
         public void PlaceEnemyCard(CardData data, int index)
         {
             var thisSlot = EnemySlots[index];

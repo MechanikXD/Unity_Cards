@@ -20,6 +20,9 @@ namespace Cards.Board
         public bool IsEmpty { get; private set; } = true;
         public CardModel Card { get; private set; }
 
+        public void Deactivate() => _canSnapTo = false;
+        public void Activate() => _canSnapTo = true;
+        
         public void Attach(CardModel card, bool instantMove=false)
         {
             IsEmpty = false;
@@ -43,12 +46,11 @@ namespace Cards.Board
         // Show card actions if this slot has card attached
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!IsEmpty || !AnyRequireMove())
+            if (!_board.AnyRequireMove())
             {
                 HideInfoOnClick.HideAll();
                 return;
             }
-            
             HideInfoOnClick.HideInfo();
             var playerSlots = _board.PlayerSlots;
             foreach (var slot in playerSlots)
@@ -56,25 +58,11 @@ namespace Cards.Board
                 if (slot._cardIndex != _cardIndex && !slot.IsEmpty && slot.Card.RequestMove)
                 {
                     var card = slot.Detach();
-                    card.MoveCard(this);
+                    if (IsEmpty) card.MoveCard(this);
+                    else card.SwapCardsAsync(slot, this, _cardMoveSpeed * 2f).Forget();
                     break;
                 }
             }
-        }
-
-        // Check for other models containing 'RequestMove' check
-        private bool AnyRequireMove()
-        {
-            var playerSlots = _board.PlayerSlots;
-            foreach (var slot in playerSlots)
-            {
-                if (!slot.IsEmpty && slot.Card.RequestMove)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // Required to implement OnPointerUp

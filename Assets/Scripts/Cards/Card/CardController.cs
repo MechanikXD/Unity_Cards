@@ -61,8 +61,22 @@ namespace Cards.Card
             }
             else if (Interactable && _thisModel.Hand == null)
             {
-                HideInfoOnClick.HideAll();
-                _thisModel.ShowActions();
+                var gameBoard = GameManager.Instance.Board;
+                if (gameBoard.AnyRequireMove()) // Pass event to slot below
+                {
+                    foreach (var slot in gameBoard.PlayerSlots)
+                    {
+                        if (slot.IsEmpty || slot.Card != _thisModel) continue;
+
+                        slot.OnPointerUp(eventData);
+                        break;
+                    }
+                }
+                else
+                {
+                    HideInfoOnClick.HideAll();
+                    _thisModel.ShowActions();
+                }
             }
             else
             {
@@ -101,6 +115,7 @@ namespace Cards.Card
 
                 if (hit != null && hit.TryGetComponent<CardSlot>(out var slot) && slot.IsEmpty && slot.CanSnapTo)
                 {
+                    SessionManager.Instance.IncrementStatistics("Cards Played");
                     slot.Attach(_thisModel);
                     _thisModel.SetPlaced();
                     _isPlaced = true;

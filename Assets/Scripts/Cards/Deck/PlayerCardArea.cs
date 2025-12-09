@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Other.Interactions;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace Cards.Deck
     {
         [SerializeField] private Transform _root;
         [SerializeField] private int _maxCapacity;
+        [SerializeField] private HighLightRed _highlightable;
         [SerializeField] private TMP_Text _maxCapacityText;
         [SerializeField] private TMP_Text _currentCapacityText;
         private int _currentCapacity;
@@ -17,6 +19,7 @@ namespace Cards.Deck
 
         public int CardCount => _currentCardsInDeck.Count;
         public int[] GetCardIDs => _currentCardsInDeck.ToArray();
+        public void HighLightCounter() => _highlightable.HighLight();
 
         public bool CanAddToDeck(int cost) => _maxCapacity - _currentCapacity >= cost;
 

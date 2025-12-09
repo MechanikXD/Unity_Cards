@@ -34,6 +34,7 @@ namespace UI.View.GameView
             Destroy(SessionManager.Instance.gameObject);
             UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
                 () => SceneManager.LoadScene("MainMenu"));
+            UIManager.Instance.ExitLastCanvas();
         }
 
         private static void ExitApplication() => UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(Application.Quit);

@@ -52,6 +52,7 @@ namespace Cards.Deck
                     otherCards.RemoveCard(_thisModel.IndexInLayout);
                     playerCards.AddCard(_thisModel);
                 }
+                else playerCards.HighLightCounter();
             }
         }
 

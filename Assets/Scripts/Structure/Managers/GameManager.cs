@@ -59,7 +59,8 @@ namespace Structure.Managers
 
         private void FinalizeGame()
         {
-            UIManager.Instance.GetUICanvas<GameResultView>().SetStats(":)");
+            UIManager.Instance.GetUICanvas<GameResultView>()
+                .SetStats(SessionManager.Instance.GetFormatedStats());
             UIManager.Instance.EnterUICanvas<GameResultView>();
         }
     }
