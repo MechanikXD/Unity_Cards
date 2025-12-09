@@ -132,16 +132,17 @@ namespace Structure.Managers
             var sceneData = SceneDataGetters[SceneManager.GetActiveScene().name];
             
             return new SerializableGameSession(CurrentAct, _playerData.SerializeSelf(),
-                PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData());
+                PlayerBuffs.Save(), EnemyBuffs.Save(), sceneData(), _statistics);
         }
 
         public void Deserialize(SerializableGameSession self)
         {
-            CurrentAct = self.Act;
-            _playerData.Deserialize(self.PlayerHand);
-            PlayerBuffs.Load(_buffs, self.PlayerBuffs);
-            EnemyBuffs.Load(_buffs, self.EnemyBuffs);
+            CurrentAct = self._act;
+            _playerData.Deserialize(self._playerHand);
+            PlayerBuffs.Load(_buffs, self._playerBuffs);
+            EnemyBuffs.Load(_buffs, self._enemyBuffs);
             SceneDataSetters[SceneManager.GetActiveScene().name](self.SceneData);
+            foreach (var kvp in self.Statistics) AddStatistics(kvp.Key, kvp.Value);
             if (SceneManager.GetActiveScene().name == "GameScene") HadLoadedData = true;
         }
     }
@@ -149,20 +150,22 @@ namespace Structure.Managers
     [Serializable]
     public class SerializableGameSession
     {
-        public int Act { get; }
-        public SerializablePlayerHand PlayerHand { get; }
-        public string PlayerBuffs { get; }
-        public string EnemyBuffs { get; }
-        public JObject SceneData { get; }
+        public int _act;
+        public SerializablePlayerHand _playerHand;
+        public string _playerBuffs;
+        public string _enemyBuffs;
+        public JObject SceneData;
+        public Dictionary<string, float> Statistics;
 
         public SerializableGameSession(int act, SerializablePlayerHand playerHand, 
-            string playerBuffs, string enemyBuffs, object sceneData)
+            string playerBuffs, string enemyBuffs, object sceneData, Dictionary<string, float> statistics)
         {
-            Act = act;
-            PlayerHand = playerHand;
-            PlayerBuffs = playerBuffs;
-            EnemyBuffs = enemyBuffs;
+            _act = act;
+            _playerHand = playerHand;
+            _playerBuffs = playerBuffs;
+            _enemyBuffs = enemyBuffs;
             SceneData = JObject.FromObject(sceneData);
+            Statistics = statistics;
         }
     }
 }

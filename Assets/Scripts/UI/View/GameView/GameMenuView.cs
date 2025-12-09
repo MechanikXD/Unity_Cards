@@ -36,7 +36,7 @@ namespace UI.View.GameView
 
         private static void ToMainMenu()
         {
-            GameSerializer.Clear();
+            GameSerializer.Serialize();
             Destroy(SessionManager.Instance.gameObject);
             UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
                 () => SceneManager.LoadScene("MainMenu"));

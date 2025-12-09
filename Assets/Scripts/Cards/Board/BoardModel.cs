@@ -59,7 +59,7 @@ namespace Cards.Board
         public CardSlot[] EnemySlots => _enemyCardSlots;
         
         private void OnDisable() => UnsubscribeFromEvents();
-        
+
         #region Game Flow Controll
         
         public void StartGame(EnemyDifficultySettings settings, bool startAct=true)
