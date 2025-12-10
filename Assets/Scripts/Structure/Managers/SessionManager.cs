@@ -117,7 +117,7 @@ namespace Structure.Managers
             if (buff is PlayerBuff playerBuff)
             {
                 if (playerBuff.Activation == ActivationType.Instant) playerBuff.Apply(_playerData);
-                else PlayerBuffs.Add(playerBuff);
+                PlayerBuffs.Add(playerBuff);
             }
             else if (buff is EnemyBuff enemyBuff) EnemyBuffs.Add(enemyBuff);
         }

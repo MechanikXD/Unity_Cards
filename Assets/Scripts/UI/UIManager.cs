@@ -46,6 +46,8 @@ namespace UI
             if (_uiStack.Count > 0) _uiStack.Peek().Enable();
             else ExitPauseState();
         }
+
+        public bool ContainsHUD<T>() where T : CanvasView => _hudCanvases.ContainsKey(typeof(T));
         
         public void EnterHUDCanvas<T>() where T : CanvasView => GetHUDCanvas<T>().Enable();
 

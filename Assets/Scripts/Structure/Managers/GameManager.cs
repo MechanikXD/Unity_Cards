@@ -19,6 +19,7 @@ namespace Structure.Managers
         {
             var gs = SessionManager.Instance;
             Board.StartGame(gs.DifficultySettings, !gs.HadLoadedData);
+            UIManager.Instance.GetHUDCanvas<GameHUDView>().LoadBuffList(gs.PlayerBuffs, gs.EnemyBuffs);
             gs.HadLoadedData = false;
         }
         

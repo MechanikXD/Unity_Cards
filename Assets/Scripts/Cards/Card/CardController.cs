@@ -122,6 +122,7 @@ namespace Cards.Card
                     return;
                 }
             }
+            else SessionManager.Instance.PlayerData.HighLightUi();
 
             MoveToOriginalAsync().Forget();
         }

@@ -1,4 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using Other.Interactions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +10,7 @@ namespace UI.View.GameView
     public class PlayerStatView : MonoBehaviour
     {
         private const float VALUE_CHANGE_SPEED = 0.75f;
+        [SerializeField, CanBeNull] private HighLightRed _highLight;
         
         [SerializeField] private TMP_Text _healthText;
         [SerializeField] private Image _healthFill;
@@ -18,6 +21,8 @@ namespace UI.View.GameView
         [SerializeField] private Image _lightFill;
         private float _targetLightFill = 1f;
         private bool _currentlyChangingLightFill;
+
+        public void HighLight() => _highLight?.HighLight();
 
         public void SetHealth(int health, int maxHealth, bool instantChange=false)
         {

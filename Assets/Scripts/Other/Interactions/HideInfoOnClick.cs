@@ -31,6 +31,11 @@ namespace Other.Interactions
             }
         }
 
-        public static void HideInfo() => UIManager.Instance.ExitHudCanvas<CardDetailView>();
+        public static void HideInfo()
+        {
+            UIManager.Instance.ExitHudCanvas<CardDetailView>();
+            if (UIManager.Instance.ContainsHUD<GameHUDView>())
+                UIManager.Instance.GetHUDCanvas<GameHUDView>().HideBuffList();
+        }
     }
 }

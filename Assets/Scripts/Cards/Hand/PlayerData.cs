@@ -154,6 +154,8 @@ namespace Cards.Hand
             }
         }
 
+        public void HighLightUi() => _statView.HighLight();
+
         #endregion
         // Methods to modify health-related values within this class
         #region Health Related

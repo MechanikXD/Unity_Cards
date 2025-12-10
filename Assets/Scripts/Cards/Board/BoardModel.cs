@@ -156,7 +156,7 @@ namespace Cards.Board
         {
             HideInfoOnClick.HideAll();
             GlobalInputBlocker.Instance.DisableInput();
-            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(false);
+            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnablePlayButton(false);
             
             SessionManager.Instance.PlayerBuffs.ApplyAll(PlayerData, ActivationType.CombatStart);
             SessionManager.Instance.EnemyBuffs.ApplyAll(_enemyData, ActivationType.CombatStart);
@@ -255,7 +255,7 @@ namespace Cards.Board
             
             ClearFinalAttacks();
             GlobalInputBlocker.Instance.EnableInput();
-            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnableButton(true);
+            UIManager.Instance.GetHUDCanvas<GameHUDView>().EnablePlayButton(true);
             NextTurn();
         }
         

@@ -58,5 +58,15 @@ namespace ProgressionBuffs
             if (concat.Length > 0) concat.Remove(concat.Length - 1, 1);
             return concat.ToString();
         }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            foreach (var kvp in _buffs)
+                foreach (var buff in kvp.Value)
+                    sb.AppendLine($"{buff.Title}: {buff.Description}");
+
+            return sb.ToString();
+        }
     }
 }
