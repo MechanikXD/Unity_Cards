@@ -27,6 +27,7 @@ namespace Structure.Managers
 
         public void WinAct()
         {
+            if (ActIsFinished) return;
             ActIsFinished = true;
             UIManager.Instance.GetHUDCanvas<ScreenFade>()
                 .FadeIn(() => SceneManager.LoadScene("Dialogs"));
@@ -54,6 +55,7 @@ namespace Structure.Managers
         
         public void LooseAct()
         {
+            if (ActIsFinished) return;
             ActIsFinished = true;
             FinalizeGame();
         }
