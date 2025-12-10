@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dialog DataBase
   m_EditorClassIdentifier: 
   _data:
-  - _backgroundImagePath: Resources/Backgrounds/GreymoorBG
+  - _backgroundImagePath: Backgrounds/GreymoorBG
     _foregroundImagePath: 
     _dialogs:
     - Test

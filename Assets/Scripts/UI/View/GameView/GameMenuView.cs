@@ -1,4 +1,5 @@
-﻿using Core.SessionStorage;
+﻿using SaveLoad;
+using Structure.Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -36,10 +37,12 @@ namespace UI.View.GameView
         private static void ToMainMenu()
         {
             GameSerializer.Serialize();
-            Destroy(GameStorage.Instance.gameObject);
-            SceneManager.LoadScene("MainMenu");
+            Destroy(SessionManager.Instance.gameObject);
+            UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene("MainMenu"));
+            ExitCanvas();
         }
 
-        private static void ExitApplication() => Application.Quit();
+        private static void ExitApplication() => UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(Application.Quit);
     }
 }

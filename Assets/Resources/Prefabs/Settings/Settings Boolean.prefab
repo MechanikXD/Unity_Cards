@@ -77,9 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28d5e03353d4ff5bb0adc85e2bc1b6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _title: {fileID: 421949880536662866}
-  _name: 
-  _defaultValue: 0
+  _titleField: {fileID: 421949880536662866}
   _switch: {fileID: 647770199201901343}
 --- !u!1 &1296072393707004080
 GameObject:
@@ -301,9 +299,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -359,9 +357,9 @@ MonoBehaviour:
   m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 1
+  m_isRichText: 0
   m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0

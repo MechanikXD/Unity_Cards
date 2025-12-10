@@ -1,0 +1,14 @@
+﻿using Cards.Board;
+using UnityEngine;
+
+namespace Cards.Card.Effects
+{
+    [CreateAssetMenu(fileName = "Card Effect", menuName = "ScriptableObjects/Card Effect/")]
+    public abstract class CardEffect : ScriptableObject
+    {
+        [SerializeField] private string _description;
+        public string Description => _description;
+
+        public abstract void Execute(BoardContext context);
+    }
+}

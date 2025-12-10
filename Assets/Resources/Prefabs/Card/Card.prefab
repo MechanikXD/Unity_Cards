@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2570084e6cfc4d1d8045b088499b8961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controller: {fileID: 4339269837463877349}
   _sortingGroup: {fileID: -4098478259757336368}
   _animator: {fileID: 2887023314339951715}
   _cardAnimations:

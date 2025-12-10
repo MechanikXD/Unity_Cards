@@ -1,5 +1,7 @@
-﻿using Core.SessionStorage;
-using Enemy;
+﻿using Enemy;
+using SaveLoad;
+using Structure.Managers;
+using UI.Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,18 +54,19 @@ namespace UI.View.MainMenuView
         private void ContinueGame()
         {
             var data = GameSerializer.Deserialize();
-            SceneManager.LoadScene(data.scene);
+            UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene(data.scene));
 
             void DeserializeOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
             {
                 if (scene.name == "MainMenu") return;
-                GameStorage.Instance.Deserialize(data.storage);
+                SessionManager.Instance.Deserialize(data.storage);
                 SceneManager.sceneLoaded -= DeserializeOnSceneLoad;
             }
 
             SceneManager.sceneLoaded += DeserializeOnSceneLoad;
         }
 
-        private static void ExitApplication() => Application.Quit();
+        private static void ExitApplication() => UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(Application.Quit);
     }
 }
