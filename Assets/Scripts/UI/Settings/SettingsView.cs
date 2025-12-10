@@ -13,7 +13,7 @@ namespace UI.Settings
         [SerializeField] private Transform _contentRoot;
         [SerializeField] private Transform _groupTabRoot;
         [SerializeField] private SettingsData _settingData;
-        // TODO: Test access from other scenes
+        // <i>Should</i> be accessible on other scenes as well 
         private readonly static Dictionary<string, Setting> Settings = new Dictionary<string, Setting>();
         
         private readonly List<SettingGroupTab> _groupTabs = new List<SettingGroupTab>();

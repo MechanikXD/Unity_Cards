@@ -28,12 +28,12 @@ namespace Structure.Managers
         public void WinAct()
         {
             ActIsFinished = true;
-            Board.FinishAct();
             UIManager.Instance.GetHUDCanvas<ScreenFade>()
                 .FadeIn(() => SceneManager.LoadScene("Dialogs"));
 
             void InitializeDialog(Scene scene, LoadSceneMode mode)
             {
+                SessionManager.Instance.PlayerData.Reset();
                 if (scene.name != "Dialogs") return;
 
                 var first = _dialogDataBase.GetRandom();

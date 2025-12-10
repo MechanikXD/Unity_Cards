@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Cards.Board;
 using Cards.Card.Data;
 using Cards.Hand;
@@ -53,6 +55,10 @@ namespace Cards.Card
         public bool CanBePlaced => Hand.CanUseCard(Data.Cost);
         public Animator Animator => _animator;
         public SortingGroup SortingGroup => _sortingGroup;
+        // Invoked each time this card attacks
+        private readonly LinkedList<Action> _persistentOnAttackAction = new LinkedList<Action>();
+        // Invoked only once during next attack
+        private readonly LinkedList<Action> _singleOnAttackAction = new LinkedList<Action>();
 
         private void Awake()
         {
@@ -81,6 +87,23 @@ namespace Cards.Card
             
             Hand = owner;
         }
+        
+        public void Clear()
+        {
+            var imageNull = CardDataProvider.ImageNull;
+            _sprite.sprite = imageNull;
+            _background.sprite = imageNull;
+            _descriptionField.SetText(string.Empty);
+            _affinityImage.sprite = imageNull;
+            
+            _attackField.SetText(string.Empty);
+            _costField.SetText(string.Empty);
+            _healthField.SetText(string.Empty);
+            ClearFinalAttack();
+
+            Hand = null;
+            Data = default;
+        }
 
         public void SetPlaced()
         {
@@ -90,6 +113,8 @@ namespace Cards.Card
             _animator.enabled = true;
         }
 
+        #region Actions During the Game
+        
         public void SetRandomFinalAttack()
         {
             var attackRange = Data.Attack;
@@ -113,23 +138,6 @@ namespace Cards.Card
             }
             _healthField.SetText(CurrentHealth.ToString());
         }
-
-        public void Clear()
-        {
-            var imageNull = CardDataProvider.ImageNull;
-            _sprite.sprite = imageNull;
-            _background.sprite = imageNull;
-            _descriptionField.SetText(string.Empty);
-            _affinityImage.sprite = imageNull;
-            
-            _attackField.SetText(string.Empty);
-            _costField.SetText(string.Empty);
-            _healthField.SetText(string.Empty);
-            ClearFinalAttack();
-
-            Hand = null;
-            Data = default;
-        }
         
         public void ClearFinalAttack()
         {
@@ -145,6 +153,20 @@ namespace Cards.Card
         public void PlayAnimation(string animationName) => 
             _animator.Play(animationName, -1, 0f);
 
+        public void AddActionOnHit(Action act) => _singleOnAttackAction.AddLast(act);
+        public void AddPersistentActionOnHit(Action act) => _persistentOnAttackAction.AddLast(act);
+
+        private void InvokeAttackActions()
+        {
+            foreach (var act in _persistentOnAttackAction) act();
+            foreach (var act in _singleOnAttackAction) act();
+            _singleOnAttackAction.Clear();
+        }
+
+        #endregion
+
+        #region Action With Card
+        
         public void ShowActions()
         {
             if (RequestMove) return;
@@ -226,6 +248,8 @@ namespace Cards.Card
             from.Activate();
         }
 
+        #endregion
+        
         private void OnDestroy() => _cts.Cancel();
     }   
 }

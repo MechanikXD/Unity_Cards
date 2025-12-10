@@ -59,7 +59,7 @@ namespace Cards.Board
         public CardSlot[] EnemySlots => _enemyCardSlots;
         
         private void OnDisable() => UnsubscribeFromEvents();
-
+        
         #region Game Flow Controll
         
         public void StartGame(EnemyDifficultySettings settings, bool startAct=true)
@@ -80,28 +80,6 @@ namespace Cards.Board
             DisplayTurn().Forget();
             
             if (startAct) StartAct();
-        }
-
-        public void FinishAct()
-        {
-            foreach (var slot in PlayerSlots)
-            {
-                if (slot.IsEmpty) continue;
-
-                var card = slot.Detach();
-                _modelPool.Return(card);
-            }
-            PlayerData.Reset();
-            _layout.RemoveALl();
-            
-            foreach (var slot in EnemySlots)
-            {
-                if (slot.IsEmpty) continue;
-
-                var card = slot.Detach();
-                _modelPool.Return(card);
-            }
-            _enemyData.Reset();
         }
 
         private void StartAct()
@@ -188,16 +166,20 @@ namespace Cards.Board
 
                                 playerCard.SortingGroup.sortingOrder = CARD_SORTING_GROUP + 1;
                                 otherCard.SortingGroup.sortingOrder = CARD_SORTING_GROUP;
-                                
-                                otherCard.TakeDamage(difference);
-                                if (otherCard.IsDefeated)
+
+                                var i1 = i;
+                                playerCard.AddActionOnHit(() =>
                                 {
-                                    var model = _enemyCardSlots[i].Detach();
-                                    _modelPool.Return(model);
-                                    SessionManager.Instance.IncrementStatistics("Cards Defeated");
-                                }
+                                    otherCard.TakeDamage(difference);
+                                    if (otherCard.IsDefeated)
+                                    {
+                                        var model = _enemyCardSlots[i1].Detach();
+                                        _modelPool.Return(model);
+                                        SessionManager.Instance.IncrementStatistics("Cards Defeated");
+                                    }
+                                    PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex));
+                                });
                                 
-                                PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex)); 
                                 playerCard.PlayRandomAnimation();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                                     cancellationToken:this.destroyCancellationToken);
@@ -209,15 +191,20 @@ namespace Cards.Board
                                 
                                 playerCard.SortingGroup.sortingOrder = CARD_SORTING_GROUP;
                                 otherCard.SortingGroup.sortingOrder = CARD_SORTING_GROUP + 1;
-                                
-                                playerCard.TakeDamage(-difference);
-                                if (playerCard.IsDefeated)
+
+                                var i2 = i;
+                                otherCard.AddActionOnHit(() =>
                                 {
-                                    var model = _playerCardSlots[i].Detach();
-                                    _modelPool.Return(model);
-                                }
+                                    playerCard.TakeDamage(-difference);
+                                    if (playerCard.IsDefeated)
+                                    {
+                                        var model = _playerCardSlots[i2].Detach();
+                                        _modelPool.Return(model);
+                                    }
                                 
-                                PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
+                                    PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
+                                });
+                                
                                 otherCard.PlayRandomAnimationReverse();
                                 await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                                     cancellationToken:this.destroyCancellationToken);
@@ -228,8 +215,12 @@ namespace Cards.Board
                     }
                     else // Player unopposed
                     {
-                        _enemyData.TakeDamage(playerCard.FinalAttack);
-                        PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex));
+                        playerCard.AddActionOnHit(() =>
+                        {
+                            _enemyData.TakeDamage(playerCard.FinalAttack);
+                            PlayEffects(playerEffects, TriggerType.OnHit, () => GetPlayerContext(currentIndex));
+                        });
+                        
                         playerCard.PlayRandomAnimation();
                         await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                             cancellationToken:this.destroyCancellationToken);
@@ -241,10 +232,14 @@ namespace Cards.Board
                 {
                     var otherCard = _enemyCardSlots[i].Card;
                     var otherEffects = otherCard.Data.Effects;
-                    PlayerData.TakeDamage(otherCard.FinalAttack);
-                    PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
-                    otherCard.PlayRandomAnimationReverse();
                     
+                    otherCard.AddActionOnHit(() =>
+                    {
+                        PlayerData.TakeDamage(otherCard.FinalAttack);
+                        PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
+                    });
+                    
+                    otherCard.PlayRandomAnimationReverse();
                     await UniTask.WaitForSeconds(BETWEEN_ATTACKS_DELAY, 
                         cancellationToken:this.destroyCancellationToken);
                     PlayEffects(otherEffects, TriggerType.TurnEnd, () => GetEnemyContext(currentIndex));
