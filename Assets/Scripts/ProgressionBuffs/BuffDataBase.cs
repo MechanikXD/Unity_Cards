@@ -73,6 +73,8 @@ namespace ProgressionBuffs
                 counter++;
                 if (counter >= amount) break;
             }
+            
+            if (result.Count == 0) result.Add(players.GetRandom());
 
             return result;
         }
@@ -93,6 +95,8 @@ namespace ProgressionBuffs
                 counter++;
                 if (counter >= amount) break;
             }
+            
+            if (result.Count == 0) result.Add(players.GetRandom());
 
             return result;
         }

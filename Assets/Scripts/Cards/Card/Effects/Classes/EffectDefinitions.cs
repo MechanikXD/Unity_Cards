@@ -47,4 +47,12 @@ namespace Cards.Card.Effects.Classes
             }
         }
     }
+
+    public class Darkness : CardEffect
+    {
+        public override void Execute(BoardContext context)
+        {
+            if (context.Other[context.Index].IsEmpty) context.OtherData.UseLight(1);
+        }
+    }
 }

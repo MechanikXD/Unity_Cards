@@ -7,7 +7,9 @@ namespace Cards.Card.Effects
     public abstract class CardEffect : ScriptableObject
     {
         [SerializeField] private string _description;
+        [SerializeField] private bool _isHidden;
         public string Description => _description;
+        public bool IsHidden => _isHidden;
 
         public abstract void Execute(BoardContext context);
     }

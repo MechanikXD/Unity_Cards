@@ -59,7 +59,9 @@ namespace Cards.Card
         private readonly LinkedList<Action> _persistentOnAttackAction = new LinkedList<Action>();
         // Invoked only once during next attack
         private readonly LinkedList<Action> _singleOnAttackAction = new LinkedList<Action>();
-
+        // For other stuff to store statuses/checks
+        public readonly Dictionary<string, float> LocalStatuses = new Dictionary<string, float>();
+        
         private void Awake()
         {
             _animator.enabled = false;
