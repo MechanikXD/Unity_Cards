@@ -12,11 +12,13 @@ namespace ProgressionBuffs
         [SerializeField] private int _tier;
         [SerializeField] private ActivationType _activation;
         [SerializeField] private string _description;
+        [SerializeField] private bool _isUnique;
 
         public string Title => _title;
         public string OptionTitle => _optionTitle;
         public string Description => _description;
         public int Tier => _tier;
+        public bool IsUnique => _isUnique;
         public ActivationType Activation => _activation;
         public int ID { get; internal set; }
 

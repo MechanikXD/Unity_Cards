@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ProgressionBuffs.Enemy
 {
-    [CreateAssetMenu(fileName = "Strength", menuName = "ScriptableObjects/Buff/Enemy/Strength")]
+    [CreateAssetMenu(fileName = "Toughness", menuName = "ScriptableObjects/Buff/Enemy/Toughness")]
     public class Toughness : EnemyBuff
     {
         [SerializeField] private float _healthMultiply;
@@ -18,6 +18,7 @@ namespace ProgressionBuffs.Enemy
             data.SetMaxHealth((int)(data.MaxHealth * _healthMultiply));
     }
     
+    [CreateAssetMenu(fileName = "Strength", menuName = "ScriptableObjects/Buff/Enemy/Strength")]
     public class Strength : EnemyBuff
     {
         [SerializeField] private int _targetCount;
@@ -43,6 +44,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "ThickSkin", menuName = "ScriptableObjects/Buff/Enemy/ThickSkin")]
     public class ThickSkin : EnemyBuff
     {
         [SerializeField] private int _targetCount;
@@ -65,6 +67,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "Survivability", menuName = "ScriptableObjects/Buff/Enemy/Survivability")]
     public class Survivability : EnemyBuff
     {
         [SerializeField] private int _playerHealthBoost;
@@ -80,6 +83,7 @@ namespace ProgressionBuffs.Enemy
             data.RestoreHealth(_healthRegeneration);
     }
 
+    [CreateAssetMenu(fileName = "Doppelgangers", menuName = "ScriptableObjects/Buff/Enemy/Doppelgangers")]
     public class Doppelgangers : EnemyBuff
     {
         [SerializeField] private int _cardDuplicateCount;
@@ -97,6 +101,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "BloodFury", menuName = "ScriptableObjects/Buff/Enemy/BloodFury")]
     public class BloodFury : EnemyBuff
     {
         [SerializeField] private int _targetCount;
@@ -149,7 +154,8 @@ namespace ProgressionBuffs.Enemy
             return data;
         }
     }
-
+    
+    [CreateAssetMenu(fileName = "AddEffects", menuName = "ScriptableObjects/Buff/Enemy/AddEffects")]
     public class AddEffects : EnemyBuff
     {
         [SerializeField] private CardEffect _effect;
@@ -165,6 +171,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
     
+    [CreateAssetMenu(fileName = "AddEffectToAll", menuName = "ScriptableObjects/Buff/Enemy/AddEffectToAll")]
     public class AddEffectToAll : EnemyBuff
     {
         [SerializeField] private CardEffect _effect;
@@ -176,6 +183,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "HastyDraw", menuName = "ScriptableObjects/Buff/Enemy/HastyDraw")]
     public class HastyDraw : EnemyBuff
     {
         [SerializeField] private int _drawCountBonus;
@@ -186,6 +194,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "DeadHand", menuName = "ScriptableObjects/Buff/Enemy/DeadHand")]
     public class DeadHand : EnemyBuff
     {
         [SerializeField] private CardData _cardData;
@@ -200,6 +209,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "Adaptation", menuName = "ScriptableObjects/Buff/Enemy/Adaptation")]
     public class Adaptation : EnemyBuff
     {
         [SerializeField] private int _strongestHealthBoost;
@@ -235,6 +245,7 @@ namespace ProgressionBuffs.Enemy
         }
     }
 
+    [CreateAssetMenu(fileName = "DimmingAura", menuName = "ScriptableObjects/Buff/Enemy/DimmingAura")]
     public class DimmingAura : EnemyBuff
     {
         [SerializeField] private int _playerCostIncrease;

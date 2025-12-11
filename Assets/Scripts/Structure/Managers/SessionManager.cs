@@ -13,6 +13,7 @@ using SaveLoad;
 using SaveLoad.Serializeables;
 using UI.View.MainMenuView;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.SceneManagement;
 
 namespace Structure.Managers
@@ -111,6 +112,8 @@ namespace Structure.Managers
             foreach (var enemyBuff in EnemyBuffs.GetBuffs(ActivationType.Instant)) enemyBuff.Apply(enemy);
             foreach (var enemyBuff in EnemyBuffs.GetBuffs(ActivationType.ActStart)) enemyBuff.Apply(enemy);
         }
+
+        public bool PlayerHasBuff(int index) => PlayerBuffs.Contains(index);
 
         public void AddBuff(BuffBase buff)
         {

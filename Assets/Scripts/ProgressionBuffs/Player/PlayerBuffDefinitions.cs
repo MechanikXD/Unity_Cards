@@ -1,4 +1,8 @@
-﻿using Cards.Card.Effects;
+﻿using System;
+using System.Collections.Generic;
+using Cards.Card;
+using Cards.Card.Data;
+using Cards.Card.Effects;
 using Cards.Hand;
 using Other.Extensions;
 using Structure.Managers;
@@ -17,6 +21,7 @@ namespace ProgressionBuffs.Player
         }
     }
 
+    [CreateAssetMenu(fileName = "EverlastingLamp", menuName = "ScriptableObjects/Buff/Player/EverlastingLamp")]
     public class EverlastingLamp : PlayerBuff
     {
         [SerializeField] private int _cardDrawBoots;
@@ -35,6 +40,7 @@ namespace ProgressionBuffs.Player
         }
     }
 
+    [CreateAssetMenu(fileName = "TippedScale", menuName = "ScriptableObjects/Buff/Player/TippedScale")]
     public class TippedScale : PlayerBuff
     {
         private const string SIN_STATUS_KEY = "Sin";
@@ -85,6 +91,7 @@ namespace ProgressionBuffs.Player
         }
     }
 
+    [CreateAssetMenu(fileName = "AddEffects", menuName = "ScriptableObjects/Buff/Player/AddEffects")]
     public class AddEffects : PlayerBuff
     {
         [SerializeField] private CardEffect _effect;
@@ -100,6 +107,7 @@ namespace ProgressionBuffs.Player
         }
     }
     
+    [CreateAssetMenu(fileName = "AddEffectToAll", menuName = "ScriptableObjects/Buff/Player/AddEffectToAll")]
     public class AddEffectToAll : PlayerBuff
     {
         [SerializeField] private CardEffect _effect;
@@ -108,6 +116,60 @@ namespace ProgressionBuffs.Player
         public override void Apply(PlayerData data)
         {
             foreach (var card in data.Deck) card.AddEffect(_trigger, _effect);
+        }
+    }
+
+    [CreateAssetMenu(fileName = "Synergy", menuName = "ScriptableObjects/Buff/Player/Synergy")]
+    public class Synergy : PlayerBuff
+    {
+        [SerializeField] private float _multiply;
+        
+        public override void Apply(PlayerData data)
+        {
+            var dict = new Dictionary<CardAffinity, int>();
+            foreach (var affinity in Enum.GetValues(typeof(CardAffinity))) 
+                dict.Add((CardAffinity)affinity, 0);
+            // Count affinities
+            foreach (var card in data.Deck) dict[card.Affinity]++;
+            // Apply strength
+            for (var i = 0; i < data.Deck.Length; i++) 
+                data.Deck[i] = ModifyAttack(data.Deck[i], 
+                    (int)(dict[data.Deck[i].Affinity] * _multiply));
+        }
+
+        private static CardData ModifyAttack(CardData data, int attack)
+        {
+            var v2I = data.Attack;
+            v2I.x += attack;
+            v2I.y += attack;
+            data.Attack = v2I;
+            return data;
+        }
+    }
+
+    [CreateAssetMenu(fileName = "Hope", menuName = "ScriptableObjects/Buff/Player/Hope")]
+    public class Hope : PlayerBuff
+    {
+        [SerializeField] private int _lightBoost;
+        [SerializeField] private int _lightRegenerationBoost;
+        
+        public override void Apply(PlayerData data)
+        {
+            data.SetMaxLight(data.MaxLight + _lightBoost);
+            data.SetLightRestore(data.LightRegeneration + _lightRegenerationBoost);
+        }
+    }
+
+    [CreateAssetMenu(fileName = "BattleReady", menuName = "ScriptableObjects/Buff/Player/BattleReady")]
+    public class BattleReady : PlayerBuff
+    {
+        [SerializeField] private int _initialHandBoost;
+        [SerializeField] private int _cardDrawBoost;
+        
+        public override void Apply(PlayerData data)
+        {
+            data.SetCardDrawCount(data.DrawCount + _cardDrawBoost);
+            data.SetStartingHandSize(data.StartingHandSize + _initialHandBoost);
         }
     }
 }

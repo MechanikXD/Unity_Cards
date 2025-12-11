@@ -136,6 +136,8 @@ namespace Cards.Board
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnablePlayButton(false);
             
+            PlayerData.DoCombatStartEvents();
+            _enemyData.DoCombatStartEvents();
             SessionManager.Instance.PlayerBuffs.ApplyAll(PlayerData, ActivationType.CombatStart);
             SessionManager.Instance.EnemyBuffs.ApplyAll(_enemyData, ActivationType.CombatStart);
             await DisplayFinalAttacksAsync();
