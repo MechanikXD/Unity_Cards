@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117fd28f32944397adc37a8d1cab63ba, type: 3}
+  m_Name: Hopelessness
+  m_EditorClassIdentifier: 
+  _title: Hopelessness
+  _optionTitle: Your light will drain from their Attacks
+  _tier: 4
+  _activation: 0
+  _description: 3 random enemies gain 'Light Shatter' effect
+  _isUnique: 0
+  _effect: {fileID: 11400000, guid: 1b1c43e04d3a56b4c838be1e4cd3e56b, type: 2}
+  _trigger: 1
+  _targetCount: 3

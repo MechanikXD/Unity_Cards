@@ -3,6 +3,7 @@ using System.Linq;
 using Other.Extensions;
 using ProgressionBuffs.Enemy;
 using ProgressionBuffs.Player;
+using ProgressionBuffs.Scriptables;
 using Structure.Managers;
 using UnityEngine;
 

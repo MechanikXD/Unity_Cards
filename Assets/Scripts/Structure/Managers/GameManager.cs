@@ -37,8 +37,8 @@ namespace Structure.Managers
                 SessionManager.Instance.PlayerData.Reset();
                 if (scene.name != "Dialogs") return;
 
-                var first = _dialogDataBase.GetRandom();
-                var second = _dialogDataBase.GetRandom();
+                var first = _dialogDataBase.GetRandom(DialogType.PlayerBuff);
+                var second = _dialogDataBase.GetRandom(DialogType.EnemyBuff);
                 DialogSceneController.Instance.Load(new[]
                 {
                     new DialogSettings(first._backgroundImagePath, first._foregroundImagePath,

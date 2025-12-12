@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using ProgressionBuffs;
 using ProgressionBuffs.Enemy;
 using ProgressionBuffs.Player;
+using ProgressionBuffs.Scriptables;
 using SaveLoad;
 using SaveLoad.Serializeables;
 using UI.View.MainMenuView;

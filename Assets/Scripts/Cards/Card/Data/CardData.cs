@@ -54,10 +54,22 @@ namespace Cards.Card.Data
             }
         }
 
-        public void AddEffect(TriggerType trigger, CardEffect effect) => 
+        public void AddEffect(TriggerType trigger, CardEffect effect)
+        {
+            if (!Effects.ContainsKey(trigger)) Effects.Add(trigger, new List<CardEffect>());
             Effects[trigger].Add(effect);
-        public void RemoveEffect(TriggerType trigger, CardEffect effect) => 
-            Effects[trigger].Remove(effect);
+        }
+
+        public void RemoveEffect(TriggerType trigger, CardEffect effect)
+        {
+            if (Effects.ContainsKey(trigger)) Effects[trigger].Remove(effect);
+        }
+
+        public bool ContainsEffect(TriggerType trigger, CardEffect effect)
+        {
+            if (!Effects.ContainsKey(trigger)) return false;
+            return Effects[trigger].Contains(effect);
+        }
 
         public static bool operator ==(CardData thisCard, CardData otherCard) => 
             thisCard.Equals(otherCard);

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c82e7b60196748ef8086b235d8656953, type: 3}
-  m_Name: Health Up 2
+  m_Name: Health Up
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: 36b4add6d1293cb4b9f34f40c8bd98e0, type: 3}
-  _title: Health Up
-  _optionTitle: Select Health 2
-  _tier: 1
+  _title: Health Up 1
+  _optionTitle: You want to become more endurable
+  _tier: 0
   _activation: 0
-  _description: Boost player helath by 4
-  _healthBoost: 4
+  _description: Boost player helath by 5
+  _isUnique: 0
+  _healthBoost: 5

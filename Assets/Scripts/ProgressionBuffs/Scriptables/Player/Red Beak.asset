@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 232439a5da754eb6a1614357bb4dc208, type: 3}
+  m_Name: Red Beak
+  m_EditorClassIdentifier: 
+  _title: Red Beak
+  _optionTitle: Their punishments are so scary...
+  _tier: 3
+  _activation: 1
+  _description: If your card was attacked by their target, deal bonus 5 damage
+  _isUnique: 1
+  _enemyTrigger: 1
+  _enemyEffect: {fileID: 11400000, guid: cbec421387a68de4790ac1e578730456, type: 2}
+  _playerTrigger: 1
+  _playerEffect: {fileID: 11400000, guid: 0a57ccea1c93fbf41b3e3b2f8ac0f328, type: 2}

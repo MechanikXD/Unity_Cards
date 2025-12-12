@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c82e7b60196748ef8086b235d8656953, type: 3}
   m_Name: Health Up 1
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: 36b4add6d1293cb4b9f34f40c8bd98e0, type: 3}
-  _title: Health Up
-  _optionTitle: Select Health 1
-  _tier: 0
+  _title: Health Up 2
+  _optionTitle: Your Desire to Survive Pushes you Ahead
+  _tier: 1
   _activation: 0
-  _description: Boost player helath by 2
-  _healthBoost: 2
+  _description: Boost player helath by 10
+  _isUnique: 0
+  _healthBoost: 10

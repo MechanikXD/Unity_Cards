@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8b92d0661434013acdd7f7ce0ef8782, type: 3}
   m_Name: Strength 1
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: 78aaee2565b32e842b28fc958d8e1abe, type: 3}
-  _title: Strenght
-  _optionTitle: Select Strenght 1
+  _title: Strenght 1
+  _optionTitle: Make Enemies Stronger
   _tier: 1
   _activation: 0
   _description: 2 Random Enemy's cards gain 1 Power
-  _targetCount: 2
-  _strengthCount: 1
+  _isUnique: 0
+  _healthMultiply: 0
