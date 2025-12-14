@@ -3290,6 +3290,7 @@ MonoBehaviour:
   _turnShowSpeed: 20
   _turnStayTime: 0.5
   _turnHideSpeed: 5
+  _cardDestroyParticles: {fileID: 2724006880697973969, guid: fe03e1429c6c6cb4eaa3197800cb50d7, type: 3}
   _cardSpawn: {x: 15, y: -2, z: 0}
   _playerCardSlots:
   - {fileID: 1391429279}

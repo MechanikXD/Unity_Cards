@@ -43,6 +43,8 @@ namespace Cards.Board
         [SerializeField] private float _turnStayTime = 0.5f;
         [SerializeField] private float _turnHideSpeed = 2f;
         private int _currentTurn;
+        [SerializeField] private ParticleSystem _cardDestroyParticles;
+        private ObjectPool<ParticleSystem> _destroyParticlesPool;
 
         [Header("Player")]
         [SerializeField] private Vector3 _cardSpawn;
@@ -76,8 +78,10 @@ namespace Cards.Board
             PlayerData.UpdateStatView(true);
             _enemyData.UpdateStatView(true);
 
-            _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
-
+            if (startAct) _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
+            _destroyParticlesPool = new ObjectPool<ParticleSystem>(_cardDestroyParticles,
+                _playerCardSlots.Length + 1, null, null);
+            
             _currentTurn = 0;
             _turnCounter.SetText(_currentTurn.ToString());
             DisplayTurn().Forget();
@@ -179,6 +183,7 @@ namespace Cards.Board
                                     if (otherCard.IsDefeated)
                                     {
                                         var model = _enemyCardSlots[i1].Detach();
+                                        PlayParticlesAndReturn(model.transform.position).Forget();
                                         _modelPool.Return(model);
                                         SessionManager.Instance.IncrementStatistics("Cards Defeated");
                                     }
@@ -204,6 +209,7 @@ namespace Cards.Board
                                     if (playerCard.IsDefeated)
                                     {
                                         var model = _playerCardSlots[i2].Detach();
+                                        PlayParticlesAndReturn(model.transform.position).Forget();
                                         _modelPool.Return(model);
                                     }
                                 
@@ -453,6 +459,15 @@ namespace Cards.Board
                 if (SessionManager.Instance !=null) PlayerData.PlayerDefeated -= GameManager.Instance.LooseAct;
                 _enemyData.PlayerDefeated -= GameManager.Instance.WinAct;    
             }
+        }
+
+        private async UniTask PlayParticlesAndReturn(Vector2 pos)
+        {
+            var particles = _destroyParticlesPool.Pull();
+            particles.gameObject.transform.position = pos;
+            particles.Play();
+            await UniTask.WaitForSeconds(particles.main.startLifetime.constantMax);
+            _destroyParticlesPool.Return(particles);
         }
     }
 

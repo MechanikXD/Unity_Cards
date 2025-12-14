@@ -36,6 +36,7 @@ namespace Cards.Card
         [SerializeField] private AudioClip[] _hitSounds;
         [SerializeField] private AudioClip _attachSound;
         [SerializeField] private Vector2 _soundPitch;
+        [SerializeField] private ParticleSystem _hitParticles;
         
         [Header("Visual")]
         [SerializeField] private SpriteRenderer _sprite;
@@ -142,6 +143,7 @@ namespace Cards.Card
                 CurrentHealth = 0;
             }
             _healthField.SetText(CurrentHealth.ToString());
+            _hitParticles.Play();
         }
         
         public void ClearFinalAttack()
