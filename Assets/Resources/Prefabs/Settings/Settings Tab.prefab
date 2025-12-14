@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 3132523841992787435}
   - component: {fileID: 1799822159512979461}
   - component: {fileID: 3457984223056370211}
+  - component: {fileID: 1979477662777318250}
   m_Layer: 5
   m_Name: Settings Tab
   m_TagString: Untagged
@@ -274,3 +275,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1979477662777318250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7494546777746440366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8905f415906244f0a265a7dbe6a40561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 3457984223056370211}
+  _clip: {fileID: 8300000, guid: 8ebe727da175a044881c0f1eaa9c3385, type: 3}
+  _pitch: {x: 0.9, y: 1.1}

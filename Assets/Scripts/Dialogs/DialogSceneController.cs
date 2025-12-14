@@ -27,6 +27,8 @@ namespace Dialogs
         [SerializeField] private Button _confirmButton;
 
         [SerializeField] private AudioClip _music;
+        [SerializeField] private AudioClip[] _advanceDialogSounds;
+        [SerializeField] private Vector2 _soundPitch;
         [SerializeField] private BuffOptionButton[] _dialogOptions;
         private int _optionsCount;
         private bool _dialogIsFinished;
@@ -176,6 +178,7 @@ namespace Dialogs
 
             _dialogWindow.SetText(_dialogs[_currentDialogIndex]);
             _currentDialogIndex++;
+            AudioManager.Instance.Play(_advanceDialogSounds, _soundPitch);
         }
 
         private void LoadOptions()

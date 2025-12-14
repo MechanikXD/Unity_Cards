@@ -23,7 +23,7 @@ namespace Cards.Board
         public void Deactivate() => _canSnapTo = false;
         public void Activate() => _canSnapTo = true;
         
-        public void Attach(CardModel card, bool instantMove=false)
+        public void Attach(CardModel card, bool instantMove=false, bool reenableController=true)
         {
             IsEmpty = false;
             Card = card;
@@ -31,7 +31,7 @@ namespace Cards.Board
             card.transform.localScale = Vector3.one;
             card.SortingGroup.sortingOrder = SORTING_ORDER;
             if (instantMove) card.transform.position = _cardPosition;
-            else card.MoveToLocalAsync(_cardPosition, _cardMoveSpeed).Forget();
+            else card.MoveToLocalAsync(_cardPosition, _cardMoveSpeed, reenableController:reenableController).Forget();
         }
 
         public CardModel Detach()

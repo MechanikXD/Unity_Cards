@@ -35,6 +35,8 @@ namespace Cards.Board
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
         private ObjectPool<CardModel> _modelPool;
+        [SerializeField] private AudioClip _turnShowSound;
+        [SerializeField] private Vector2 _soundPitch;
         [SerializeField] private CanvasGroup _turnDisplay;
         [SerializeField] private TMP_Text _turnCounter;
         [SerializeField] private float _turnShowSpeed = 5f;
@@ -311,6 +313,7 @@ namespace Cards.Board
             }
 
             _turnDisplay.alpha = 1f;
+            AudioManager.Instance.Play(_turnShowSound, _soundPitch);
             await UniTask.WaitForSeconds(_turnStayTime, 
                 cancellationToken:_turnDisplay.GetCancellationTokenOnDestroy());
             while (_turnDisplay.alpha > valueSnap)
@@ -335,7 +338,6 @@ namespace Cards.Board
             var model = _modelPool.Pull();
             model.Set(card, PlayerData);
             model.transform.position = _cardSpawn;
-            model.Animator.enabled = false;
             model.Controller.Interactable = true;
             AddCardToLayout(model);
         }
@@ -364,11 +366,9 @@ namespace Cards.Board
 
             var newCard = _modelPool.Pull();
             newCard.transform.position = thisSlot.transform.position + _slotRelativeCardSpawn;
-            newCard.Animator.enabled = true;
-            newCard.Controller.Interactable = false;
             newCard.Set(data, null);
             
-            thisSlot.Attach(newCard);
+            thisSlot.Attach(newCard, reenableController:false);
         }
         
         // To play effect of certain activation type...
@@ -412,7 +412,6 @@ namespace Cards.Board
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
                 newModel.transform.position = _cardSpawn;
-                newModel.Animator.enabled = true;
                 _playerCardSlots[i].Attach(newModel, true);
             }
             
@@ -425,7 +424,6 @@ namespace Cards.Board
                 newModel.Set(card.ToCardData(), null);
                 newModel.transform.position =
                     _enemyCardSlots[i].transform.position + _slotRelativeCardSpawn;
-                newModel.Animator.enabled = true;
                 _enemyCardSlots[i].Attach(newModel, true);
             }
             

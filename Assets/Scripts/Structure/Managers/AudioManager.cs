@@ -86,7 +86,7 @@ namespace Structure.Managers
                 source.clip = clip;
                 source.pitch = pitch;
                 source.volume = 1f; // TODO: Pull from settings
-                source.Play();
+                source.PlayOneShot(clip);
 
                 await UniTask.WaitForSeconds(clip.length, cancellationToken: _cts.Token);
             }
@@ -129,7 +129,7 @@ namespace Structure.Managers
 
             source.Stop();
             _activeSources.Remove(source);
-            _sourcePool.Return(source);
+            if (source != _musicSource) _sourcePool.Return(source);
         }
     }
 }
