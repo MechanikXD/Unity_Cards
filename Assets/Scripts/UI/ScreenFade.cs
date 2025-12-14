@@ -23,12 +23,13 @@ namespace UI
         
         public void FadeIn(Action after)
         {
-            if (!_changingAlpha) ChangeImageAlphaAsync(1f, after).Forget();
+            if (!_changingAlpha) ChangeImageAlphaAsync(1f, after, true).Forget();
         }
 
-        private async UniTask ChangeImageAlphaAsync(float target, [CanBeNull] Action afterAction=null)
+        private async UniTask ChangeImageAlphaAsync(float target,
+            [CanBeNull] Action afterAction = null, bool stopAudio = false)
         {
-            var task = AudioManager.Instance.StopAllSources();
+            var task = stopAudio ? AudioManager.Instance.StopAllSources() : UniTask.CompletedTask;
             _changingAlpha = true;
             GlobalInputBlocker.Instance.DisableInput();
             var baseColor = _fadeScreen.color;
@@ -45,7 +46,7 @@ namespace UI
             _fadeScreen.color = baseColor;
             GlobalInputBlocker.Instance.EnableInput();
             _changingAlpha = false;
-            await task;
+            if (stopAudio) await task;
             afterAction?.Invoke();
         }
     }

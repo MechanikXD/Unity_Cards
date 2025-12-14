@@ -1887,6 +1887,7 @@ MonoBehaviour:
   _foreground: {fileID: 1291228476}
   _dialogWindow: {fileID: 2139159451}
   _confirmButton: {fileID: 785722791}
+  _music: {fileID: 8300000, guid: 53d3163fd8cd7f24d9d5660afb904436, type: 3}
   _dialogOptions:
   - {fileID: 1104727696115515248}
   - {fileID: 2020322005}

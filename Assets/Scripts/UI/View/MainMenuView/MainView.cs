@@ -10,6 +10,7 @@ namespace UI.View.MainMenuView
 {
     public class MainView : CanvasView
     {
+        [SerializeField] private AudioClip _lobbyMusic;
         [SerializeField] private EnemyDifficultySettings[] _difficultySettings;
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _continueButton;
@@ -31,6 +32,8 @@ namespace UI.View.MainMenuView
             base.Awake();
             _continueButton.interactable = GameSerializer.HasSavedData();
         }
+
+        private void Start() => AudioManager.Instance.PlayMusic(_lobbyMusic);
 
         private void OnDisable()
         {

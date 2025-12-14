@@ -2412,6 +2412,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7bbe3266f143f7b82db4a7ac23299b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _music:
+  - {fileID: 8300000, guid: 469f56cf202b8d9408a21247aa2a2a1b, type: 3}
+  - {fileID: 8300000, guid: 2f2744a694f00d74ba1857b64de7edbf, type: 3}
+  - {fileID: 8300000, guid: 96903db23375c5b42afc94a7414179ab, type: 3}
+  _musicChangeStep: 5
   _board: {fileID: 778903803}
   _dialogDataBase: {fileID: 11400000, guid: 0c865e7606ae1294c9c5a3e66ea1ac36, type: 2}
 --- !u!4 &535807822

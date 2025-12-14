@@ -3903,6 +3903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hideOnStart: 0
+  _lobbyMusic: {fileID: 8300000, guid: 9e408c27998662a4986138d21e09ba4c, type: 3}
   _difficultySettings:
   - {fileID: 11400000, guid: c261132242e7fb148a3391a934fedd23, type: 2}
   - {fileID: 11400000, guid: 48c0060bbc4614f44965de86c386775e, type: 2}

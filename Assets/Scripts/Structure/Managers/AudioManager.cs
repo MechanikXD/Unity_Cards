@@ -28,9 +28,9 @@ namespace Structure.Managers
 
         protected override void Initialize()
         {
-            _sourcePool = new ObjectPool<AudioSource>(_sourcePrefab, _sourceCount, 
-                    RecordSource, ForgetSource, transform, true);
             _activeSources = new LinkedList<AudioSource>();
+            _sourcePool = new ObjectPool<AudioSource>(_sourcePrefab, _sourceCount, 
+                    RecordSource, ForgetSource, true);
         }
 
         public void PlayMusic(AudioClip musicClip)
@@ -75,7 +75,7 @@ namespace Structure.Managers
         // This is called each time a source is returned to _sourcePull (object pull)
         private void ForgetSource(AudioSource source)
         {
-            source.gameObject.SetActive(false);
+            if (source != _musicSource) source.gameObject.SetActive(false);
             _activeSources.Remove(source);
         }
 
@@ -120,11 +120,7 @@ namespace Structure.Managers
             }
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            _cts.Cancel();
-        }
+        protected override void BeforeDestroy() => _cts.Cancel();
         
         private void CleanupSource(AudioSource source)
         {
