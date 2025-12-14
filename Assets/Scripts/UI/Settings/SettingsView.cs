@@ -19,6 +19,11 @@ namespace UI.Settings
         private readonly List<SettingGroupTab> _groupTabs = new List<SettingGroupTab>();
         private int _currentGroupIndex;
 
+        private void Start()
+        {
+            foreach (var kvp in Settings) kvp.Value.SettingsChanged();
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -62,7 +67,7 @@ namespace UI.Settings
         private void CreateGroups()
         {
             var firstDisplayed = false;
-            bool loadSettings = Settings.Count <= 0;
+            var loadSettings = Settings.Count <= 0;
             for (var i = 0; i < _settingData.SettingGroups.Length; i++)
             {
                 // Create new group tab
@@ -88,15 +93,9 @@ namespace UI.Settings
             }
         }
         
-        private void OnEnable()
-        {
-            _backButton.onClick.AddListener(ExitUICanvas);
-        }
+        private void OnEnable() => _backButton.onClick.AddListener(ExitUICanvas);
 
-        private void OnDisable()
-        {
-            _backButton.onClick.RemoveListener(ExitUICanvas);
-        }
+        private void OnDisable() => _backButton.onClick.RemoveListener(ExitUICanvas);
 
         private void ExitUICanvas()
         {

@@ -65,6 +65,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 219d3e5c6c8f7ad46a2ee01ed849f32d, type: 3}
   - {fileID: 8300000, guid: 2aa8f8e2e21aa0940b9df2dd4da42cc8, type: 3}
   - {fileID: 8300000, guid: 7c1cec16eaf761e479e8906fca9695af, type: 3}
+  _attachSound: {fileID: 8300000, guid: a5065144c0eddca46b897c83554ca427, type: 3}
   _soundPitch: {x: 0.9, y: 1.1}
   _sprite: {fileID: 4824896885634547759}
   _background: {fileID: 1849810718430064127}

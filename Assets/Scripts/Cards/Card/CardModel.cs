@@ -34,6 +34,7 @@ namespace Cards.Card
         [SerializeField] private CardActionButton _destroyButton;
         [SerializeField] private CardActionButton _moveButton;
         [SerializeField] private AudioClip[] _hitSounds;
+        [SerializeField] private AudioClip _attachSound;
         [SerializeField] private Vector2 _soundPitch;
         
         [Header("Visual")]
@@ -223,7 +224,11 @@ namespace Cards.Card
                 await UniTask.NextFrame(_cts.Token);
             }
 
-            if (reenableController) Controller.Interactable = true;
+            if (reenableController)
+            {
+                Controller.Interactable = true;
+                AudioManager.Instance.Play(_attachSound, _soundPitch);
+            }
             RequestMove = false;
             transform.localPosition = final;
         }
