@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Cards.Card;
+using Cards.Card;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

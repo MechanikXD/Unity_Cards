@@ -13,28 +13,29 @@ MonoBehaviour:
   m_Name: Global Settings
   m_EditorClassIdentifier: 
   _settingGroups:
-  - _groupTitle: First
-    _sliders:
-    - _settingName: Test slider
-      _order: 1
-      _defaultValue: 1
-      _bounds: {x: 0, y: 2}
-      _wholeNumbers: 0
+  - _groupTitle: General
+    _sliders: []
     _booleans:
-    - _settingName: test bool
+    - _settingName: There ain't nobody here but us chickens
       _order: 0
       _isOnByDefault: 0
     _dropdowns: []
-  - _groupTitle: Second
-    _sliders: []
+  - _groupTitle: Audio
+    _sliders:
+    - _settingName: Master
+      _order: 0
+      _defaultValue: 1
+      _bounds: {x: 0, y: 1}
+      _wholeNumbers: 0
+    - _settingName: Music
+      _order: 0
+      _defaultValue: 0.5
+      _bounds: {x: 0, y: 1}
+      _wholeNumbers: 0
+    - _settingName: Effects
+      _order: 0
+      _defaultValue: 0.5
+      _bounds: {x: 0, y: 1}
+      _wholeNumbers: 0
     _booleans: []
-    _dropdowns:
-    - _settingName: Test Dropdown
-      _order: 1
-      _values:
-      - First
-      - Second
-      - more
-      - I need more
-      - MORE
-      - MOOOOORE
+    _dropdowns: []

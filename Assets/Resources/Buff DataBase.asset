@@ -13,7 +13,27 @@ MonoBehaviour:
   m_Name: Buff DataBase
   m_EditorClassIdentifier: 
   _buffs:
+  - {fileID: 11400000, guid: 64ed086eb41bf864198ba5bb83cb68cc, type: 2}
+  - {fileID: 11400000, guid: 81e3285bff55ffb4db9a1761adf89685, type: 2}
+  - {fileID: 11400000, guid: b9aec81518f928b4c957840eaaecc7cd, type: 2}
+  - {fileID: 11400000, guid: 225180690ea283e4dbafe0be454ac893, type: 2}
+  - {fileID: 11400000, guid: 43611ba5cfa677e42b6375f74a4298d1, type: 2}
+  - {fileID: 11400000, guid: 2ed43cfd0c97cf24eb3cc4f4fef17c81, type: 2}
+  - {fileID: 11400000, guid: 046eed15682d1cf4aa205b443efaee4d, type: 2}
+  - {fileID: 11400000, guid: 26a1c1cea35a8ca40b7867fdc97f0744, type: 2}
+  - {fileID: 11400000, guid: 075614e8cbaaa2343a7d1766673905b9, type: 2}
+  - {fileID: 11400000, guid: a4fd97016cd964d4f91a25ae80b4e7a2, type: 2}
+  - {fileID: 11400000, guid: 894bb65cbe63973479d5f3d3de79ce60, type: 2}
+  - {fileID: 11400000, guid: 749780a085b5a554d9e474ed859bde58, type: 2}
+  - {fileID: 11400000, guid: 2f715d28debac1e49b46d0dae59e5fe7, type: 2}
+  - {fileID: 11400000, guid: a321008df5e1bde45ae88b74f1001dbd, type: 2}
+  - {fileID: 11400000, guid: 8fb564042d95a334ba9ce58c8d39b8c6, type: 2}
+  - {fileID: 11400000, guid: 116caac7d1b5e9c4f8d14d0156800e37, type: 2}
+  - {fileID: 11400000, guid: 4d6218671e2ff5843a16645c1d965140, type: 2}
   - {fileID: 11400000, guid: d86bcd279c7bf9c42a4bfd1436f31242, type: 2}
   - {fileID: 11400000, guid: 1b2f135852ca43a4393281c89cb222ad, type: 2}
-  - {fileID: 11400000, guid: 3fdefaf960746024d89b0a49a42f98b2, type: 2}
-  - {fileID: 11400000, guid: 225180690ea283e4dbafe0be454ac893, type: 2}
+  - {fileID: 11400000, guid: 93eebc9829d56b2429d3b17f865e6344, type: 2}
+  - {fileID: 11400000, guid: fe8a35ab7f506404e99420698fada441, type: 2}
+  - {fileID: 11400000, guid: a55b260b4e330864bb25632264297d03, type: 2}
+  - {fileID: 11400000, guid: 7d6b71b2fbc2ba746b33482a54de511c, type: 2}
+  - {fileID: 11400000, guid: f8a832353c9b90a48a2572f81f28dd14, type: 2}

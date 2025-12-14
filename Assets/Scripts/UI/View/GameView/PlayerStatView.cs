@@ -1,5 +1,6 @@
-﻿using System.Threading;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using Other.Interactions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,35 +10,37 @@ namespace UI.View.GameView
     public class PlayerStatView : MonoBehaviour
     {
         private const float VALUE_CHANGE_SPEED = 0.75f;
-        private readonly CancellationTokenSource _cts = new  CancellationTokenSource();
+        [SerializeField, CanBeNull] private HighLightRed _highLight;
         
         [SerializeField] private TMP_Text _healthText;
         [SerializeField] private Image _healthFill;
         private float _targetHealthFill = 1f;
         private bool _currentlyChangingHealthFill;
         
-        [SerializeField] private TMP_Text _hopeText;
-        [SerializeField] private Image _hopeFill;
-        private float _targetHopeFill = 1f;
-        private bool _currentlyChangingHopeFill;
+        [SerializeField] private TMP_Text _lightText;
+        [SerializeField] private Image _lightFill;
+        private float _targetLightFill = 1f;
+        private bool _currentlyChangingLightFill;
+
+        public void HighLight() => _highLight?.HighLight();
 
         public void SetHealth(int health, int maxHealth, bool instantChange=false)
         {
             _healthText.SetText(health.ToString());
             _targetHealthFill = health / (float)maxHealth;
             if (instantChange) _healthFill.fillAmount = _targetHealthFill;
-            else if (!_currentlyChangingHealthFill) ChangeHealthFillAmountAsync(_cts.Token).Forget();
+            else if (!_currentlyChangingHealthFill) ChangeHealthFillAmountAsync().Forget();
         }
         
-        public void SetHope(int hope, int maxHope, bool instantChange=false)
+        public void SetLight(int currentLight, int maxLight, bool instantChange=false)
         {
-            _hopeText.SetText(hope.ToString());
-            _targetHopeFill = hope / (float)maxHope;
-            if (instantChange) _hopeFill.fillAmount = _targetHopeFill;
-            else if (!_currentlyChangingHopeFill) ChangeHopeFillAmountAsync(_cts.Token).Forget();
+            _lightText.SetText(currentLight.ToString());
+            _targetLightFill = currentLight / (float)maxLight;
+            if (instantChange) _lightFill.fillAmount = _targetLightFill;
+            else if (!_currentlyChangingLightFill) ChangeLightFillAmountAsync().Forget();
         }
 
-        private async UniTask ChangeHealthFillAmountAsync(CancellationToken ct = default)
+        private async UniTask ChangeHealthFillAmountAsync()
         {
             _currentlyChangingHealthFill = true;
             
@@ -53,36 +56,31 @@ namespace UI.View.GameView
                         : valueChangeThisFrame;
                 
                 _healthFill.fillAmount = currentFillValue;
-                await UniTask.NextFrame(ct);
+                await UniTask.NextFrame(destroyCancellationToken);
             }
             
             _currentlyChangingHealthFill = false;
         }
 
-        private async UniTask ChangeHopeFillAmountAsync(CancellationToken ct = default)
+        private async UniTask ChangeLightFillAmountAsync()
         {
-            _currentlyChangingHopeFill = true;
+            _currentlyChangingLightFill = true;
             
-            var currentFillValue = _hopeFill.fillAmount;
-            while (!Mathf.Approximately(currentFillValue, _targetHopeFill))
+            var currentFillValue = _lightFill.fillAmount;
+            while (!Mathf.Approximately(currentFillValue, _targetLightFill))
             {
                 var valueChangeThisFrame = VALUE_CHANGE_SPEED * Time.deltaTime;
-                if (Mathf.Abs(currentFillValue - _targetHopeFill) < valueChangeThisFrame) 
-                    currentFillValue = _targetHopeFill;
-                else currentFillValue += currentFillValue > _targetHopeFill
+                if (Mathf.Abs(currentFillValue - _targetLightFill) < valueChangeThisFrame) 
+                    currentFillValue = _targetLightFill;
+                else currentFillValue += currentFillValue > _targetLightFill
                     ? -valueChangeThisFrame
                     : valueChangeThisFrame;
                 
-                _hopeFill.fillAmount = currentFillValue;
-                await UniTask.NextFrame(ct);
+                _lightFill.fillAmount = currentFillValue;
+                await UniTask.NextFrame(destroyCancellationToken);
             }
             
-            _currentlyChangingHopeFill = false;
-        }
-
-        private void OnDisable()
-        {
-            _cts.Cancel();
+            _currentlyChangingLightFill = false;
         }
     }
 }

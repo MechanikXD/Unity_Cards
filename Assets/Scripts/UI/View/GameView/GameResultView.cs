@@ -1,4 +1,5 @@
-﻿using Core.SessionStorage;
+﻿using SaveLoad;
+using Structure.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,10 +31,17 @@ namespace UI.View.GameView
         private static void ToMainMenu()
         {
             GameSerializer.Clear();
-            Destroy(GameStorage.Instance.gameObject);
-            SceneManager.LoadScene("MainMenu");
+            Destroy(SessionManager.Instance.gameObject);
+            ExitCanvas();
+            UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(
+                () => SceneManager.LoadScene("MainMenu"));
+        }
+        
+        private static void ExitCanvas()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.ExitLastCanvas();
         }
 
-        private static void ExitApplication() => Application.Quit();
+        private static void ExitApplication() => UIManager.Instance.GetHUDCanvas<ScreenFade>().FadeIn(Application.Quit);
     }
 }

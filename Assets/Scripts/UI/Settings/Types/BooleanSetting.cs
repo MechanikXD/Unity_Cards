@@ -1,4 +1,4 @@
-﻿using Storage;
+﻿using Structure;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,16 +11,10 @@ namespace UI.Settings.Types
         private bool _defaultValue;
         public bool IsOn { get; private set; }
 
-        private void OnEnable()
-        {
-            _switch.onValueChanged.AddListener(OnSwitch);
-        }
-        
-        private void OnDisable()
-        {
-            _switch.onValueChanged.RemoveListener(OnSwitch);
-        }
+        private void OnEnable() => _switch.onValueChanged.AddListener(OnSwitch);
 
+        private void OnDisable() => _switch.onValueChanged.RemoveListener(OnSwitch);
+        
         private void OnSwitch(bool isOn)
         {
             IsOn = isOn;

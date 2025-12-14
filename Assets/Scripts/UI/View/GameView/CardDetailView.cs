@@ -1,5 +1,5 @@
-﻿using Core.Cards.Card;
-using Core.Cards.Card.Data;
+﻿using Cards.Card;
+using Cards.Card.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

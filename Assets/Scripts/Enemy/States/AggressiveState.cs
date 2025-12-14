@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Core.Behaviour.StateMachine;
-using Core.Cards.Card.Data;
-using Other;
+using Cards.Card.Data;
 using Other.Extensions;
+using Structure.StateMachine;
 
 namespace Enemy.States
 {

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e79cf586a124e3bac47a6372954ef30, type: 3}
+  m_Name: Synergy
+  m_EditorClassIdentifier: 
+  _title: Synergy
+  _optionTitle: In Union you will become stronger
+  _tier: 4
+  _activation: 0
+  _description: Cards gain Strenght for each 2 card with the same affinity
+  _isUnique: 0
+  _multiply: 0.5

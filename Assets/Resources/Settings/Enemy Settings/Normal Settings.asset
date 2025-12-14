@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Normal Settings
   m_EditorClassIdentifier: 
   _difficultyName: Normal
-  _minDeckSize: 0
+  _minDeckSize: 8
   _maxDeckSize: 12
   _selectionType: 0
   _deckMaxCost: 50
