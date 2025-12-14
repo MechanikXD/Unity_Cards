@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
+using Structure.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,7 @@ namespace UI
 
         private async UniTask ChangeImageAlphaAsync(float target, [CanBeNull] Action afterAction=null)
         {
+            var task = AudioManager.Instance.StopAllSources();
             _changingAlpha = true;
             GlobalInputBlocker.Instance.DisableInput();
             var baseColor = _fadeScreen.color;
@@ -43,6 +45,7 @@ namespace UI
             _fadeScreen.color = baseColor;
             GlobalInputBlocker.Instance.EnableInput();
             _changingAlpha = false;
+            await task;
             afterAction?.Invoke();
         }
     }

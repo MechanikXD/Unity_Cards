@@ -6,27 +6,38 @@ using Object = UnityEngine.Object;
 
 namespace Structure
 {
-    public class ObjectPool<TObject> where TObject : MonoBehaviour
+    public class ObjectPool<TObject> where TObject : Component
     {
         private readonly TObject _prefab;
         private int _maxLenght;
         private readonly Stack<TObject> _pool;
-        
+
+        private readonly bool _hasObjectParent;
+        private readonly bool _objDontDestroyOnLoad;
+        [CanBeNull] private readonly Transform _objectParent;
         private readonly Action<TObject> _onPull;
         private readonly Action<TObject> _onReturn;
 
         public ObjectPool(TObject prefab, int initialSize,
-            [CanBeNull] Action<TObject> onPull, [CanBeNull] Action<TObject> onReturn)
+            [CanBeNull] Action<TObject> onPull, [CanBeNull] Action<TObject> onReturn, 
+            [CanBeNull] Transform parent=null, bool objDontDestroyOnLoad=false)
         {
             _maxLenght = initialSize;
             _prefab = prefab;
             _pool = new Stack<TObject>(initialSize);
             _onPull = onPull ?? DefaultPull;
             _onReturn = onReturn ?? DefaultReturn;
+            _objectParent = parent;
+            _hasObjectParent = _objectParent != null;
+            _objDontDestroyOnLoad = objDontDestroyOnLoad;
 
             for (var i = 0; i < initialSize; i++)
             {
-                var newObj = Object.Instantiate(prefab);
+                var newObj = _hasObjectParent ? 
+                    Object.Instantiate(prefab, _objectParent) : 
+                    Object.Instantiate(prefab);
+                
+                if (_objDontDestroyOnLoad) Object.DontDestroyOnLoad(newObj);
                 _onReturn(newObj);
                 _pool.Push(newObj);
             }
@@ -36,7 +47,10 @@ namespace Structure
         {
             if (_pool.Count == 0)
             {
-                var newObj = Object.Instantiate(_prefab);
+                var newObj = _hasObjectParent ? 
+                    Object.Instantiate(_prefab, _objectParent) : 
+                    Object.Instantiate(_prefab);
+                if (_objDontDestroyOnLoad) Object.DontDestroyOnLoad(newObj);
                 _onPull(newObj);
                 return newObj;
             }

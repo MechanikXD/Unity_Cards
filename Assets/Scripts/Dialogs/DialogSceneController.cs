@@ -26,6 +26,7 @@ namespace Dialogs
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
 
+        [SerializeField] private AudioClip _music;
         [SerializeField] private BuffOptionButton[] _dialogOptions;
         private int _optionsCount;
         private bool _dialogIsFinished;
@@ -35,6 +36,8 @@ namespace Dialogs
         private BuffOptionButton _currentlySelected;
 
         private void OnDisable() => _confirmButton.onClick.RemoveAllListeners();
+
+        private void Start() => AudioManager.Instance.PlayMusic(_music);
 
         protected override void Initialize() { }
 

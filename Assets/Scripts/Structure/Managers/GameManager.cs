@@ -9,6 +9,9 @@ namespace Structure.Managers
 {
     public class GameManager : SingletonBase<GameManager>
     {
+        [SerializeField] private AudioClip[] _music;
+        [SerializeField] private int _musicChangeStep = 5;
+        
         [SerializeField] private BoardModel _board;
         [SerializeField] private DialogDataBase _dialogDataBase;
         
@@ -21,10 +24,31 @@ namespace Structure.Managers
             Board.StartGame(gs.DifficultySettings, !gs.HadLoadedData);
             UIManager.Instance.GetHUDCanvas<GameHUDView>().LoadBuffList(gs.PlayerBuffs, gs.EnemyBuffs);
             gs.HadLoadedData = false;
+            PlayMusic();
         }
         
         protected override void Initialize() { }
 
+        private void PlayMusic()
+        {
+            var act = SessionManager.Instance.CurrentAct;
+
+            if (act >= (_music.Length - 1) * _musicChangeStep)
+            {
+                AudioManager.Instance.PlayMusic(_music[^1]);
+                return;
+            }
+            
+            for (var i = 0; i < _music.Length; i++)
+            {
+                if (act < (i + 1) * _musicChangeStep)
+                {
+                    AudioManager.Instance.PlayMusic(_music[i]);
+                    break;
+                }
+            }
+        }
+        
         public void WinAct()
         {
             if (ActIsFinished) return;
