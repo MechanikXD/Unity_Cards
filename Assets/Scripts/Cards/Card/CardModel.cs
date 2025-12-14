@@ -198,7 +198,7 @@ namespace Cards.Card
         {
             RequestMove = true;
             HideActions();
-            MoveToLocalAsync(transform.localPosition + _moveStartLift, _liftSpeed).Forget();
+            MoveToLocalAsync(transform.localPosition + _moveStartLift, _liftSpeed, reenableController:false).Forget();
         }
         
         public void MoveCard(CardSlot newSlot)
@@ -230,8 +230,8 @@ namespace Cards.Card
             {
                 Controller.Interactable = true;
                 AudioManager.Instance.Play(_attachSound, _soundPitch);
+                RequestMove = false;
             }
-            RequestMove = false;
             transform.localPosition = final;
         }
 
