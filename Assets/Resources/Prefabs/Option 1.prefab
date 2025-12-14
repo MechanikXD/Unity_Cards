@@ -451,7 +451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _button: {fileID: 652827163520025608}
-  _clip: {fileID: 8300000, guid: 8ebe727da175a044881c0f1eaa9c3385, type: 3}
+  _clip: {fileID: 8300000, guid: c4380629157cbe245a7ee622495c5570, type: 3}
   _pitch: {x: 0.9, y: 1.1}
 --- !u!1 &9069682269338734452
 GameObject:

@@ -455,12 +455,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pressSounds:
-  - {fileID: 8300000, guid: 4cb016408e19bd442888d960ae6b0189, type: 3}
-  - {fileID: 8300000, guid: ad903273b8091c540afbc2bc6ccc6d28, type: 3}
-  - {fileID: 8300000, guid: 48dfb3aa7e12ef14e855402b7e61e70c, type: 3}
-  - {fileID: 8300000, guid: bb8ac307e06037d4fbe3044a0fb063de, type: 3}
+  - {fileID: 8300000, guid: f2f341d56026e984084491337ce2bf7c, type: 3}
+  - {fileID: 8300000, guid: 7e232b492885baa4092499ae471896a9, type: 3}
+  - {fileID: 8300000, guid: 94671c7d5ba6fab40a3a69973c1e46a5, type: 3}
+  - {fileID: 8300000, guid: 2b042398a49d2da4bb57fcdbfe72f977, type: 3}
   _holdSound:
-  - {fileID: 8300000, guid: edbe155b5a8bc6444aa69dafcff17960, type: 3}
+  - {fileID: 8300000, guid: 15919b894455904458e7304342f5cd93, type: 3}
   _pitch: {x: 0.9, y: 1.1}
   _holdThreshold: 0.3
 --- !u!114 &6004174078994817678

@@ -62,6 +62,7 @@ namespace UI.Settings
         private void CreateGroups()
         {
             var firstDisplayed = false;
+            bool loadSettings = Settings.Count <= 0;
             for (var i = 0; i < _settingData.SettingGroups.Length; i++)
             {
                 // Create new group tab
@@ -72,8 +73,8 @@ namespace UI.Settings
                 // Create settings for this group
                 newGroup.LoadSettings(_settingData.SettingGroups[i], out var createdSettings);
                 // Load settings into dictionary if it's empty
-                if (Settings.Count <= 0)  
-                    foreach (var setting in createdSettings) 
+                if (loadSettings)
+                    foreach (var setting in createdSettings)
                         Settings.Add(setting.Key, setting.Value);
                 
                 // Enable only first tab

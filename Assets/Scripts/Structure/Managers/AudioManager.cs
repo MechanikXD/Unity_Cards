@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Other.Extensions;
+using UI.Settings;
+using UI.Settings.Types;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,6 +21,30 @@ namespace Structure.Managers
         [SerializeField] private float _fadeOutSpeed = 10f;
         private ObjectPool<AudioSource> _sourcePool;
         private LinkedList<AudioSource> _activeSources;
+
+        private float _masterVolume;
+        private float _musicVolume;
+        private float _effectVolume;
+
+        private void OnEnable()
+        {
+            void GetMaster(Setting s)
+            {
+                _masterVolume = ((SliderSetting)s).CurrentValue;
+                UpdateAudioSourceVolume();
+            }
+            void GetMusic(Setting s)
+            {
+                _musicVolume = ((SliderSetting)s).CurrentValue;
+                UpdateAudioSourceVolume();
+            }
+
+            void GetEffect(Setting s) => _effectVolume = ((SliderSetting)s).CurrentValue;
+
+            SettingsView.AddEventOnSetting("Master", GetMaster);
+            SettingsView.AddEventOnSetting("Music", GetMusic);
+            SettingsView.AddEventOnSetting("Effects", GetEffect);
+        }
 
         protected override void Awake()
         {
@@ -36,7 +62,7 @@ namespace Structure.Managers
         public void PlayMusic(AudioClip musicClip)
         {
             _musicSource.clip = musicClip;
-            _musicSource.volume = 1f; // TODO: Pull From Settings
+            _musicSource.volume = _masterVolume * _musicVolume;
             _musicSource.Play();
             _activeSources.AddLast(_musicSource);
         }
@@ -49,6 +75,15 @@ namespace Structure.Managers
             var source = _sourcePool.Pull();
             var pitch = Random.Range(pitchRange.x, pitchRange.y);
             PlayClip(source, clip, pitch).Forget();
+        }
+
+        private void UpdateAudioSourceVolume()
+        {
+            foreach (var source in _activeSources)
+            {
+                if (source == _musicSource) source.volume = _musicVolume * _masterVolume;
+                else source.volume = _effectVolume * _masterVolume;
+            }
         }
 
         public UniTask StopAllSources()
@@ -85,7 +120,7 @@ namespace Structure.Managers
             {
                 source.clip = clip;
                 source.pitch = pitch;
-                source.volume = 1f; // TODO: Pull from settings
+                source.volume = _masterVolume * _effectVolume;
                 source.PlayOneShot(clip);
 
                 await UniTask.WaitForSeconds(clip.length, cancellationToken: _cts.Token);

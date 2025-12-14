@@ -732,7 +732,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.6
-    functionName: InvokeAttackActions
+    functionName: PassOnEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

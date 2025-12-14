@@ -1717,6 +1717,7 @@ GameObject:
   - component: {fileID: 419467481}
   - component: {fileID: 419467480}
   - component: {fileID: 419467479}
+  - component: {fileID: 419467482}
   m_Layer: 5
   m_Name: Pause Button
   m_TagString: Untagged
@@ -1826,6 +1827,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419467477}
   m_CullTransparentMesh: 1
+--- !u!114 &419467482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419467477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8905f415906244f0a265a7dbe6a40561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 419467479}
+  _clip: {fileID: 8300000, guid: c4380629157cbe245a7ee622495c5570, type: 3}
+  _pitch: {x: 0.9, y: 1.1}
 --- !u!1 &421580876
 GameObject:
   m_ObjectHideFlags: 0
@@ -3267,7 +3283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardPrefab: {fileID: 2156658722798406469, guid: f1ba6b7adc80bc44fb77ce0bbd47e115, type: 3}
   _layout: {fileID: 2020779073}
-  _turnShowSound: {fileID: 8300000, guid: 8d5079d518df13a4eae2e868d42144d3, type: 3}
+  _turnShowSound: {fileID: 8300000, guid: 095b8c65e9a9b664b84401570daa6e74, type: 3}
   _soundPitch: {x: 0.9, y: 1.1}
   _turnDisplay: {fileID: 486244910}
   _turnCounter: {fileID: 885420529}
@@ -4965,6 +4981,7 @@ GameObject:
   - component: {fileID: 1193652794}
   - component: {fileID: 1193652793}
   - component: {fileID: 1193652795}
+  - component: {fileID: 1193652796}
   m_Layer: 5
   m_Name: Show Buff Button
   m_TagString: Untagged
@@ -5075,6 +5092,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1193652796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193652791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8905f415906244f0a265a7dbe6a40561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 1193652795}
+  _clip: {fileID: 8300000, guid: c4380629157cbe245a7ee622495c5570, type: 3}
+  _pitch: {x: 0.9, y: 1.1}
 --- !u!1 &1209841873
 GameObject:
   m_ObjectHideFlags: 0
@@ -7849,6 +7881,7 @@ GameObject:
   - component: {fileID: 1890732001}
   - component: {fileID: 1890732000}
   - component: {fileID: 1890731999}
+  - component: {fileID: 1890732002}
   m_Layer: 5
   m_Name: Play Button
   m_TagString: Untagged
@@ -7958,6 +7991,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1890731997}
   m_CullTransparentMesh: 1
+--- !u!114 &1890732002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1890731997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8905f415906244f0a265a7dbe6a40561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 1890731999}
+  _clip: {fileID: 8300000, guid: c4380629157cbe245a7ee622495c5570, type: 3}
+  _pitch: {x: 0.9, y: 1.1}
 --- !u!1 &1978017727
 GameObject:
   m_ObjectHideFlags: 0

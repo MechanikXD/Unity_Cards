@@ -1889,7 +1889,7 @@ MonoBehaviour:
   _confirmButton: {fileID: 785722791}
   _music: {fileID: 8300000, guid: 53d3163fd8cd7f24d9d5660afb904436, type: 3}
   _advanceDialogSounds:
-  - {fileID: 8300000, guid: 300c456b0fdcfbf45be684b6b5d5a7a3, type: 3}
+  - {fileID: 8300000, guid: cc25f9eef43fe7f4d8a162ea14c68f31, type: 3}
   _soundPitch: {x: 0.9, y: 1.1}
   _dialogOptions:
   - {fileID: 1104727696115515248}

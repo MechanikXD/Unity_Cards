@@ -62,9 +62,9 @@ MonoBehaviour:
   _destroyButton: {fileID: 5177773104230217835}
   _moveButton: {fileID: 6077728718598501866}
   _hitSounds:
-  - {fileID: 8300000, guid: fd5789cf121df8448af40876c9a620fc, type: 3}
-  - {fileID: 8300000, guid: 065065d6d9b044845a2fd4c0c4c7ccad, type: 3}
-  - {fileID: 8300000, guid: 70283dbed01328e469d0721b5789bc98, type: 3}
+  - {fileID: 8300000, guid: 219d3e5c6c8f7ad46a2ee01ed849f32d, type: 3}
+  - {fileID: 8300000, guid: 2aa8f8e2e21aa0940b9df2dd4da42cc8, type: 3}
+  - {fileID: 8300000, guid: 7c1cec16eaf761e479e8906fca9695af, type: 3}
   _soundPitch: {x: 0.9, y: 1.1}
   _sprite: {fileID: 4824896885634547759}
   _background: {fileID: 1849810718430064127}
@@ -93,12 +93,12 @@ MonoBehaviour:
   _xMoveBorders: {x: -5, y: 5}
   _holdThreshold: 0.3
   _pressSounds:
-  - {fileID: 8300000, guid: 48dfb3aa7e12ef14e855402b7e61e70c, type: 3}
-  - {fileID: 8300000, guid: bb8ac307e06037d4fbe3044a0fb063de, type: 3}
-  - {fileID: 8300000, guid: 4cb016408e19bd442888d960ae6b0189, type: 3}
-  - {fileID: 8300000, guid: ad903273b8091c540afbc2bc6ccc6d28, type: 3}
+  - {fileID: 8300000, guid: f2f341d56026e984084491337ce2bf7c, type: 3}
+  - {fileID: 8300000, guid: 7e232b492885baa4092499ae471896a9, type: 3}
+  - {fileID: 8300000, guid: 94671c7d5ba6fab40a3a69973c1e46a5, type: 3}
+  - {fileID: 8300000, guid: 2b042398a49d2da4bb57fcdbfe72f977, type: 3}
   _holdSound:
-  - {fileID: 8300000, guid: edbe155b5a8bc6444aa69dafcff17960, type: 3}
+  - {fileID: 8300000, guid: 15919b894455904458e7304342f5cd93, type: 3}
   _pitch: {x: 0.9, y: 1.1}
 --- !u!210 &-4098478259757336368
 SortingGroup:
