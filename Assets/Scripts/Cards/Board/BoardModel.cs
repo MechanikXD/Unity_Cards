@@ -37,14 +37,18 @@ namespace Cards.Board
         private ObjectPool<CardModel> _modelPool;
         [SerializeField] private AudioClip _turnShowSound;
         [SerializeField] private Vector2 _soundPitch;
+        [Header("Turn Display")]
         [SerializeField] private CanvasGroup _turnDisplay;
         [SerializeField] private TMP_Text _turnCounter;
         [SerializeField] private float _turnShowSpeed = 5f;
         [SerializeField] private float _turnStayTime = 0.5f;
         [SerializeField] private float _turnHideSpeed = 2f;
         private int _currentTurn;
+        [Header("VFX")]
         [SerializeField] private ParticleSystem _cardDestroyParticles;
         private ObjectPool<ParticleSystem> _destroyParticlesPool;
+        [SerializeField] private VignetteController _vignette;
+        [SerializeField] private float _vignettePulse;
 
         [Header("Player")]
         [SerializeField] private Vector3 _cardSpawn;
@@ -62,7 +66,7 @@ namespace Cards.Board
         public PlayerData EnemyData => _enemyData;
         public CardSlot[] PlayerSlots => _playerCardSlots;
         public CardSlot[] EnemySlots => _enemyCardSlots;
-        
+
         private void OnDisable() => UnsubscribeFromEvents();
         
         #region Game Flow Controll
@@ -248,6 +252,7 @@ namespace Cards.Board
                     {
                         PlayerData.TakeDamage(otherCard.FinalAttack);
                         PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
+                        _vignette.PulseVignette(_vignettePulse);
                     });
                     
                     otherCard.PlayRandomAnimationReverse();
@@ -330,6 +335,15 @@ namespace Cards.Board
 
             _turnDisplay.alpha = 0f;
         } 
+        
+        private async UniTask PlayParticlesAndReturn(Vector2 pos)
+        {
+            var particles = _destroyParticlesPool.Pull();
+            particles.gameObject.transform.position = pos;
+            particles.Play();
+            await UniTask.WaitForSeconds(particles.main.startLifetime.constantMax);
+            _destroyParticlesPool.Return(particles);
+        }
 
         #endregion
 
@@ -459,15 +473,6 @@ namespace Cards.Board
                 if (SessionManager.Instance !=null) PlayerData.PlayerDefeated -= GameManager.Instance.LooseAct;
                 _enemyData.PlayerDefeated -= GameManager.Instance.WinAct;    
             }
-        }
-
-        private async UniTask PlayParticlesAndReturn(Vector2 pos)
-        {
-            var particles = _destroyParticlesPool.Pull();
-            particles.gameObject.transform.position = pos;
-            particles.Play();
-            await UniTask.WaitForSeconds(particles.main.startLifetime.constantMax);
-            _destroyParticlesPool.Return(particles);
         }
     }
 
