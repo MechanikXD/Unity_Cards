@@ -411,7 +411,6 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
-                newModel.transform.position = _cardSpawn;
                 _playerCardSlots[i].Attach(newModel, true);
             }
             
@@ -422,8 +421,6 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
-                newModel.transform.position =
-                    _enemyCardSlots[i].transform.position + _slotRelativeCardSpawn;
                 _enemyCardSlots[i].Attach(newModel, true);
             }
             
@@ -437,8 +434,8 @@ namespace Cards.Board
         {
             var otherDeck = settings.GetDeck();
             _enemyData.Initialize(otherDeck);
-            SessionManager.Instance.LoadEnemyBuffs(_enemyData);
             _enemyBehaviour = new EnemyBehaviour(this, _enemyData, settings);
+            SessionManager.Instance.LoadEnemyBuffs(_enemyData);
         }
         
         // Board context from player card 

@@ -30,7 +30,7 @@ namespace Cards.Board
             card.transform.SetParent(transform);
             card.transform.localScale = Vector3.one;
             card.SortingGroup.sortingOrder = SORTING_ORDER;
-            if (instantMove) card.transform.position = _cardPosition;
+            if (instantMove) card.transform.localPosition = _cardPosition;
             else card.MoveToLocalAsync(_cardPosition, _cardMoveSpeed, reenableController:reenableController).Forget();
         }
 
