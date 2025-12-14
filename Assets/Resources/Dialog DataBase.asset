@@ -15,6 +15,71 @@ MonoBehaviour:
   _data:
   - _backgroundImagePath: Backgrounds/GreymoorBG
     _foregroundImagePath: 
+    _dialogType: 0
     _dialogs:
-    - Test
-    - Dialog
+    - The dust settles, and silence claims the battlefield.
+    - A faint warmth rises within you, urging you onward.
+    - Something inside whispers that you can go further still.
+  - _backgroundImagePath: Backgrounds/GreymoorBG
+    _foregroundImagePath: 
+    _dialogType: 0
+    _dialogs:
+    - You catch your breath, mind sharpening after the clash.
+    - Every movement, every lesson from the fight echoes in your thoughts.
+    - "You feel the moment\u2026 ready to shape your next step."
+  - _backgroundImagePath: Backgrounds/GreymoorBG
+    _foregroundImagePath: 
+    _dialogType: 0
+    _dialogs:
+    - The air trembles around you as the energy of the battle lingers.
+    - Sparks of potential coil beneath your skin.
+    - "You sense the power waiting\u2014eager for your decision."
+  - _backgroundImagePath: Backgrounds/GreymoorBG
+    _foregroundImagePath: 
+    _dialogType: 0
+    _dialogs:
+    - Your heartbeat steadies as the chaos finally fades.
+    - The world seems clearer, lighter, more open.
+    - A small voice invites you to strengthen yourself before moving on.
+  - _backgroundImagePath: Backgrounds/GreymoorBG
+    _foregroundImagePath: 
+    _dialogType: 0
+    _dialogs:
+    - The struggle has taught you more than you expected.
+    - Patterns, weaknesses, and possibilities unfold in your mind.
+    - You can guide this newfound knowledge into something greater.
+  - _backgroundImagePath: Backgrounds/HuntersMarchBG
+    _foregroundImagePath: 
+    _dialogType: 1
+    _dialogs:
+    - Far ahead, the enemy regroups in the shadows.
+    - Their resolve hardens as whispers of your victory spread.
+    - You sense they will not remain as they were.
+  - _backgroundImagePath: Backgrounds/HuntersMarchBG
+    _foregroundImagePath: 
+    _dialogType: 1
+    _dialogs:
+    - Distant horns echo across the field.
+    - "Shapes gather\u2014more than before, moving with purpose."
+    - Their numbers grow, preparing for the next confrontation.
+  - _backgroundImagePath: Backgrounds/HuntersMarchBG
+    _foregroundImagePath: 
+    _dialogType: 1
+    _dialogs:
+    - The foes learn from each defeat.
+    - You see their stance shift, their eyes sharpen.
+    - They will adapt to challenge you more fiercely.
+  - _backgroundImagePath: Backgrounds/HuntersMarchBG
+    _foregroundImagePath: 
+    _dialogType: 1
+    _dialogs:
+    - "A dark force coils around the battlefield\u2019s edges."
+    - The enemies breathe it in, trembling as it changes them.
+    - Their bodies and minds twist with new, unsettling potential.
+  - _backgroundImagePath: Backgrounds/HuntersMarchBG
+    _foregroundImagePath: 
+    _dialogType: 1
+    _dialogs:
+    - "A shout rises among their ranks\u2014raw, furious, desperate."
+    - The surviving foes close in tighter, emboldened by the call.
+    - Enemies will be more unified when next you face them.

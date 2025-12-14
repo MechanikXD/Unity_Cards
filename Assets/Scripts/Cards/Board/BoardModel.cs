@@ -35,12 +35,20 @@ namespace Cards.Board
         [SerializeField] private CardGroupLayout _layout;
         private EnemyBehaviour _enemyBehaviour;
         private ObjectPool<CardModel> _modelPool;
+        [SerializeField] private AudioClip _turnShowSound;
+        [SerializeField] private Vector2 _soundPitch;
+        [Header("Turn Display")]
         [SerializeField] private CanvasGroup _turnDisplay;
         [SerializeField] private TMP_Text _turnCounter;
         [SerializeField] private float _turnShowSpeed = 5f;
         [SerializeField] private float _turnStayTime = 0.5f;
         [SerializeField] private float _turnHideSpeed = 2f;
         private int _currentTurn;
+        [Header("VFX")]
+        [SerializeField] private ParticleSystem _cardDestroyParticles;
+        private ObjectPool<ParticleSystem> _destroyParticlesPool;
+        [SerializeField] private VignetteController _vignette;
+        [SerializeField] private float _vignettePulse;
 
         [Header("Player")]
         [SerializeField] private Vector3 _cardSpawn;
@@ -55,9 +63,10 @@ namespace Cards.Board
         [SerializeField] private PlayerData _enemyData;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
+        public PlayerData EnemyData => _enemyData;
         public CardSlot[] PlayerSlots => _playerCardSlots;
         public CardSlot[] EnemySlots => _enemyCardSlots;
-        
+
         private void OnDisable() => UnsubscribeFromEvents();
         
         #region Game Flow Controll
@@ -73,8 +82,10 @@ namespace Cards.Board
             PlayerData.UpdateStatView(true);
             _enemyData.UpdateStatView(true);
 
-            _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
-
+            if (startAct) _modelPool = new ObjectPool<CardModel>(_cardPrefab, 15, null, null);
+            _destroyParticlesPool = new ObjectPool<ParticleSystem>(_cardDestroyParticles,
+                _playerCardSlots.Length + 1, null, null);
+            
             _currentTurn = 0;
             _turnCounter.SetText(_currentTurn.ToString());
             DisplayTurn().Forget();
@@ -136,6 +147,8 @@ namespace Cards.Board
             GlobalInputBlocker.Instance.DisableInput();
             UIManager.Instance.GetHUDCanvas<GameHUDView>().EnablePlayButton(false);
             
+            PlayerData.DoCombatStartEvents();
+            _enemyData.DoCombatStartEvents();
             SessionManager.Instance.PlayerBuffs.ApplyAll(PlayerData, ActivationType.CombatStart);
             SessionManager.Instance.EnemyBuffs.ApplyAll(_enemyData, ActivationType.CombatStart);
             await DisplayFinalAttacksAsync();
@@ -174,6 +187,7 @@ namespace Cards.Board
                                     if (otherCard.IsDefeated)
                                     {
                                         var model = _enemyCardSlots[i1].Detach();
+                                        PlayParticlesAndReturn(model.transform.position).Forget();
                                         _modelPool.Return(model);
                                         SessionManager.Instance.IncrementStatistics("Cards Defeated");
                                     }
@@ -199,6 +213,7 @@ namespace Cards.Board
                                     if (playerCard.IsDefeated)
                                     {
                                         var model = _playerCardSlots[i2].Detach();
+                                        PlayParticlesAndReturn(model.transform.position).Forget();
                                         _modelPool.Return(model);
                                     }
                                 
@@ -237,6 +252,7 @@ namespace Cards.Board
                     {
                         PlayerData.TakeDamage(otherCard.FinalAttack);
                         PlayEffects(otherEffects, TriggerType.OnHit, () => GetEnemyContext(currentIndex));
+                        _vignette.PulseVignette(_vignettePulse);
                     });
                     
                     otherCard.PlayRandomAnimationReverse();
@@ -308,6 +324,7 @@ namespace Cards.Board
             }
 
             _turnDisplay.alpha = 1f;
+            AudioManager.Instance.Play(_turnShowSound, _soundPitch);
             await UniTask.WaitForSeconds(_turnStayTime, 
                 cancellationToken:_turnDisplay.GetCancellationTokenOnDestroy());
             while (_turnDisplay.alpha > valueSnap)
@@ -318,6 +335,15 @@ namespace Cards.Board
 
             _turnDisplay.alpha = 0f;
         } 
+        
+        private async UniTask PlayParticlesAndReturn(Vector2 pos)
+        {
+            var particles = _destroyParticlesPool.Pull();
+            particles.gameObject.transform.position = pos;
+            particles.Play();
+            await UniTask.WaitForSeconds(particles.main.startLifetime.constantMax);
+            _destroyParticlesPool.Return(particles);
+        }
 
         #endregion
 
@@ -332,7 +358,6 @@ namespace Cards.Board
             var model = _modelPool.Pull();
             model.Set(card, PlayerData);
             model.transform.position = _cardSpawn;
-            model.Animator.enabled = false;
             model.Controller.Interactable = true;
             AddCardToLayout(model);
         }
@@ -361,11 +386,9 @@ namespace Cards.Board
 
             var newCard = _modelPool.Pull();
             newCard.transform.position = thisSlot.transform.position + _slotRelativeCardSpawn;
-            newCard.Animator.enabled = true;
-            newCard.Controller.Interactable = false;
             newCard.Set(data, null);
             
-            thisSlot.Attach(newCard);
+            thisSlot.Attach(newCard, reenableController:false);
         }
         
         // To play effect of certain activation type...
@@ -408,8 +431,6 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
-                newModel.transform.position = _cardSpawn;
-                newModel.Animator.enabled = true;
                 _playerCardSlots[i].Attach(newModel, true);
             }
             
@@ -420,9 +441,6 @@ namespace Cards.Board
                 
                 var newModel = _modelPool.Pull();
                 newModel.Set(card.ToCardData(), null);
-                newModel.transform.position =
-                    _enemyCardSlots[i].transform.position + _slotRelativeCardSpawn;
-                newModel.Animator.enabled = true;
                 _enemyCardSlots[i].Attach(newModel, true);
             }
             
@@ -436,8 +454,8 @@ namespace Cards.Board
         {
             var otherDeck = settings.GetDeck();
             _enemyData.Initialize(otherDeck);
-            SessionManager.Instance.LoadEnemyBuffs(_enemyData);
             _enemyBehaviour = new EnemyBehaviour(this, _enemyData, settings);
+            SessionManager.Instance.LoadEnemyBuffs(_enemyData);
         }
         
         // Board context from player card 

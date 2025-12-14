@@ -18,6 +18,10 @@ namespace Cards.Card
         [SerializeField] private Vector2 _xMoveBorders;
         [SerializeField] private float _holdThreshold = 0.3f;
 
+        [SerializeField] private AudioClip[] _pressSounds;
+        [SerializeField] private AudioClip[] _holdSound;
+        [SerializeField] private Vector2 _pitch;
+        
         public bool Interactable { get; set; } = true;
         private float _lastPointerDownTime;
         private bool _isDrag;
@@ -56,6 +60,7 @@ namespace Cards.Card
             {
                 HideInfoOnClick.CancelCardMove();
                 var detailView = UIManager.Instance.GetHUDCanvas<CardDetailView>();
+                AudioManager.Instance.Play(_holdSound, _pitch);
                 detailView.LoadData(_thisModel);
                 detailView.Enable();
             }
@@ -90,6 +95,7 @@ namespace Cards.Card
             HideInfoOnClick.HideAll();
 
             _isDrag = true;
+            AudioManager.Instance.Play(_pressSounds, _pitch);
             _originalPosition = transform.position;
             _thisModel.SortingGroup.sortingOrder = CARD_ORDER;
             GameManager.Instance.Board.RemoveCardFromLayout(_thisModel.IndexInLayout);

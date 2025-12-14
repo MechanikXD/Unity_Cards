@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb7c30d8b5bc4a8c824f37efbdeed5ec, type: 3}
+  m_Name: Hope 1
+  m_EditorClassIdentifier: 
+  _title: Hope 2
+  _optionTitle: You wish for the 'Light at the end of a tunel'
+  _tier: 2
+  _activation: 0
+  _description: Increase max Light by 4 and regenerate additional 1 light
+  _isUnique: 0
+  _lightBoost: 4
+  _lightRegenerationBoost: 1

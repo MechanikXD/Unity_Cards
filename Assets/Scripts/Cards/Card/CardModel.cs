@@ -33,6 +33,10 @@ namespace Cards.Card
         [SerializeField] private GameObject _buttonRoot;
         [SerializeField] private CardActionButton _destroyButton;
         [SerializeField] private CardActionButton _moveButton;
+        [SerializeField] private AudioClip[] _hitSounds;
+        [SerializeField] private AudioClip _attachSound;
+        [SerializeField] private Vector2 _soundPitch;
+        [SerializeField] private ParticleSystem _hitParticles;
         
         [Header("Visual")]
         [SerializeField] private SpriteRenderer _sprite;
@@ -53,16 +57,17 @@ namespace Cards.Card
         public bool IsDefeated { get; private set; }
         public bool RequestMove { get; private set; }
         public bool CanBePlaced => Hand.CanUseCard(Data.Cost);
-        public Animator Animator => _animator;
         public SortingGroup SortingGroup => _sortingGroup;
         // Invoked each time this card attacks
         private readonly LinkedList<Action> _persistentOnAttackAction = new LinkedList<Action>();
         // Invoked only once during next attack
         private readonly LinkedList<Action> _singleOnAttackAction = new LinkedList<Action>();
-
+        // For other stuff to store statuses/checks
+        public readonly Dictionary<string, float> LocalStatuses = new Dictionary<string, float>();
+        
         private void Awake()
         {
-            _animator.enabled = false;
+            _persistentOnAttackAction.AddLast(PlayHitSound);
             HideActions();
         }
 
@@ -110,8 +115,9 @@ namespace Cards.Card
             Hand.GetCardFromHand(Data);
             Hand.UseLight(Data.Cost);
             Hand = null;
-            _animator.enabled = true;
         }
+
+        private void PlayHitSound() => AudioManager.Instance.Play(_hitSounds, _soundPitch);
 
         #region Actions During the Game
         
@@ -137,6 +143,7 @@ namespace Cards.Card
                 CurrentHealth = 0;
             }
             _healthField.SetText(CurrentHealth.ToString());
+            _hitParticles.Play();
         }
         
         public void ClearFinalAttack()
@@ -156,7 +163,7 @@ namespace Cards.Card
         public void AddActionOnHit(Action act) => _singleOnAttackAction.AddLast(act);
         public void AddPersistentActionOnHit(Action act) => _persistentOnAttackAction.AddLast(act);
 
-        private void InvokeAttackActions()
+        public void InvokeAttackActions()
         {
             foreach (var act in _persistentOnAttackAction) act();
             foreach (var act in _singleOnAttackAction) act();
@@ -191,7 +198,7 @@ namespace Cards.Card
         {
             RequestMove = true;
             HideActions();
-            MoveToLocalAsync(transform.localPosition + _moveStartLift, _liftSpeed, reenableAnimator:false).Forget();
+            MoveToLocalAsync(transform.localPosition + _moveStartLift, _liftSpeed, reenableController:false).Forget();
         }
         
         public void MoveCard(CardSlot newSlot)
@@ -206,11 +213,11 @@ namespace Cards.Card
             HideActions();
         }
         
-        public async UniTask MoveToLocalAsync(Vector3 final, float moveSpeed, float snapDistance = 0.1f, bool reenableAnimator=true)
+        public async UniTask MoveToLocalAsync(Vector3 final, float moveSpeed, float snapDistance = 0.1f, 
+            bool reenableController=true)
         {
             _cts = _cts.Reset();
             Controller.Interactable = false;
-            _animator.enabled = false;
             var current = transform.localPosition;
             while (Vector3.Distance(current, final) > snapDistance)
             {
@@ -219,13 +226,13 @@ namespace Cards.Card
                 await UniTask.NextFrame(_cts.Token);
             }
 
-            transform.localPosition = final;
-            Controller.Interactable = true;
-            if (reenableAnimator)
+            if (reenableController)
             {
+                Controller.Interactable = true;
+                AudioManager.Instance.Play(_attachSound, _soundPitch);
                 RequestMove = false;
-                _animator.enabled = true;
             }
+            transform.localPosition = final;
         }
 
         public async UniTask SwapCardsAsync(CardSlot from, CardSlot to, float moveSpeed, float snapDistance = 0.1f)
@@ -238,7 +245,7 @@ namespace Cards.Card
             otherCard.Controller.Interactable = false;
             
             await otherCard.MoveToLocalAsync(otherCard.transform.localPosition + _moveStartLift,
-                moveSpeed, snapDistance, reenableAnimator:false);
+                moveSpeed, snapDistance);
             otherCard.Controller.Interactable = false; // Because it's set true after each move
             
             to.Attach(this);

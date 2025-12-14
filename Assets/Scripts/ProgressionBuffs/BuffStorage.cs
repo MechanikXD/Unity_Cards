@@ -33,6 +33,15 @@ namespace ProgressionBuffs
             if (_buffs.TryGetValue(buff.Activation, out var list)) list.Remove(buff);
         }
 
+        public bool Contains(int index)
+        {
+            foreach (var kvp in _buffs)
+                foreach (var buffs in kvp.Value)
+                    if (buffs.ID == index) return true;
+
+            return false;
+        }
+
         public void Clear() => _buffs.Clear();
 
         public void Load(BuffDataBase db, string buffIds)

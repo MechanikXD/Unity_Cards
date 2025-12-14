@@ -26,6 +26,9 @@ namespace Dialogs
         [SerializeField] private TMP_Text _dialogWindow;
         [SerializeField] private Button _confirmButton;
 
+        [SerializeField] private AudioClip _music;
+        [SerializeField] private AudioClip[] _advanceDialogSounds;
+        [SerializeField] private Vector2 _soundPitch;
         [SerializeField] private BuffOptionButton[] _dialogOptions;
         private int _optionsCount;
         private bool _dialogIsFinished;
@@ -35,6 +38,8 @@ namespace Dialogs
         private BuffOptionButton _currentlySelected;
 
         private void OnDisable() => _confirmButton.onClick.RemoveAllListeners();
+
+        private void Start() => AudioManager.Instance.PlayMusic(_music);
 
         protected override void Initialize() { }
 
@@ -173,6 +178,7 @@ namespace Dialogs
 
             _dialogWindow.SetText(_dialogs[_currentDialogIndex]);
             _currentDialogIndex++;
+            AudioManager.Instance.Play(_advanceDialogSounds, _soundPitch);
         }
 
         private void LoadOptions()

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef8f975ae3924761b000807940bb7893, type: 3}
+  m_Name: Doppelgangers
+  m_EditorClassIdentifier: 
+  _title: Doppelgangers
+  _optionTitle: Their Numbers will Grow
+  _tier: 3
+  _activation: 0
+  _description: Enemy gain 3 Copy of random cards in their deck
+  _isUnique: 0
+  _cardDuplicateCount: 3

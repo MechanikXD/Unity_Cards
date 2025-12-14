@@ -3,6 +3,8 @@ using System.Linq;
 using Other.Extensions;
 using ProgressionBuffs.Enemy;
 using ProgressionBuffs.Player;
+using ProgressionBuffs.Scriptables;
+using Structure.Managers;
 using UnityEngine;
 
 namespace ProgressionBuffs
@@ -68,11 +70,14 @@ namespace ProgressionBuffs
             foreach (var index in indexes)
             {
                 if (Mathf.Abs(players[index].Tier - tier) > maxDeviation) continue;
-
+                if (players[index].IsUnique && SessionManager.Instance.PlayerHasBuff(index)) continue;
+                
                 result.Add(players[index]);
                 counter++;
                 if (counter >= amount) break;
             }
+            
+            if (result.Count == 0) result.Add(players.GetRandom());
 
             return result;
         }
@@ -88,11 +93,14 @@ namespace ProgressionBuffs
             foreach (var index in indexes)
             {
                 if (Mathf.Abs(players[index].Tier - tier) > maxDeviation) continue;
+                if (players[index].IsUnique && SessionManager.Instance.PlayerHasBuff(index)) continue;
 
                 result.Add(players[index]);
                 counter++;
                 if (counter >= amount) break;
             }
+            
+            if (result.Count == 0) result.Add(players.GetRandom());
 
             return result;
         }

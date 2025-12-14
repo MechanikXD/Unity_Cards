@@ -62,6 +62,7 @@ namespace Cards.Card
             var stringBuilder = new StringBuilder();
             foreach (CardEffect effect in effects)
             {
+                if (effect.IsHidden) continue;
                 stringBuilder.Append(MakeDescription(effect, prefix));
             }
             

@@ -1,4 +1,5 @@
 ﻿using Other.Interactions;
+using Structure.Managers;
 using UI;
 using UI.View.GameView;
 using UI.View.MainMenuView;
@@ -9,6 +10,9 @@ namespace Cards.Deck
 {
     public class DeckCardController : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IDragHandler
     {
+        [SerializeField] private AudioClip[] _pressSounds;
+        [SerializeField] private AudioClip[] _holdSound;
+        [SerializeField] private Vector2 _pitch;
         [SerializeField] private float _holdThreshold = 0.3f;
         private DeckCardModel _thisModel;
         private float _lastPointerDownTime;
@@ -32,6 +36,7 @@ namespace Cards.Deck
             if (duration >= _holdThreshold)
             {
                 var detailView = UIManager.Instance.GetHUDCanvas<CardDetailView>();
+                AudioManager.Instance.Play(_holdSound, _pitch);
                 detailView.LoadData(_thisModel.CardData);
                 detailView.Enable();
             }
@@ -44,11 +49,13 @@ namespace Cards.Deck
 
                 if (_thisModel.InPlayerHand)
                 {
+                    AudioManager.Instance.Play(_pressSounds, _pitch);
                     playerCards.RemoveCard(_thisModel.IndexInLayout);
                     otherCards.AddCard(_thisModel);
                 }
                 else if (playerCards.CanAddToDeck(_thisModel.CardData.Cost))
                 {
+                    AudioManager.Instance.Play(_pressSounds, _pitch);
                     otherCards.RemoveCard(_thisModel.IndexInLayout);
                     playerCards.AddCard(_thisModel);
                 }

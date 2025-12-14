@@ -42,6 +42,7 @@ namespace Cards.Hand
 
         public bool HasAnyCards => CardsInHand.Count > 0 || CurrentDeck.Count > 0;
         public bool IsDefeated { get; private set; }
+        private readonly LinkedList<Action<PlayerData>> _combatStartEvents = new LinkedList<Action<PlayerData>>();
         public event Action PlayerDefeated; 
         
         /// <summary>
@@ -93,6 +94,7 @@ namespace Cards.Hand
             CardsInHand.Clear();
 
             CurrentLight = MaxLight;
+            _combatStartEvents.Clear();
             
             if (_statView != null) _statView.SetLight(CurrentLight, MaxLight, true);
         }
@@ -291,6 +293,14 @@ namespace Cards.Hand
         }
 
         #endregion
+
+        public void DoCombatStartEvents()
+        {
+            foreach (var action in _combatStartEvents) action(this);
+        }
+
+        public void AddCombatStartEvent(Action<PlayerData> action) => 
+            _combatStartEvents.AddLast(action);
 
         public SerializablePlayerHand SerializeSelf()
         {

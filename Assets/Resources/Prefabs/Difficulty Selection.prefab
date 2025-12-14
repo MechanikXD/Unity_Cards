@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7702040845384100782}
   - component: {fileID: 7540001976110926669}
   - component: {fileID: 5507788533810215941}
+  - component: {fileID: 5675988833230257747}
   m_Layer: 5
   m_Name: Difficulty Selection
   m_TagString: Untagged
@@ -68,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8704723172980508906, guid: 9e19662ebc6d8424b9403dd14dded007, type: 3}
+  m_Sprite: {fileID: -2901756460035830365, guid: 16d1c9e5fff600b4da50552f2a8de467, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -77,7 +78,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.7
 --- !u!114 &7540001976110926669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +137,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 7540001976110926669}
   _title: {fileID: 7882940892972219626}
+--- !u!114 &5675988833230257747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230827038492563406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8905f415906244f0a265a7dbe6a40561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 7540001976110926669}
+  _clip: {fileID: 8300000, guid: c4380629157cbe245a7ee622495c5570, type: 3}
+  _pitch: {x: 0.9, y: 1.1}
 --- !u!1 &2077447594367958240
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,15 +219,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Normal
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d7ffc3cb50a6df74080d764596e51da8, type: 2}
+  m_sharedMaterial: {fileID: 4574592489340481032, guid: d7ffc3cb50a6df74080d764596e51da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -228,8 +244,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 65
+  m_fontSizeBase: 65
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
